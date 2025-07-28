@@ -1,0 +1,349 @@
+.rounded-30{
+    border-radius: 30px;
+}
+.f-28px{
+    font-size: 1.2rem;
+}
+.f-18px{
+    font-size: 0.8rem;
+}
+/*Reservation page CSS Start*/ 
+.res-list-card{
+    background: rgba(120, 111, 56, 0.07);
+    border-radius: 0.938rem;
+}
+.res-list-card .card-body{
+    padding: 1.125rem;
+}
+.res-img-box{
+    width: 8.75rem;
+    height: 6.25rem;
+    border-radius: 0.625rem;
+    display: inline-block;
+    background: rgba(120, 111, 56, 0.05);
+    overflow: hidden;
+}
+.res-img-box img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.res-lable,.res-ans,.res-link{
+    font-weight: 400;
+    font-size: 1.375rem;
+    /*line-height: 1.25rem;*/
+}
+.res-lable{
+    color: #000000;
+    margin-right: 1rem;
+}
+.res-ans{
+    color: #505050;
+    margin-bottom: 0;
+}
+.booking-tn .res-lable{
+    width: 8rem;
+}
+.booking-tn .res-ans{
+    width: calc(100% - 9rem);
+}
+.booking-tg .res-lable{
+    width: 6rem;
+}
+.booking-tg .res-ans{
+    width: calc(100% - 7rem);
+}
+.booking-check .res-lable{
+    width: 7rem;
+}
+
+.booking-check .res-ans{
+    width: calc(100% - 8rem);
+}
+.booking-check .activity-level .res-lable{
+    width: 9rem;
+}
+.booking-check .activity-level .res-ans{
+    width: calc(100% - 10rem);
+}
+.booking-sb .res-lable{
+    width: 8.25rem;
+}
+.booking-sb .res-ans{
+    width: calc(100% - 9.25rem);
+}
+.res-link{
+    color: #786F38;
+}
+.res-middle{
+    width: calc(100% - 19rem);
+    margin-left: 0
+}
+.res-ans-badge{
+    border-radius: 1.063rem;
+    font-weight: 400;
+    font-size: 1.125rem;
+    line-height: 1rem;
+    margin-top: -1rem;
+    position: relative;
+    top: 0.5rem;
+}
+.current-badge{
+    background-color: #BCC482;
+    color: #000000;
+}
+.completed-badge{
+    background-color: #786F38;
+    color: #ffffff;
+}
+.res-link-w{
+    width: 8.75rem;
+    display: inline-block;
+}
+.res-link-w a{
+    display: block;
+    margin-bottom: 1rem;
+}
+.res-link-w a:last-child{
+    margin-bottom: 0;
+}
+.reviewStar{
+    font-size: 2rem;
+    color: #EFE600;
+}
+.reviewStar-color{
+    color: #EFE600;
+}
+.reviewStar-color i,
+.reviewStar i{
+    margin-right: 0.313rem;
+}
+.reviewStar .form-check-label{
+    margin-right: .5rem;
+    position: relative;
+}
+.reviewStar .form-check-input{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    margin: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+.reviewStar span{
+    width: 1.875rem;
+    height: 1.875rem;
+    text-align: center;
+    display: inline-block;
+
+}
+
+@media (min-width: 576px){
+    .reviewModal .modal-dialog{
+        max-width: 33.125rem;
+    }
+}
+@media (max-width: 991.98px) {
+    .res-middle{
+        width: 100%;
+    }
+    .res-middle .res-lable{
+        width: 9rem;
+    }
+    .res-middle .res-ans{
+        width: calc(100% - 10rem);
+    }
+    .res-mob-list-card .res-link-w{
+        position: absolute;
+        bottom: 1rem;
+        width: 100%;
+    }
+    .res-mob-list-card .res-link-w a{
+        display: inline-block;
+        margin: 0 1rem;
+    }
+    .res-list-card.res-mob-list-card .card-body{
+        padding-bottom: 4rem;
+    }
+}
+@media (max-width: 767.98px) {
+    .res-middle,.res-link-w{
+        width: 100%;
+    }
+    .res-link-w{
+        text-align: center !important;
+        margin-top: 1.5rem;
+    }
+    .res-img-box{
+        display: block;
+        margin: 0 auto;
+        margin-right: auto !important;
+        margin-bottom: 1.5rem;
+    }
+    .res-middle .res-lable{
+        width: 9rem;
+    }
+    .res-middle .res-ans{
+        width: calc(100% - 10rem);
+    }
+}
+
+/*Detail page CSS*/
+.page-light-card{
+    background-color: rgba(191, 184, 136, 0.08);
+}
+.page-light-card .card-body{
+    padding: 1.875rem;
+}
+.page-outline-card{
+    background: #FFFFFF;
+    border: 1px solid rgba(120, 111, 56, 0.25);
+}
+.card-dark .card-body,
+.page-outline-card .card-footer,
+.page-outline-card .card-body{
+        padding: 1.2rem 1rem;
+}
+.locationSize{
+    height: 1.25rem;
+    position: relative;
+    top: -2px
+}
+.book-detail-row .res-lable{
+    width: 7.5rem;
+    margin-right: 1rem;
+}
+.book-detail-row .res-ans{
+    width: calc(100% - 8.5rem);
+}
+.book-detail-row .res-lable,.book-detail-row .res-ans{
+    font-size: 1rem;
+}
+.badge-secondary{
+    background: #786F38;
+    border-radius: 30px;
+    color: #ffffff;
+}
+.badge-secondary-outline{
+    border: 1px solid #786F38;
+    color: #000000;
+}
+.price-card .card-footer{
+    background-color: #786F38;
+    border-radius: 0 0 1.563rem 1.563rem;
+}
+.user-booking-detail{
+    font-weight: 500;
+    font-size: 1.375rem;
+    line-height: 1.25rem;
+    color: #000000;
+}
+.user-booking-detail span{
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 100%;
+    background: rgba(120, 111, 56, 0.1);
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0.5rem;
+}
+.user-booking-detail span img{
+    width: 1.125rem;
+    height: 1.125rem;
+}
+
+
+
+.ui-widget-content{
+    box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%) !important;
+    border: 1px solid #bfb888 !important;
+    margin-top: 1rem;
+    border-radius: 0.938rem;
+    overflow: hidden;
+
+}
+.ui-state-active, .ui-widget-content .ui-state-active, 
+.ui-widget-header .ui-state-active, 
+a.ui-button:active, .ui-button:active, 
+.ui-button.ui-state-active:hover{
+    border: 1px solid #bcc482 !important;
+    background: #bcc482 !important;
+    color: #000000 !important;
+}
+.ocash-media{
+    align-items: center;
+    padding: 0.5rem 1rem !important;
+}
+.ocash-media img{
+    width: 2.625rem !important;
+    height: 2.625rem !important;
+    border-radius: 0.313rem;
+    object-fit: cover;
+    margin-right: 1rem;
+}
+.ocash-media .media-body{
+    width: calc(100% -3.5rem);
+}
+.ocash-media .media-body h5{
+    font-size: 1.25rem;
+    margin-bottom: 0.125rem;
+    font-weight: 600;
+}
+.ocash-media .media-body p{
+    margin-bottom: 0;
+    font-weight: 400;
+}
+/*Reservation page CSS End*/ 
+
+.sc-img-slider{
+    height: 10.5rem;
+    margin: -0.063rem;
+}
+.sc-img-slider{
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease;
+    -webkit-transition: opacity 1s ease;
+}
+
+.sc-img-slider.slick-initialized {
+    visibility: visible;
+    opacity: 1;
+}
+
+.sc-img-slider .slick-list,
+.sc-img-slider .slick-track{
+    height: 100%;
+}
+.sc-img-slider img.img-fluid{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+.sc-img-slider .slick-prev:before,
+.sc-img-slider .slick-next:before{
+    display: none;
+}
+.sc-img-slider button.slick-arrow img{
+    width: 0.9rem;
+    height: 0.9rem;
+    object-fit: contain;
+}
+.sc-img-slider .slick-prev,
+.sc-img-slider .slick-next{
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.5);
+    width: 2.125rem;
+    height: 2.125rem;
+    border-radius: 100%;
+}
+.sc-img-slider .slick-prev{
+    left: 0.938rem;
+}
+.sc-img-slider .slick-next{
+    right: 0.938rem;
+}

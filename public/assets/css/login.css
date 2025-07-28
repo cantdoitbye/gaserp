@@ -1,0 +1,194 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+body {
+    background-color: #f9f9f9;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active  {
+    transition: background-color 5000s;
+    -webkit-text-fill-color: #000 !important;
+}
+/* Login page Start */
+.login-logo img{
+    height: 2.875rem;
+}
+.login-card {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 1.563rem;
+    border-bottom-left-radius: 1.563rem;
+}
+.login-bg-card {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 1.563rem;
+    border-bottom-right-radius: 1.563rem;
+}
+
+.order-2 .login-card {
+    border-top-right-radius: 1.563rem;
+    border-bottom-right-radius: 1.563rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.order-1 .login-bg-card {
+    border-top-left-radius: 1.563rem;
+    border-bottom-left-radius: 1.563rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.login-bg {
+    background-image: url("../img/login-pages/login-bg.webp");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.signup-bg{
+    background-image: url("../img/login-pages/signup-bg.webp");
+    background-repeat: no-repeat;
+    background-size: cover; 
+}
+.reset-bg{
+    background-repeat: no-repeat;
+    background-size: cover; 
+    width: 720px;
+    height: 1280px;
+    /* aspect-ratio: 16:9; */
+    padding-top: 56.25%; 
+
+
+}
+.logined-reset-bg{
+    background-image: url("../img/login-pages/change-password-bg.webp");
+    background-repeat: no-repeat;
+    background-size: cover; 
+}
+.login-card .card-body {
+    padding: 6.875rem 6.25rem;
+}
+.login-primary-btn {
+    border-radius: 1.875rem;
+    -webkit-border-radius: 1.875rem;
+    -moz-border-radius: 1.875rem;
+    -ms-border-radius: 1.875rem;
+    -o-border-radius: 1.875rem;
+}
+.g-icon{
+    position: absolute;
+    top: -0.25rem;
+    left: -1.125rem;
+    height: 1.875rem;
+    object-fit: cover;
+}
+
+.pl-15px{
+    padding-left: 1.125rem;
+}
+.login-line{
+    width: 150px;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.15);
+}
+.login-form .form-control-lg{
+    font-size: 1.125rem;
+    line-height: 0.938rem;
+    padding: 1rem 1.875rem;
+    min-height: calc(1.5em + 2rem + 1px);
+}
+.login-form .form-label{
+    font-family: 'Poppins';
+    font-weight: 500;
+    font-size: 1.375rem;
+    color: #000000;
+    line-height: 1.25rem;
+    margin-bottom: 1.063rem;
+}
+.login-form [type="checkbox"].form-check-input{
+    width: 1.625rem;
+    height: 1.625rem;
+    border-radius: 0.188rem;
+    -webkit-border-radius: 0.188rem;
+    -moz-border-radius: 0.188rem;
+    -ms-border-radius: 0.188rem;
+    -o-border-radius: 0.188rem;
+}
+.login-form [type="radio"].form-check-input{
+    width: 1.75rem;
+    height: 1.75rem;
+    position: absolute;
+    left: 3rem;
+    top: 1rem;
+}
+.form-radio-label.login-radio{
+    min-width: 12.5rem;
+    padding: 0.938rem 1.25rem;
+    padding-left: 4rem;
+    border-radius: 0.625rem;
+    border: 2px solid #C7C096;
+    border-radius: 0.625rem;
+    -webkit-border-radius: 0.625rem;
+    -moz-border-radius: 0.625rem;
+    -ms-border-radius: 0.625rem;
+    -o-border-radius: 0.625rem;
+    cursor: pointer;
+}
+.form-check-input:checked[type="radio"] + label.form-radio-label.login-radio{
+    border-color: #6CBBC6;
+    color: #6CBBC6 !important;
+}
+.pass_showhide{
+    top: 0.938rem;
+    right: 1.875rem;
+    width: 1.875rem;
+    height: 1.875rem;
+}
+.pass_showhide img{
+    width: 1.875rem;
+    height: 1.875rem;
+}
+.pass_showhide.show .opacity-0{
+    opacity: 1;
+}
+.pass_showhide.show .opacity-1{
+    opacity: 0;
+}
+@media (min-width: 1200px) {
+
+    .login-conainer .container{
+        max-width: 985px;
+    }
+}
+@media (min-width: 1400px) {
+    .login-conainer .container{
+        max-width: 1400px;
+    }
+}
+@media (max-width: 1399.98px) {
+    html{
+        font-size: 75%;
+    }
+
+    .login-card .card-body {
+        padding: 4.875rem 4.25rem;
+    }
+}
+@media (max-width: 767.98px) {
+    .login-card .card-body {
+        padding: 2rem 1.5rem;
+    }
+    .order-2 .login-card,
+    .login-card{
+        border-radius: 1.563rem;
+    }
+    .form-radio-label.login-radio{
+        min-width: 10.5rem;
+    }
+    .login-conainer.p-4{
+        padding: 1.5rem 0 !important;
+    }
+}
+/* Login page End */

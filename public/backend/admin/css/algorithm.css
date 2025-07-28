@@ -1,0 +1,26 @@
+.option-box {
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.option-box.selected {
+    border-color: #6CBBC6;
+}
+
+.option-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.option-icon {
+    width: 440px;
+    height: 440px;
+    /* border: 16px solid #C6C6C64D; */
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%);
+  
+}

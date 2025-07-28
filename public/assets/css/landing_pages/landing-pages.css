@@ -1,0 +1,542 @@
+/*Common CSS Start*/
+@media (max-width: 1599.98px) {
+    html {
+        font-size: 75%;
+    }
+}
+@media (max-width: 1399.98px) {
+    html {
+        font-size: 75%;
+    }
+}
+@media (max-width: 1199.98px) {
+    html {
+        font-size: 55%;
+    }
+}
+@media (max-width: 991.98px) {
+    html {
+        font-size: 75%;
+    }
+}
+html {
+    position: relative;
+    min-height: 100%;
+}
+.rounded-30 {
+    border-radius: 1.875rem !important;
+    -webkit-border-radius: 1.875rem !important;
+    -moz-border-radius: 1.875rem !important;
+    -ms-border-radius: 1.875rem !important;
+    -o-border-radius: 1.875rem !important;
+}
+.rounded-25 {
+    border-radius: 1.563rem !important;
+    -webkit-border-radius: 1.563rem !important;
+    -moz-border-radius: 1.563rem !important;
+    -ms-border-radius: 1.563rem !important;
+    -o-border-radius: 1.563rem !important;
+}
+.rounded-15 {
+    border-radius: 0.938rem !important;
+    -webkit-border-radius: 0.938rem !important;
+    -moz-border-radius: 0.938rem !important;
+    -ms-border-radius: 0.938rem !important;
+    -o-border-radius: 0.938rem !important;
+}
+.f-15px {
+    font-size: 0.938rem;
+}
+.f-18px {
+    font-size: 1.125rem;
+}
+.f-19px {
+    font-size: 1.188rem;
+}
+.f-20px {
+    font-size: 1.25rem;
+}
+.f-22px {
+    font-size: 1.375rem;
+}
+.f-24px {
+    font-size: 1.5rem;
+}
+.f-25px {
+    font-size: 1.563rem;
+}
+.f-26px {
+    font-size: 1.625rem;
+}
+.f-28px {
+    font-size: 1.75rem;
+}
+.f-30px {
+    font-size: 1.875rem;
+}
+.f-35px {
+    font-size: 2.188rem;
+}
+.f-36px {
+    font-size: 2.25rem;
+}
+.f-40px {
+    font-size: 2.5rem;
+}
+.f-45px {
+    font-size: 2.813rem;
+}
+.f-50px {
+    font-size: 3.125rem;
+}
+.f-55px {
+    font-size: 3.438rem;
+}
+.f-70px {
+    font-size: 4.375rem;
+}
+
+.py-100{
+    padding-top: 6.25rem;
+    padding-bottom: 6.25rem;
+}
+.p-100{
+    padding: 6.25rem;
+}
+
+.p-50{
+    padding: 3.125rem;
+}
+
+.mb-30{
+    margin-bottom: 1.875rem;
+}
+.mb-50{
+    margin-bottom: 3.125rem;
+}
+
+.fw-400 {
+    font-weight: 400;
+}
+.fw-500 {
+    font-weight: 500;
+}
+.fw-600 {
+    font-weight: 600;
+}
+.fw-700 {
+    font-weight: 700;
+}
+.fw-800 {
+    font-weight: 800;
+}
+
+
+a.text-color-50,
+.text-color-50 {
+    color: #505050;
+}
+.btn.btn-lg-60 {
+    font-family: "Lato";
+    font-weight: 500;
+    font-size: 1.375rem;
+    line-height: 1.25rem;
+    padding-top: 1.188rem;
+    padding-bottom: 1.188rem;
+}
+.btn.btn-lg-50 {
+    font-family: "Lato";
+    font-weight: 400;
+    font-size: 1.25rem;
+    line-height: 1.25rem;
+    padding-top: 0.855rem;
+    padding-bottom: 0.855rem;
+}
+.btn.btn-lg-50 img {
+    width: 1.5rem;
+    height: 1.5rem;
+    object-fit: contain;
+}
+
+.f-ws-600 {
+    font-family: "Work Sans";
+    font-weight: 600;
+}
+.f-ws-500 {
+    font-family: "Work Sans";
+    font-weight: 500;
+}
+
+.min-w-120{
+    min-width: 7.5rem;
+}
+
+.min-w-150{
+    min-width: 9.375rem;
+}
+.min-w-180{
+    min-width: 11.25rem;
+}
+.min-w-200{
+    min-width: 12.5rem;
+}
+.min-w-270{
+    min-width: 16.875rem;
+}
+.max-w-100{
+    max-width: 100%;
+}
+
+.section-title{
+    letter-spacing: -0.02em;
+    margin-bottom: 2.5rem;
+}
+
+.index-2{
+    z-index: 2;
+}
+.obj-fit-cover{
+    object-fit: cover;
+}
+
+.page-form .form-label{
+    color: #000000;
+    font-weight: 500;
+    font-size: 1.375rem;
+}
+.page-form .form-control-lg{
+    font-size: 1.125rem;
+    line-height: 0.938rem;
+    padding: 1rem 1.875rem;
+    min-height: calc(1.5em + 2rem + 1px);
+    border-radius: 1.875rem;
+}
+.page-form textarea.form-control{
+    font-size: 1.125rem;
+    padding: 1rem 1.875rem;
+    border-radius: 1.875rem;
+}
+
+@media (max-width: 767.98px) {
+    .py-100 {
+        padding-top: 3.25rem;
+        padding-bottom: 3.25rem;
+    }
+    .section-title .f-50px{
+        font-size: 2.25rem;
+    }
+    .section-title .f-24px{
+        font-size: 1.2rem;
+    }
+
+    .f-30px{
+        font-size: 1.4rem;
+    }
+    .f-35px{
+        font-size: 1.6rem;
+    }
+    .f-40px{
+        font-size: 1.8rem;
+    }
+    .f-50px{
+        font-size: 2.25rem;
+    }
+    .f-55px{
+        font-size: 2.50rem;
+    }
+}
+
+
+
+/* Common CSS End*/
+
+/* Header CSS Start */
+.header-navbar {
+    /*    padding-left: 4.75rem;
+        padding-right: 4.75rem;*/
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+    /*    max-width: 120rem;
+        margin-right: auto;
+        margin-left: auto;*/
+}
+.navbar-brand {
+    z-index: 1;
+}
+.navbar-brand img {
+    height: 2.875rem;
+    object-fit: contain;
+}
+.header-navbar .navbar-nav .nav-link {
+    font-weight: 400;
+    color: #786f38;
+}
+.header-navbar .navbar-nav .nav-link.active {
+    color: #0c6980;
+}
+.header-profile img {
+    width: 3.75rem;
+    height: 3.75rem;
+    object-fit: cover;
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    -ms-border-radius: 100%;
+    -o-border-radius: 100%;
+}
+.header-dropdown a.dropdown-item {
+    color: #786f38;
+    font-weight: 500;
+    padding: 0.25rem 1.875rem;
+}
+.header-dropdown a.dropdown-item.active, .header-dropdown a.dropdown-item:active{
+    color: #ffffff;
+}
+.header-dropdown a.dropdown-item.logout-item {
+    color: #ec0000;
+}
+.header-dropdown .dropdown-menu {
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.07);
+    border-radius: 1.563rem 0.625rem 1.563rem 1.563rem;
+    -webkit-border-radius: 1.563rem 0.625rem 1.563rem 1.563rem;
+    -moz-border-radius: 1.563rem 0.625rem 1.563rem 1.563rem;
+    -ms-border-radius: 1.563rem 0.625rem 1.563rem 1.563rem;
+    -o-border-radius: 1.563rem 0.625rem 1.563rem 1.563rem;
+}
+.login-mob-btn{
+    width: 2.625rem;
+    height: 1.875rem;
+    border-radius: 0.5rem !important;
+    padding: 0;
+    border-color: #969696;
+    box-shadow: none !important;
+}
+@media (max-width: 1399.98px) {
+
+}
+@media (min-width: 992px) {
+    .navbar-expand-lg.header-navbar .navbar-nav .nav-link {
+        padding-right: 0.844rem;
+        padding-left: 0.844rem;
+    }
+    .navbar-expand-lg.header-navbar .navbar-collapse {
+        margin-left: -12rem;
+        margin-right: -11.443rem;
+    }
+}
+@media (max-width: 991.98px) {
+    /*    .header-navbar{
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }*/
+    .header-navbar .navbar-collapse {
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        width: 100%;
+        top: 75px;
+        padding: 1rem 3rem;
+        border-radius: 30px;
+        background: linear-gradient(
+            90.02deg,
+            rgb(52, 91, 68) 0.93%,
+            rgb(12, 105, 128) 99.99%
+            );
+    }
+    .header-navbar .navbar-nav .nav-link {
+        color: #ffffff;
+        opacity: 0.75;
+    }
+    .navbar-light.header-navbar .navbar-nav .nav-link:hover,
+    .header-navbar .navbar-nav .nav-link.active {
+        color: #ffffff;
+        opacity: 1;
+    }
+}
+@media (max-width: 767.98px) {
+    .header-navbar .navbar-collapse{
+        top: 64.5px;
+    }
+    /*    .header-navbar {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }*/
+}
+/* Header CSS End */
+
+
+.main-container{
+    margin-right: auto;
+    margin-left: auto;
+    width: 100%;
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+    max-width: 100%;
+}
+.page-heading{
+    border-radius: 1.563rem;
+    background: linear-gradient(180deg, #216261 0%, #0C6980 100%);
+    text-align: center;
+    padding: 6.5rem 1.5rem;
+}
+.container-1360{
+    max-width: 85rem;
+}
+.container-1400{
+    max-width: 87.5rem;
+}
+@media (min-width: 992px){
+    .container.main-container{
+        max-width: 112rem;
+    }
+}
+@media (min-width: 1200px){
+    .container.main-container{
+        max-width: 106rem;
+    }
+}
+@media (min-width: 1400px){
+    .container.main-container{
+        max-width: 113.5rem;
+    }
+}
+@media (min-width: 1600px){
+    .container.main-container{
+        max-width: 113.5rem;
+    }
+}
+
+@media (max-width: 991.98px) {
+
+}
+@media (max-width: 767.98px){
+    .main-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    .page-heading{
+        padding: 2.5rem 1.5rem;
+    }
+}
+/*Common CSS End*/
+
+/*Contact page CSS Start*/
+.contact-img::after{
+    content: '';
+    background: rgba(12, 105, 128, 0.85);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    border-radius: 1.563rem 0 0 1.563rem;
+}
+.contact-img img.bg-contact-img{
+    border-radius: 1.563rem 0 0 1.563rem;
+}
+.email-icon{
+    width: 1.875rem;
+    height: 1.875rem;
+    object-fit: contain;
+}
+.contact-vectore{
+    position: absolute;
+    left: -2.125rem;
+    bottom: -3.25rem;
+    z-index: -1;
+}
+@media (max-width: 991.98px) {
+    .container-1400.contact-continer{
+        max-width: 40.5rem;
+    }
+    .contact-img::after,
+    .contact-img img.bg-contact-img{
+        border-radius: 1.563rem 1.563rem 0 0;
+    }
+}
+@media (max-width: 767.98px) {
+    .page-form.p-100{
+        padding: 3rem 1.5rem;
+    }
+
+}
+/*Contact page CSS End*/
+
+
+/*Parnter Page CSS Start*/
+.partner-column img{
+    height: 5rem;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+}
+@media (min-width: 992px) {
+    .partner-column-6:first-child:nth-last-child(odd) {
+        width:100%;
+    }
+}
+@media (max-width: 767.98px) {
+    .partner-column img{
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+}
+/*Parnter Page CSS End*/
+
+
+
+/*Footer CSS Start*/
+.footer-container{
+    background-color: #BCC482;
+    padding: 7.5rem 0;
+    background-image: url(../..//img/footer-bg.svg);
+    background-repeat: no-repeat;
+    background-position: 42rem 5rem;
+    background-size: 78rem;
+}
+.footer-logo img{
+    width: auto;
+    height: 4.125rem;
+}
+.footer-email img{
+    width: 1.875rem;
+    height: 1.875rem;
+}
+.footer-container hr{
+    background-color:  #ffffff;
+}
+
+.footer-searchbar .form-control{
+    background: rgba(255, 255, 255, 0.15);
+    border: 0.063rem solid rgba(255, 255, 255, 0.5);
+    color: #000000;
+}
+.footer-searchbar .form-control::-moz-placeholder {
+    color: #000000;
+    opacity: 1;
+    font-size: 1.5rem
+}
+.footer-searchbar .form-control::placeholder {
+    color: #000000;
+    opacity: 1;
+    font-size: 1.5rem
+}
+@media (max-width: 1399.98px) {
+    .footer-container{
+        background-position: 37rem 5rem;
+    }
+}
+@media (max-width: 1241.98px) {
+    .footer-container{
+        background-position: 30rem 4rem;
+    }
+}
+@media (max-width: 1199.98px) {
+    .footer-container{
+        background-position: 38rem 4rem;
+    }
+}
+/*Footer CSS End*/

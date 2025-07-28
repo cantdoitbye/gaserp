@@ -1,0 +1,143 @@
+
+.about-text{
+    width: calc(100% - 43.75rem);
+}
+.about-main-img{
+    width: 100%;
+    max-width: 43.75rem;
+    height: 46.875rem;
+    margin: 0 auto;
+    border: 0.438rem solid #F2C272;
+    border-radius: 21.875rem;
+    padding: 2.5rem;
+}
+
+.about-main-img img.about-main-png{
+    border-radius: 21.875rem;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #D9D9D9;
+}
+.about-main-img img.about-dot-img{
+    position: absolute;
+    bottom: 0;
+    right: 2rem;
+    width: 8.25rem;
+    height: 18.375rem;
+    object-fit: contain;
+}
+
+@media (max-width: 991.98px) {
+    .about-text{
+        width: 100%
+    }
+}
+@media (max-width: 767.98px){
+    .about-main-img {
+        width: 100%;
+        max-width: 28.75rem;
+        height: 31.875rem;
+        margin-top: 1.5rem;
+    }
+    .about-main-img img.about-dot-img{
+        width: 5.25rem;
+        height: 12.375rem;
+    }
+}
+
+/*Sustainable Tourism*/
+.sustainable-img{
+    background-color: #DEDEDE;
+    max-width: 39.25rem;
+    height: 49.5rem;
+    margin: 0 auto;
+}
+
+.sustainable-section:before{
+    content: '';
+    max-width: 98.125rem;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.04);
+    position: absolute;
+    border-radius: 1.563rem;
+    right: 0;
+    left: 13rem;
+    top: 0;
+    bottom: 0;
+    display: inline-block;
+    z-index: -1;
+}
+@media (max-width: 991.98px) {
+    .sustainable-section{
+        padding: 2rem;
+    }
+    .sustainable-img{
+        margin-bottom: 1.5rem;
+    }
+    .sustainable-section:before{
+        max-width: 100%;
+        right: 0;
+        left: 0;
+        top: 14rem;
+        height: 90%;
+    }
+}
+
+@media (max-width: 767.98px){
+    .sustainable-img{
+        height: 36.5rem;
+    }
+    .sustainable-section .me-5{
+        margin-right: 0 !important;
+    }
+}
+
+/*Sustainable Tourism*/
+
+.vectore-about{
+    width: 100%;
+    top: -4rem;
+    left: 0;
+}
+
+.core-v-card{
+    width: calc(100% - 2.813rem);
+    margin-left: auto;
+}
+
+.core-v-card .card-body{
+    padding: 1.875rem 1.25rem;
+    padding-left: 4.688rem;
+}
+.core-round-box{
+    display: inline-block;
+    width: 5.625rem;
+    height: 5.625rem;
+    border-radius: 100%;
+    background: linear-gradient(90deg, #BFB888 0%, #786F38 100%);
+    top: 50%;
+    left: 0;
+    transform: translate(-50%, -50%);
+}
+.core-round-box img{
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: contain;
+}
+@media (max-width: 767.98px){
+    .vectore-about{
+        top: -10rem;
+    }
+    .core-v-card .card-body{
+        padding-left: 3.688rem;
+    }
+    .core-round-box{
+        width: 4.625rem;
+        height: 4.625rem;
+    }
+    .core-round-box img {
+        width: 2rem;
+        height: 2rem;
+    }
+}

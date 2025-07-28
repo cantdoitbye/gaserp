@@ -1,0 +1,9 @@
+[program:rider-delivernotification-queue]
+process_name=%(program_name)s_%(process_num)02d
+command=php /public_html/artisan queue:work --queue=delivery_notification database --tries=5 --timeout=300
+autostart=true
+autorestart=true
+user=delivery
+numprocs=4
+redirect_stderr=true
+stdout_logfile=/public_html/storage/logs/laravel.log

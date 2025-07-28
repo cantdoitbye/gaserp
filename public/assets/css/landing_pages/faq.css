@@ -1,0 +1,92 @@
+
+/*Faq Page CSS Start*/
+.faq-collpase .accordion-item{
+    margin-bottom: 1.875rem;
+    border: 0;
+    background-color: transparent;
+}
+.faq-collpase .accordion-button{
+    background-color: #BFB888;
+    color: #000000;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    font-size: 1.563rem;
+    border-radius: 2.188rem !important;
+    padding: 1.375rem 2.5rem;
+    padding-right: 5rem;
+    border: 0;
+    box-shadow: none;
+}
+.ion-expand-icon{
+    width: 1.625rem;
+    height: 1.625rem;
+    position: absolute;
+    right: 2rem;
+}
+.ion-expand-icon::before, .ion-expand-icon::after {
+    background-color: #ffffff;
+    content: "";
+    position: absolute;
+    transition: transform 0.25s ease-out;
+}
+.ion-expand-icon::before {
+    height: 1.625rem;
+    left: 50%;
+    margin-left: -0.125rem;
+    top: 0;
+    width: 0.25rem;
+}
+.ion-expand-icon::after {
+    height: 0.25rem;
+    left: 0;
+    margin-top: -0.125rem;
+    top: 50%;
+    width: 1.625rem;
+}
+
+.faq-collpase .accordion-button:not(.collapsed) .ion-expand-icon::before {
+    transform: rotate3d(0, 0, 1, 90deg);
+}
+.faq-collpase .accordion-button:not(.collapsed) .ion-expand-icon::after {
+    transform: rotate3d(0, 0, 1, 180deg);
+}
+.faq-collpase .accordion-button::after{
+    display: none;
+}
+.faq-collpase .accordion-button:not(.collapsed){
+    background-color: #BFB888;
+    color: #000000;
+}
+
+.faq-collpase .accordion-body{
+    background-image: url('../..//img/faq-bg.png');
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    background-size: 8rem;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 0.625rem 0.625rem 2.188rem 2.188rem;
+    margin-top: 1.25rem;
+    padding: 2.5rem;
+
+}
+.faq-collpase .accordion-body p{
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: #505050;
+    font-size: 1.5rem;
+}
+
+@media (max-width: 767.98px) {
+    .faq-collpase .accordion-button{
+        padding: 1.375rem 1.5rem;
+        padding-right: 5rem;
+        font-size: 1.4rem;
+    }
+    .faq-collpase .accordion-body{
+        padding: 1.5rem;
+    }
+    .faq-collpase .accordion-body p{
+        font-size: 1.2rem;
+    }
+}
+/*Faq Page CSS End*/

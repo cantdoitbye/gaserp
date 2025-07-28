@@ -1,0 +1,99 @@
+/**
+ * jquery-bootstrap-scrolling-tabs
+ * @version v2.6.1
+ * @link https://github.com/mikejacobson/jquery-bootstrap-scrolling-tabs
+ * @author Mike Jacobson <michaeljjacobson1@gmail.com>
+ * @license MIT License, http://www.opensource.org/licenses/MIT
+ */
+.scrtabs-tab-container * {
+    box-sizing: border-box;
+}
+
+.scrtabs-tab-container {
+    height: 42px;
+}
+.scrtabs-tab-container .tab-content {
+    clear: left;
+}
+
+.scrtabs-tab-container.scrtabs-bootstrap4
+    .scrtabs-tabs-movable-container
+    > .navbar-nav {
+    -ms-flex-direction: row;
+    flex-direction: row;
+}
+
+.scrtabs-tabs-fixed-container {
+    float: left;
+    height: 42px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.scrtabs-tabs-movable-container {
+    position: relative;
+}
+.scrtabs-tabs-movable-container .tab-content {
+    display: none;
+}
+
+.scrtabs-tab-container.scrtabs-rtl
+    .scrtabs-tabs-movable-container
+    > ul.nav-tabs {
+    padding-right: 0;
+}
+
+.scrtabs-tab-scroll-arrow {
+    border: 1.5px solid #786f38;
+    color: #786f38;
+    display: none;
+    float: left;
+    font-size: 14px;
+    padding: 0;
+    text-align: center;
+    width: 1.938rem;
+    height: 1.938rem;
+    line-height: 1.9rem;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    margin-top: 0.25rem;
+}
+.scrtabs-tab-scroll-arrow:hover {
+    background-color: #786f38;
+    color: #ffffff;
+}
+
+.scrtabs-tab-scroll-arrow,
+.scrtabs-tab-scroll-arrow .scrtabs-click-target {
+    cursor: pointer;
+}
+
+.scrtabs-tab-scroll-arrow.scrtabs-with-click-target {
+    cursor: default;
+}
+
+.scrtabs-tab-scroll-arrow.scrtabs-disable,
+.scrtabs-tab-scroll-arrow.scrtabs-disable .scrtabs-click-target {
+    color: #ddd;
+    cursor: default;
+}
+
+.scrtabs-tab-scroll-arrow.scrtabs-disable:hover {
+    background-color: initial;
+}
+
+.scrtabs-tabs-fixed-container ul.nav-tabs > li {
+    white-space: nowrap;
+}
+
+.scrtabs-tab-scroll-arrow.scrtabs-tab-scroll-arrow-left {
+  position: relative;
+  left: -1%;
+}
+.scrtabs-tab-scroll-arrow.scrtabs-tab-scroll-arrow-right {
+  position: relative;
+  right: -1%;
+}

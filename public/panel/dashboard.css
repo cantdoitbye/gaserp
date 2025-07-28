@@ -1,0 +1,240 @@
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.desk-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.desk-card {
+    background-color: #faf9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.desk-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.desk-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: white;
+}
+
+.desk-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Color variations for desk icons */
+.finance {
+    background-color: #6a1b1f;
+}
+
+.legal {
+    background-color: #38ab63;
+}
+
+.purchase {
+    background-color: #f3ca3e;
+}
+
+.sales {
+    background-color: #e04d43;
+}
+
+.plumber {
+    background-color: #f39c12;
+}
+
+.labour {
+    background-color: #4c5357;
+}
+
+.sub-contractor {
+    background-color: #a57268;
+}
+
+.dpr {
+    background-color: #f39c12;
+}
+
+/* Overview Section */
+.overview-section {
+    margin-bottom: 30px;
+}
+
+.filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filter {
+    background-color: white;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-size: 13px;
+    color: #666;
+    cursor: pointer;
+}
+
+.search-btn {
+    background-color: #e31e24;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 20px;
+    cursor: pointer;
+}
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.stat-card {
+    background-color: white;
+    border-radius: 5px;
+    padding: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.stat-title {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+}
+
+.stat-indicator {
+    width: 3px;
+    height: 35px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 3px;
+}
+
+.indicator-green {
+    background-color: #38ab63;
+}
+
+.indicator-red {
+    background-color: #e04d43;
+}
+
+.indicator-yellow {
+    background-color: #f3ca3e;
+}
+
+/* Net Profit Section */
+.net-profit {
+    background-color: white;
+    border-radius: 5px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.net-profit-title {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.net-profit-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+}
+
+.profit-percentage {
+    color: #38ab63;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* User list */
+.user-list {
+    display: flex;
+    margin-left: 20px;
+}
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #e31e24;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    margin-left: -10px;
+    border: 2px solid white;
+}
+
+.user-more {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #8794A8;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    margin-left: -10px;
+    border: 2px solid white;
+}
+
+.this-month {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 13px;
+    color: #555;
+    margin-left: 15px;
+}
+
+.this-month i {
+    margin-left: 5px;
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}

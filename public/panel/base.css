@@ -1,0 +1,599 @@
+/* Add this to your stylesheets for better visualization of pipeline project info */
+
+.pipeline-info {
+    background-color: #f8f9fa;
+    border-left: 3px solid #e31e24;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 0 4px 4px 0;
+}
+
+.pipeline-info h4 {
+    margin-top: 0;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.pipeline-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.pipeline-detail {
+    display: flex;
+    flex-direction: column;
+}
+
+.pipeline-label {
+    font-size: 12px;
+    color: #666;
+}
+
+.pipeline-value {
+    font-weight: 500;
+    font-size: 15px;
+}
+
+/* Pipeline type specific styling */
+.high-pressure {
+    color: #dc3545;
+}
+
+.medium-pressure {
+    color: #fd7e14;
+}
+
+.low-pressure {
+    color: #28a745;
+}
+
+/* Service type badges */
+.service-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.service-installation {
+    background-color: #e7f5ff;
+    color: #1a73e8;
+}
+
+.service-repair {
+    background-color: #ffe8e8;
+    color: #e53935;
+}
+
+.service-maintenance {
+    background-color: #fff8e1;
+    color: #f9a825;
+}
+
+.service-inspection {
+    background-color: #e8f5e9;
+    color: #43a047;
+}
+
+.service-mixed {
+    background-color: #f5f5f5;
+    color: #757575;
+}
+
+/* Pipeline material icons */
+.material-icon {
+    font-size: 18px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.material-steel {
+    color: #78909c;
+}
+
+.material-hdpe {
+    color: #29b6f6;
+}
+
+/* Project filter additions */
+.filter-group {
+    margin-bottom: 15px;
+}
+
+.filter-group-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.pipeline-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pipeline-filter-checkbox {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pipeline-filter-checkbox input {
+    margin-right: 5px;
+}
+
+/* Pipeline length visualization in document list */
+.pipeline-length-indicator {
+    height: 4px;
+    background-color: #e31e24;
+    margin-top: 5px;
+    border-radius: 2px;
+}
+
+/* Document priority based on pipeline type */
+.priority-high {
+    border-left: 4px solid #dc3545;
+}
+
+.priority-medium {
+    border-left: 4px solid #fd7e14;
+}
+
+.priority-normal {
+    border-left: 4px solid #20c997;
+}
+
+/* Pipeline specific notification styling */
+.notification-pipeline-info {
+    display: inline-block;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-left: 5px;
+    font-size: 11px;
+    color: #555;
+}
+
+.sub-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding-left: 20px;
+}
+
+.sub-menu.show {
+    max-height: 300px;
+    overflow-y: visible;
+}
+
+.sub-menu-item {
+    padding: 8px 15px;
+    font-size: 14px;
+    display: block;
+    text-decoration: none;
+    color: #555;
+    margin-bottom: 1px;
+}
+
+.sub-menu-item i {
+    width: 20px;
+    margin-right: 8px;
+    text-align: center;
+}
+
+.sub-menu-item:hover {
+    background-color: #f0f0f0;
+}
+
+.sub-menu-item.active {
+    background-color: rgba(227, 30, 36, 0.15);
+    border-left: 3px solid #e31e24;
+    padding-left: 12px;
+}
+
+/* Red dot indicator */
+.red-dot-indicator {
+    position: relative;
+    padding-left: 30px !important;
+}
+
+.red-dot {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: #e31e24;
+    border-radius: 50%;
+}
+
+
+
+
+
+
+.pepng-menu-container {
+    position: relative;
+}
+
+.pepng-main-menu {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: #555;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.pepng-main-menu.active {
+    background-color: #e31e24;
+    color: white;
+}
+
+.pepng-main-menu.active i {
+    color: white;
+}
+
+.pepng-main-menu:hover:not(.active) {
+    background-color: #f0f0f0;
+}
+
+.pepng-main-menu i {
+    width: 25px;
+    text-align: center;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+/* Enhanced Submenu Styles */
+.pepng-submenu {
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    max-height: 0;
+    background-color: #f9f9f9;
+}
+
+.pepng-submenu.show {
+    max-height: 500px; /* Increased height to ensure all items show */
+    display: block !important;
+}
+
+.pepng-submenu-item {
+    padding: 8px 8px 8px 30px;
+    font-size: 14px;
+    display: block;
+    text-decoration: none;
+    color: #555;
+    border-left: 3px solid transparent;
+    margin: 2px 0;
+    position: relative;
+}
+
+.pepng-submenu-item i {
+    width: 20px;
+    margin-right: 8px;
+    text-align: center;
+}
+
+.pepng-submenu-item:hover {
+    background-color: #f0f0f0;
+}
+
+.pepng-submenu-item.active {
+    background-color: rgba(227, 30, 36, 0.1);
+    border-left: 3px solid #e31e24;
+}
+
+/* Red dot indicator */
+.pepng-red-dot {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: #e31e24;
+    border-radius: 50%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px), (max-height: 600px) {
+    .pepng-submenu-item {
+        padding: 6px 6px 6px 28px;
+        font-size: 13px;
+    }
+}
+
+/* Fix for zoom levels */
+@media screen and (min-resolution: 0.001dpcm) {
+    _:-ms-lang(x), 
+    .pepng-submenu {
+        height: auto !important;
+    }
+    _:-ms-lang(x), 
+    .pepng-submenu.show {
+        height: auto !important;
+    }
+}
+
+
+
+.legal-menu-container {
+    position: relative;
+}
+
+.legal-main-menu {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: #555;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.legal-main-menu.active {
+    background-color: #e31e24;
+    color: white;
+}
+
+.legal-main-menu.active i {
+    color: white;
+}
+
+.legal-main-menu:hover:not(.active) {
+    background-color: #f0f0f0;
+}
+
+.legal-main-menu i {
+    width: 25px;
+    text-align: center;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+/* Enhanced Submenu Styles */
+.legal-submenu {
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    max-height: 0;
+    background-color: #f9f9f9;
+}
+
+.legal-submenu.show {
+    max-height: 500px; /* Increased height to ensure all items show */
+    display: block !important;
+}
+
+.legal-submenu-item {
+    padding: 8px 8px 8px 30px;
+    font-size: 14px;
+    display: block;
+    text-decoration: none;
+    color: #555;
+    border-left: 3px solid transparent;
+    margin: 2px 0;
+    position: relative;
+}
+
+.legal-submenu-item i {
+    width: 20px;
+    margin-right: 8px;
+    text-align: center;
+}
+
+.legal-submenu-item:hover {
+    background-color: #f0f0f0;
+}
+
+.legal-submenu-item.active {
+    background-color: rgba(227, 30, 36, 0.1);
+    border-left: 3px solid #e31e24;
+}
+
+/* Red dot indicator */
+.legal-red-dot {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: #e31e24;
+    border-radius: 50%;
+}
+
+/* Fix for zoom levels */
+@media screen and (min-resolution: 0.001dpcm) {
+    _:-ms-lang(x), 
+    .legal-submenu {
+        height: auto !important;
+    }
+    _:-ms-lang(x), 
+    .legal-submenu.show {
+        height: auto !important;
+    }
+}
+
+
+
+
+/* PE Tracker Menu Styles - Add this to your existing CSS file */
+
+/* PE Tracker Menu Container */
+.petracker-menu-container {
+    margin-bottom: 5px;
+}
+
+/* PE Tracker Main Menu */
+.petracker-main-menu {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-radius: 8px;
+    margin: 0 10px;
+    position: relative;
+}
+
+.petracker-main-menu:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.petracker-main-menu.active {
+    background: rgba(255, 255, 255, 0.15);
+    border-left: 4px solid #ffffff;
+}
+
+.petracker-main-menu i {
+    margin-right: 12px;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+.petracker-main-menu span {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* PE Tracker Submenu */
+.petracker-submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: rgba(0, 0, 0, 0.2);
+    margin: 0 10px;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+.petracker-submenu.show {
+    max-height: 300px;
+    padding: 10px 0;
+}
+
+/* PE Tracker Submenu Items */
+.petracker-submenu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px 10px 40px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    margin: 2px 10px;
+    font-size: 14px;
+}
+
+.petracker-submenu-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    transform: translateX(3px);
+}
+
+.petracker-submenu-item.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border-left: 3px solid #ffffff;
+}
+
+.petracker-submenu-item i {
+    margin-right: 10px;
+    font-size: 14px;
+    width: 16px;
+    text-align: center;
+}
+
+.petracker-submenu-item span {
+    font-weight: 400;
+}
+
+/* Collapsed Sidebar Adjustments for PE Tracker */
+.sidebar.collapsed .petracker-main-menu span,
+.sidebar.collapsed .petracker-submenu {
+    display: none;
+}
+
+.sidebar.collapsed .petracker-main-menu {
+    justify-content: center;
+    padding: 12px;
+}
+
+.sidebar.collapsed .petracker-main-menu i {
+    margin-right: 0;
+}
+
+/* Responsive Design for PE Tracker Menu */
+@media (max-width: 768px) {
+    .petracker-main-menu {
+        padding: 10px 15px;
+        margin: 0 5px;
+    }
+    
+    .petracker-submenu-item {
+        padding: 8px 15px 8px 30px;
+        margin: 1px 5px;
+        font-size: 13px;
+    }
+}
+
+/* Animation for PE Tracker Menu Toggle */
+.petracker-main-menu::after {
+    content: '\f078';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 15px;
+    transition: transform 0.3s ease;
+}
+
+.petracker-main-menu.active::after {
+    transform: rotate(180deg);
+}
+
+.sidebar.collapsed .petracker-main-menu::after {
+    display: none;
+}
+
+/* Ensure consistent styling with other menu items */
+.petracker-menu-container {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+/* Match the existing menu hover effects */
+.petracker-main-menu:hover,
+.petracker-submenu-item:hover {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Active state glow effect */
+.petracker-main-menu.active,
+.petracker-submenu-item.active {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+
+
+
+
+
+

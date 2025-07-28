@@ -1,0 +1,188 @@
+.blog-card{
+    border: 0.125rem solid #BFB888;
+}
+.blog-card .card-body{
+    padding: 2rem;
+}
+.blog-thumb {
+    width: 100%;
+    height: 41.875rem;
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    border-radius: 1.563rem;
+    margin-bottom: 2.25rem;
+    background-color: #f1f1f1;
+}
+.blog-thumb img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* width: 1080px;
+    height: 566px; */
+    object-fit: cover;
+    object-position: center;
+}
+/* .blog-detail-card .blog-thumb img{
+    object-fit: contain;
+} */
+.tag_list{
+    width: calc(100% - 10rem);
+}
+.tag_list span {
+    display: inline-block;
+    font-weight: 400;
+    font-size: 1.25rem;
+    padding: 0.875rem 1.375rem;
+    border: 0.094rem solid #216261;
+    margin-right: 0.625rem;
+    border-radius: 1.875rem;
+    line-height: 1;
+    min-width: 5.625rem;
+    text-align: center;
+    color: #786F38;
+    margin-bottom: 1rem;
+}
+
+.likeshare_row {
+    background: rgba(191, 184, 136, 0.1);
+    border-radius: 3.125rem;
+    padding: 1.25rem;
+}
+
+.likeshare_row a {
+    display: inline-flex;
+    text-align: center;
+    font-size: 1.5rem;
+    color: #000000;
+    font-weight: 400;
+    justify-content: center;
+    align-items: center;
+}
+.likeshare_row a span.blog-action-icon{
+    width: 3.75rem;
+    height: 3.75rem;
+    background: linear-gradient(90deg, #BFB888 0%, #786F38 100%);
+    border-radius: 100%;
+    position: relative;
+    display: inline-block;
+    margin-right: 1.25rem;
+}
+.blog-action-icon img{
+    width: 1.875rem;
+    height: 1.875rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.vertical-line{
+    width: 0.063rem;
+    height: 3.75rem;
+    display: inline-block;
+    background-color:  rgba(0, 0, 0, 0.15);
+}
+.likeshare_row a.actionBtn{
+    width: 2.188rem;
+    height: 2.188rem;
+    padding: 0;
+    border-radius: 100%;
+    color: #ffffff;
+    font-size: 1.2rem;
+    margin: 0 0.5rem;
+}
+.social-blog .actionBtn {
+    background: rgba(191, 184, 136, 0.1);
+    color: #BFB888;
+    border-radius: 1.063rem;
+    width: 3.125rem;
+    height: 3.125rem;
+    line-height: 3.125rem;
+    display: inline-block;
+    margin-right: 1rem;
+    text-align: center;
+    font-size: 1.625rem
+}
+.blogDetail img {
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain;
+}
+.blog-paragraph{
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: #505050;
+    display: inline-block;
+    width: 100%;
+}
+.recent-card{
+    max-width: 28.125rem;
+    margin: 0 auto;
+}
+.recentblog_image{
+    height: 18.75rem;
+    width: 100%;
+    position: relative;
+}
+.recentblog_image img{
+    width: 100%;height: 100%;
+    object-fit: cover;
+}
+
+.blog-title{
+    width: calc(100% - 10rem);
+}
+.blogDetail iframe {
+    max-width: 100%;
+}
+@media (max-width: 767.98px) {
+    .tag_list,
+    .blog-title{
+        width: 100%;
+    }
+    .blog-title .f-50px{
+        font-size: 2.125rem;
+    }
+    .f-55px{
+        font-size: 2.438rem;
+    }
+    .blog-card .card-body{
+        padding: 1rem;
+    }
+    .blog-thumb{
+        height: 20rem;
+    }
+    .blog-detail-card .blog-thumb{
+       /* height: auto; */
+       height: 20rem;
+
+      
+    }
+    .blog-detail-card .blog-thumb img{
+        position: relative;
+    }
+    .likeshare_row a span.blog-action-icon{
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-right: 0;
+    }
+    .likeshare_row a span:last-child{
+        display: block;
+    }
+    .blog-action-icon img{
+        width: 1.4rem;
+        height: 1.4rem;
+    }
+    .likeshare_row{
+        padding: 1rem;
+    }
+    .likeshare_row a{
+        display: inline-block;
+        font-size: 1rem;
+    }
+    .f-24px{
+        font-size: 1.2rem;
+    }
+}
