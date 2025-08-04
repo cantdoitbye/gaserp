@@ -285,6 +285,23 @@
                     <div class="form-section-title">Basic Information (Excel Layout)</div>
                     
                     <div class="form-row">
+
+                            <div class="form-group">
+    <label class="form-label">Project</label>
+    <select name="project_id" class="form-control @error('project_id') is-invalid @enderror">
+        <option value="">Select Project</option>
+        @foreach(\App\Models\Project::all() as $project)
+            <option value="{{ $project->id }}" {{ old('project_id') == $project->id ? 'selected' : '' }}>
+                {{ $project->name }}
+            </option>
+        @endforeach
+    </select>
+    @error('project_id')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
+
                         <div class="form-group">
                             <label class="form-label">Agreement Date</label>
                             <input type="date" name="agreement_date" class="form-control @error('agreement_date') is-invalid @enderror" value="{{ old('agreement_date', $png->agreement_date ? $png->agreement_date->format('Y-m-d') : '') }}">

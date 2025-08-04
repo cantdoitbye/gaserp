@@ -276,6 +276,8 @@ Route::resource('pe-png', PePngController::class);
     Route::get('png/measurement-types/by-png-type', [PngController::class, 'getMeasurementTypesByPngType'])->name('png.measurement-types.by-png-type');
     Route::get('png/measurement-fields', [PngController::class, 'getMeasurementFields'])->name('png.measurement-fields');
     
+        Route::get('download-template', [PngController::class, 'downloadTemplate'])->name('png.download-template'); // NEW
+
     // PNG Measurement Types Management
     Route::resource('png-measurement-types', PngMeasurementTypeController::class);
     Route::post('png-measurement-types/create-defaults', [PngMeasurementTypeController::class, 'createDefaults'])->name('png-measurement-types.create-defaults');

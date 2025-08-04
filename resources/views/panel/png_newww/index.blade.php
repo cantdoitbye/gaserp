@@ -455,12 +455,6 @@
             </div>
         @endif
 
-         @if(session('error'))
-            <div class="alert alert-danger" role="alert">
-                {{ session('error') }}
-            </div>
-        @endif
-
         <!-- Filter Section -->
         <div class="filter-section">
             <div class="filter-title">Search & Filter Options</div>
@@ -477,18 +471,18 @@
                            value="{{ request('address_filter') }}" placeholder="Search locations...">
                 </div>
                 
-             <div class="filter-group">
-    <label for="filter_plan_type">Plan Type</label>
-    <select name="plan_type" id="filter_plan_type" class="filter-select">
-        <option value="">-- All Plan Types --</option>
-        <option value="apartment" {{ request('plan_type') == 'apartment' ? 'selected' : '' }}>Apartment</option>
-        <option value="bungalow" {{ request('plan_type') == 'bungalow' ? 'selected' : '' }}>Bungalow</option>
-        <option value="rowhouse" {{ request('plan_type') == 'rowhouse' ? 'selected' : '' }}>RowHouse</option>
-        <option value="commercial" {{ request('plan_type') == 'commercial' ? 'selected' : '' }}>Commercial</option>
-        <option value="farmhouse" {{ request('plan_type') == 'farmhouse' ? 'selected' : '' }}>FarmHouse</option>
-    </select>
-</div>
-
+                <div class="filter-group">
+                    <label for="filter_plan_type">Plan Type</label>
+                    <select name="plan_type" id="filter_plan_type" class="filter-select">
+                        <option value="">-- All Plan Types --</option>
+                        <option value="d_connections" {{ request('plan_type') == 'd_connections' ? 'selected' : '' }}>D-Connections</option>
+                        <option value="commercial" {{ request('plan_type') == 'commercial' ? 'selected' : '' }}>Commercial</option>
+                        <option value="riser_approach" {{ request('plan_type') == 'riser_approach' ? 'selected' : '' }}>Riser/Approach</option>
+                        <option value="ladder" {{ request('plan_type') == 'ladder' ? 'selected' : '' }}>Ladder</option>
+                        <option value="other_contractor" {{ request('plan_type') == 'other_contractor' ? 'selected' : '' }}>Other Contractor</option>
+                        <option value="o_m" {{ request('plan_type') == 'o_m' ? 'selected' : '' }}>O&M</option>
+                    </select>
+                </div>
                 
                 <div class="filter-group">
                     <label for="filter_order_application">Order/Application/Notification</label>
@@ -702,7 +696,7 @@
                                 <td>{{ $png->service_order_no ?? 'N/A' }}</td>
                                 <td>{{ $png->application_no ?? 'N/A' }}</td>
                                 <td><strong>{{ $png->customer_name }}</strong></td>
-                                <td>{{ $png->customer_contact_no ?? 'N/A' }}</td>
+                                <td>{{ $png->contact_no ?? 'N/A' }}</td>
                                 <td title="{{ $png->address }}">{{ Str::limit($png->address, 25) }}</td>
                                 <td>
                                     @if($png->area)

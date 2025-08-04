@@ -314,10 +314,10 @@
             <span>NEPL Dashboard</span>
         </a>
 
-        <a href="{{ route('service-types.index') }}" class="menu-item {{ request()->routeIs('service-types.*') ? 'active' : '' }}">
+        {{-- <a href="{{ route('service-types.index') }}" class="menu-item {{ request()->routeIs('service-types.*') ? 'active' : '' }}">
             <i class="fas fa-cogs"></i>
             <span>Service Type</span>
-        </a>
+        </a> --}}
 
         <a href="{{ route('projects.index') }}" class="menu-item {{ request()->routeIs('projects.*') ? 'active' : '' }}">
             <i class="fas fa-project-diagram"></i>
@@ -335,7 +335,7 @@
         </a>
 
         <!-- Legal Desk Menu -->
-        <div class="menu-container">
+        {{-- <div class="menu-container">
             <div class="main-menu {{ request()->routeIs('legal-desk.*') || request()->routeIs('legal-document-types.*') || request()->routeIs('project-legal-documents.*') || request()->routeIs('legal-notifications.*') ? 'active' : '' }}" id="legal-toggle">
                 <i class="fas fa-gavel"></i>
                 <span>Legal Desk</span>
@@ -359,7 +359,7 @@
                     <span>Notifications</span>
                 </a>
             </div>
-        </div>
+        </div> --}}
 
         <a href="#" class="menu-item {{ request()->routeIs('purchase.*') ? 'active' : '' }}">
             <i class="fas fa-shopping-cart"></i>

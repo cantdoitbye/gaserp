@@ -318,6 +318,11 @@
                         <a href="{{ route('projects.legal-desk', $project->id) }}" class="btn btn-primary">
     <i class="fas fa-gavel"></i> Legal Dashboard
 </a>
+
+<a href="{{ route('png.index', ['project_id' => $project->id]) }}" class="btn btn-primary">
+    <i class="fas fa-gavel"></i> Png
+</a>
+
                         <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this project? This action cannot be undone.');">
                             @csrf
                             @method('DELETE')

@@ -64,7 +64,7 @@
             <div class="sample-download">
                 <h3><i class="fas fa-download"></i> Download Sample Template</h3>
                 <p>Download a sample Excel template with the correct column structure:</p>
-                <a href="{{ asset('samples/pe-tracker-template.xlsx') }}" class="btn btn-outline-primary" download>
+                <a href="{{ route('png.download-template') }}" class="btn btn-outline-primary" download>
                     <i class="fas fa-file-excel"></i> Download Sample Template
                 </a>
             </div>
@@ -118,7 +118,7 @@
                         <button type="submit" class="btn btn-primary" id="import-btn">
                             <i class="fas fa-upload"></i> Import Data
                         </button>
-                        <a href="{{ route('pe-tracker.index') }}" class="btn btn-secondary">
+                        <a href="{{ route('png.index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Back to List
                         </a>
                     </div>
@@ -252,27 +252,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function validateFile(file) {
-        // Check file type
-        const allowedTypes = [
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/vnd.ms-excel'
-        ];
+    // function validateFile(file) {
+    //     // Check file type
+    //     const allowedTypes = [
+    //         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    //         'application/vnd.ms-excel'
+    //     ];
         
-        if (!allowedTypes.includes(file.type)) {
-            alert('Please select a valid Excel file (.xlsx or .xls)');
-            return false;
-        }
+    //     if (!allowedTypes.includes(file.type)) {
+    //         alert('Please select a valid Excel file (.xlsx or .xls)');
+    //         return false;
+    //     }
 
-        // Check file size (10MB limit)
-        const maxSize = 10 * 1024 * 1024;
-        if (file.size > maxSize) {
-            alert('File size must be less than 10MB');
-            return false;
-        }
+    //     // Check file size (10MB limit)
+    //     const maxSize = 10 * 1024 * 1024;
+    //     if (file.size > maxSize) {
+    //         alert('File size must be less than 10MB');
+    //         return false;
+    //     }
 
-        return true;
-    }
+    //     return true;
+    // }
 
     function resetFileInput() {
         fileInput.value = '';
