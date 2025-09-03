@@ -223,12 +223,15 @@ class Png extends Model
     public static function getPlanTypeOptions()
     {
         return [
-            'apartment' => 'Apartment',
-            'bungalow' => 'Bungalow',
-            'rowhouse' => 'RowHouse',
+            'domestic' => 'Domestic',
             'commercial' => 'Commercial',
-            'farmhouse' => 'FarmHouse'
+            'riser_hadder' => 'Riser-Hadder',
+            'dma' => 'DMA',
+            'welded' => 'Welded',
+            'o&m' => 'O&M'
         ];
+
+        
     }
 
      public static function getConversionStatusOptions()

@@ -432,62 +432,224 @@ class PngController extends Controller
     /**
      * Import PNG data from Excel
      */
-  public function import(Request $request)
+/**
+     * Import PNG data from Excel with improved error handling
+     */
+    public function import(Request $request)
     {
+        // Validate the request first
         $request->validate([
-            'excel_file' => 'required|mimes:xlsx,xls,csv|max:2048',
+            'excel_file' => 'required|file|mimes:xlsx,xls|max:10240', // max 10MB
+        ], [
+            'excel_file.required' => 'Please select an Excel file to import.',
+            'excel_file.file' => 'The uploaded file is not valid.',
+            'excel_file.mimes' => 'Please upload a valid Excel file (.xlsx or .xls).',
+            'excel_file.max' => 'The file size should not exceed 10MB.',
         ]);
 
+        // Check if file was actually uploaded
+        if (!$request->hasFile('excel_file')) {
+            return redirect()->back()
+                ->with('error', 'No file was uploaded. Please select an Excel file.')
+                ->withInput();
+        }
+
+        $file = $request->file('excel_file');
+
+        // Additional file validation
+        if (!$file->isValid()) {
+            return redirect()->back()
+                ->with('error', 'The uploaded file is corrupted or invalid.')
+                ->withInput();
+        }
+
         try {
-            $import = new PngImport;
-            Excel::import($import, $request->file('excel_file'));
+            // Log the import attempt
+            \Log::info('PNG Import started', [
+                'file_name' => $file->getClientOriginalName(),
+                'file_size' => $file->getSize(),
+                'mime_type' => $file->getMimeType(),
+                'user_id' => auth()->id(),
+                'options' => [
+                    'skip_duplicates' => $request->boolean('skip_duplicates'),
+                    'update_duplicates' => $request->boolean('update_duplicates'),
+                    'validate_only' => $request->boolean('validate_only')
+                ]
+            ]);
+
+            // Create a temporary file to ensure file persistence during import
+            $tempPath = $file->store('temp');
             
+            // Create import instance with options
+            $skipDuplicates = $request->boolean('skip_duplicates', true);
+            $updateDuplicates = $request->boolean('update_duplicates', false);
+            $validateOnly = $request->boolean('validate_only', false);
+            
+            $import = new PngImport($skipDuplicates, $updateDuplicates);
+            
+            // Import the data
+            Excel::import($import, storage_path('app/' . $tempPath));
+            
+            // Clean up temporary file
+            \Storage::delete($tempPath);
+            
+            // Get import summary
             $summary = $import->getImportSummary();
             
-            $message = "Import completed! ";
-            $message .= "Success: {$summary['success_count']}, ";
-            $message .= "Skipped: {$summary['skip_count']}, ";
-            $message .= "Errors: {$summary['error_count']}";
+            \Log::info('PNG Import completed', $summary);
             
-            if ($summary['error_count'] > 0) {
-                // Log detailed errors
-                Log::warning('PNG Import had errors', $summary['errors']);
-                
-                // Show first few errors to user
-                $errorPreview = array_slice($summary['errors'], 0, 5);
-                $message .= "\n\nFirst few errors:\n" . implode("\n", $errorPreview);
-                
-                if ($summary['error_count'] > 5) {
-                    $message .= "\n\n... and " . ($summary['error_count'] - 5) . " more errors. Check logs for details.";
-                }
-                
-                return redirect()->route('png.index')
-                    ->with('error', $message);
+            // Handle validation-only mode
+            if ($validateOnly) {
+                return $this->handleValidationOnlyResponse($summary);
             }
             
-            return redirect()->route('png.index')
-                ->with('success', $message);
+            // Handle normal import response
+            return $this->handleImportResponse($summary);
                 
-        } catch (\Exception $e) {
-            Log::error('PNG Import Critical Error: ' . $e->getMessage(), [
-                'file' => $request->file('file')->getClientOriginalName(),
-                'trace' => $e->getTraceAsString()
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            // Handle validation errors from the import
+            $failures = $e->failures();
+            $errorMessages = [];
+            
+            foreach ($failures as $failure) {
+                $errorMessages[] = "Row {$failure->row()}: " . implode(', ', $failure->errors());
+            }
+            
+            \Log::error('PNG Import validation failed', [
+                'errors' => $errorMessages,
+                'file_name' => $file->getClientOriginalName()
             ]);
             
-            $errorMessage = 'Critical import error: ' . $e->getMessage();
+            return redirect()->back()
+                ->with('error', 'Import failed due to validation errors.')
+                ->with('import_errors', array_slice($errorMessages, 0, 20)) // Limit to first 20 errors
+                ->with('import_summary', count($errorMessages) . ' validation errors found.')
+                ->withInput();
+                
+        } catch (\Exception $e) {
+            \Log::error('PNG Import failed with exception', [
+                'error' => $e->getMessage(),
+                'file_name' => $request->hasFile('excel_file') ? $file->getClientOriginalName() : 'Unknown',
+                'line' => $e->getLine(),
+                'file_path' => $e->getFile()
+            ]);
             
-            // Provide helpful hints based on common error patterns
-            if (strpos($e->getMessage(), 'string') !== false) {
-                $errorMessage .= "\n\nHint: Check that your Excel columns match the expected format. Service Order Number should be text, not numbers.";
+            // Clean up temporary file if it exists
+            if (isset($tempPath)) {
+                \Storage::delete($tempPath);
             }
             
-            if (strpos($e->getMessage(), 'date') !== false) {
-                $errorMessage .= "\n\nHint: Make sure date columns are properly formatted in Excel (YYYY-MM-DD or MM/DD/YYYY).";
-            }
+            $errorMessage = $this->getHumanReadableImportError($e->getMessage());
             
             return redirect()->back()
-                ->with('error', $errorMessage);
+                ->with('error', $errorMessage)
+                ->withInput();
         }
+    }
+
+    /**
+     * Handle validation-only response
+     */
+    private function handleValidationOnlyResponse($summary)
+    {
+        if ($summary['error_count'] > 0) {
+            $message = "Validation completed: Found {$summary['error_count']} errors in {$summary['total_processed']} rows.";
+            
+            return redirect()->back()
+                ->with('warning', $message)
+                ->with('import_errors', array_slice($summary['errors'], 0, 50)) // Show up to 50 errors
+                ->with('import_summary', $message)
+                ->withInput();
+        } else {
+            $message = "Validation successful: All {$summary['total_processed']} rows are valid and ready for import.";
+            
+            return redirect()->back()
+                ->with('success', $message)
+                ->withInput();
+        }
+    }
+
+    /**
+     * Handle normal import response
+     */
+    private function handleImportResponse($summary)
+    {
+        // Build response message
+        $messageParts = [];
+        $messageType = 'success';
+        
+        if ($summary['success_count'] > 0) {
+            $messageParts[] = "Successfully imported {$summary['success_count']} records";
+        }
+        
+        if ($summary['update_count'] > 0) {
+            $messageParts[] = "Updated {$summary['update_count']} existing records";
+        }
+        
+        if ($summary['skip_count'] > 0) {
+            $messageParts[] = "Skipped {$summary['skip_count']} rows";
+            if ($summary['success_count'] === 0 && $summary['update_count'] === 0) {
+                $messageType = 'warning';
+            }
+        }
+        
+        if ($summary['error_count'] > 0) {
+            $messageParts[] = "Encountered {$summary['error_count']} errors";
+            $messageType = $summary['success_count'] > 0 || $summary['update_count'] > 0 ? 'warning' : 'error';
+        }
+        
+        $message = implode(', ', $messageParts) . '.';
+        
+        // If no records were processed successfully
+        if ($summary['success_count'] === 0 && $summary['update_count'] === 0) {
+            return redirect()->back()
+                ->with('error', $message)
+                ->with('import_errors', array_slice($summary['errors'], 0, 50))
+                ->with('import_summary', 'No records were imported successfully.')
+                ->withInput();
+        }
+        
+        // If there were errors but some success
+        if ($summary['error_count'] > 0) {
+            return redirect()->route('png.index')
+                ->with($messageType, $message)
+                ->with('import_errors', array_slice($summary['errors'], 0, 50))
+                ->with('import_summary', $message);
+        }
+        
+        // Complete success
+        return redirect()->route('png.index')
+            ->with('success', $message);
+    }
+
+    /**
+     * Convert technical import errors to user-friendly messages
+     */
+    private function getHumanReadableImportError($error): string
+    {
+        if (strpos($error, 'Column count doesn\'t match') !== false) {
+            return 'Import failed: The Excel file structure doesn\'t match the expected format. Please download and use the provided template.';
+        }
+        
+        if (strpos($error, 'SQLSTATE') !== false) {
+            if (strpos($error, 'Duplicate entry') !== false) {
+                return 'Import failed: Duplicate records found. Please check your data for duplicate Service Order Numbers or enable the "Skip duplicates" option.';
+            }
+            if (strpos($error, 'Data truncated') !== false) {
+                return 'Import failed: Some data values are invalid or too long. Please check connection status, plan type, and text field lengths.';
+            }
+            return 'Import failed: Database error occurred. Please check your data format and try again.';
+        }
+        
+        if (strpos($error, 'file') !== false && strpos($error, 'readable') !== false) {
+            return 'Import failed: Cannot read the uploaded file. Please ensure the file is not corrupted and try again.';
+        }
+        
+        if (strpos($error, 'memory') !== false) {
+            return 'Import failed: File is too large to process. Please try importing a smaller file or split your data into multiple files.';
+        }
+        
+        return 'Import failed: ' . $error;
     }
 
     /**
@@ -572,5 +734,155 @@ class PngController extends Controller
         }
         
         return Storage::disk('public')->download($path);
+    }
+
+
+/**
+     * Bulk delete multiple PNG records
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'selected_ids' => 'required|string',
+        ]);
+
+        try {
+            // Parse the comma-separated IDs
+            $selectedIds = explode(',', $request->selected_ids);
+            $selectedIds = array_filter(array_map('trim', $selectedIds));
+
+            if (empty($selectedIds)) {
+                return redirect()->back()
+                    ->with('error', 'No valid IDs provided for deletion.');
+            }
+
+            // Validate that all IDs are numeric
+            foreach ($selectedIds as $id) {
+                if (!is_numeric($id)) {
+                    return redirect()->back()
+                        ->with('error', 'Invalid ID format provided.');
+                }
+            }
+
+            // Get the PNG records to be deleted for logging
+            $pngsToDelete = Png::whereIn('id', $selectedIds)->get();
+            
+            if ($pngsToDelete->isEmpty()) {
+                return redirect()->back()
+                    ->with('warning', 'No PNG jobs found with the provided IDs.');
+            }
+
+            $actualCount = $pngsToDelete->count();
+            $requestedCount = count($selectedIds);
+
+            // Log the bulk deletion attempt
+            \Log::info('Bulk PNG deletion initiated', [
+                'user_id' => auth()->id(),
+                'requested_ids' => $selectedIds,
+                'found_records' => $actualCount,
+                'records' => $pngsToDelete->pluck('service_order_no', 'id')->toArray()
+            ]);
+
+            // Delete associated files first (if any)
+            foreach ($pngsToDelete as $png) {
+                // Delete scan copy
+                if ($png->scan_copy_path && 
+Storage::disk('public')->exists($png->scan_copy_path)) {
+                    Storage::disk('public')->delete($png->scan_copy_path);
+                }
+
+                // Delete autocad drawing
+                if ($png->autocad_drawing_path && 
+Storage::disk('public')->exists($png->autocad_drawing_path)) {
+                    Storage::disk('public')->delete($png->autocad_drawing_path);
+                }
+
+                // Delete certificate
+                if ($png->certificate_path && 
+Storage::disk('public')->exists($png->certificate_path)) {
+                    Storage::disk('public')->delete($png->certificate_path);
+                }
+
+                // Delete job cards files
+                if ($png->job_cards_paths) {
+                    $jobCardPaths = is_string($png->job_cards_paths) 
+                        ? json_decode($png->job_cards_paths, true) 
+                        : $png->job_cards_paths;
+                    
+                    if (is_array($jobCardPaths)) {
+                        foreach ($jobCardPaths as $path) {
+                            if (is_array($path) && isset($path['path'])) {
+                                $filePath = $path['path'];
+                            } else {
+                                $filePath = $path;
+                            }
+                            
+                            if ($filePath && Storage::disk('public')->exists($filePath)) {
+                                Storage::disk('public')->delete($filePath);
+                            }
+                        }
+                    }
+                }
+
+                // Delete other document files
+                if ($png->other_documents_paths) {
+                    $otherDocPaths = is_string($png->other_documents_paths) 
+                        ? json_decode($png->other_documents_paths, true) 
+                        : $png->other_documents_paths;
+                    
+                    if (is_array($otherDocPaths)) {
+                        foreach ($otherDocPaths as $path) {
+                            if (is_array($path) && isset($path['path'])) {
+                                $filePath = $path['path'];
+                            } else {
+                                $filePath = $path;
+                            }
+                            
+                            if ($filePath && Storage::disk('public')->exists($filePath)) {
+                                Storage::disk('public')->delete($filePath);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Perform the bulk deletion
+            $deletedCount = Png::whereIn('id', $selectedIds)->delete();
+
+            // Log the result
+            \Log::info('Bulk PNG deletion completed', [
+                'user_id' => auth()->id(),
+                'requested_count' => $requestedCount,
+                'found_count' => $actualCount,
+                'deleted_count' => $deletedCount
+            ]);
+
+            // Prepare success/warning message
+            $message = "Successfully deleted {$deletedCount} PNG job(s).";
+            
+            if ($requestedCount > $actualCount) {
+                $notFoundCount = $requestedCount - $actualCount;
+                $message .= " Note: {$notFoundCount} job(s) were not found and may have been 
+already deleted.";
+                $messageType = 'warning';
+            } else {
+                $messageType = 'success';
+            }
+
+            return redirect()->route('png.index')
+                ->with($messageType, $message);
+
+        } catch (\Exception $e) {
+            \Log::error('Bulk PNG deletion failed', [
+                'user_id' => auth()->id(),
+                'error' => $e->getMessage(),
+                'requested_ids' => $request->selected_ids,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'An error occurred while deleting the PNG jobs: ' . 
+$e->getMessage());
+        }
     }
 }

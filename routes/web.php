@@ -260,7 +260,7 @@ Route::get('pe-png/import', [PePngController::class, 'showImportForm'])->name('p
 Route::post('pe-png/import', [PePngController::class, 'import'])->name('pe-png.import');
 Route::get('pe-png/export', [PePngController::class, 'export'])->name('pe-png.export');
 Route::resource('pe-png', PePngController::class);
-
+Route::delete('png/bulk-delete', [PngController::class, 'bulkDelete'])->name('png.bulk-delete');
 
   // PNG Routes
     Route::resource('png', PngController::class);
@@ -378,6 +378,21 @@ Route::resource('plumbers', PlumberController::class);
 
 
 Route::resource('service-types', ServiceTypeController::class);
+
+// routes/web.php
+Route::get('/purchase-assets', function () {
+    return view('panel.purchase-asset.index');
+})->name('purchase-assets.index');
+
+Route::get('/sales-financial', function () {
+    return view('panel.sales-financial.index');
+})->name('sales-financial.index');
+
+
+Route::get('/consumption', function () {
+    return view('panel.consumption.index');
+})->name('consumption.index');
+
 
 });
 

@@ -361,14 +361,19 @@
             </div>
         </div> --}}
 
-        <a href="#" class="menu-item {{ request()->routeIs('purchase.*') ? 'active' : '' }}">
+        <a href="{{ route('purchase-assets.index') }}" class="menu-item {{ request()->routeIs('purchase.*') ? 'active' : '' }}">
             <i class="fas fa-shopping-cart"></i>
-            <span>Purchase Desk</span>
+            <span>Purchase</span>
         </a>
 
-        <a href="#" class="menu-item {{ request()->routeIs('sales.*') ? 'active' : '' }}">
+        <a href="{{ route('sales-financial.index') }}" class="menu-item {{ request()->routeIs('sales.*') ? 'active' : '' }}">
             <i class="fas fa-chart-line"></i>
             <span>Sales Desk</span>
+        </a>
+
+        <a href="{{ route('consumption.index') }}" class="menu-item {{ request()->routeIs('sales.*') ? 'active' : '' }}">
+            <i class="fas fa-chart-line"></i>
+            <span>Consumption</span>
         </a>
 
         <!-- PNG Data Tracker Menu -->
@@ -398,10 +403,10 @@
 
         <!-- Commercial Data Tracker Menu -->
         <div class="menu-container">
-            <div class="main-menu {{ request()->is('commercial*') ? 'active' : '' }}" id="commercial-toggle">
+            {{-- <div class="main-menu {{ request()->is('commercial*') ? 'active' : '' }}" id="commercial-toggle">
                 <i class="fas fa-building"></i>
                 <span>Commercial Tracker</span>
-            </div>
+            </div> --}}
             
             <div class="submenu {{ request()->is('commercial*') ? 'show' : '' }}" id="commercial-submenu">
                 <a href="{{ route('commercial.index') }}" class="submenu-item {{ request()->is('commercial') || request()->is('commercial/index') ? 'active' : '' }}">

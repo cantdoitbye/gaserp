@@ -334,6 +334,78 @@
         flex-direction: column;
     }
 }
+
+.select-item, #select-all {
+    transform: scale(1.2);
+    margin: 0;
+}
+
+#delete-selected-btn {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    transition: all 0.2s ease;
+}
+
+#delete-selected-btn:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    transform: translateY(-1px);
+}
+
+.header-search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.header-title {
+    font-weight: 600;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+/* Highlight selected rows */
+tr:has(.select-item:checked) {
+    background-color: #fff3cd !important;
+}
+
+tr:has(.select-item:checked):hover {
+    background-color: #ffeaa7 !important;
+}
+
+/* Checkbox column styling */
+th:first-child, td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: inherit;
+    z-index: 5;
+}
+
+th:first-child {
+    z-index: 15;
+}
+
+/* Improve checkbox visibility */
+.select-item:checked {
+    accent-color: #007bff;
+}
+
+#select-all:indeterminate {
+    accent-color: #ffc107;
+}
+
+/* Mobile responsiveness for checkboxes */
+@media (max-width: 768px) {
+    .select-item, #select-all {
+        transform: scale(1.5);
+    }
+    
+    #delete-selected-btn {
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+    }
+}
 </style>
 @endsection
 
@@ -347,6 +419,59 @@
             <button class="icon-button"><i class="fas fa-bell"></i></button>
             <button class="icon-button"><i class="fas fa-question-circle"></i></button>
             <div class="user-avatar">{{ auth()->user()->initials ?? 'U' }}</div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="content-card">
+        <div class="filter-section">
+            <div class="filter-title">Search & Filter Options</div>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="filter_contact_numbers">Contact Numbers</label>
+                    <input type="text" name="contact_no_filter" id="filter_contact_numbers" class="filter-input" 
+                           value="{{ request('contact_no_filter') }}" placeholder="Search contact numbers...">
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filter_locations">Locations</label>
+                    <input type="text" name="address_filter" id="filter_locations" class="filter-input" 
+                           value="{{ request('address_filter') }}" placeholder="Search locations...">
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filter_plan_type">Activity Type</label>
+                    <select name="plan_type" id="filter_plan_type" class="filter-select">
+                        <option value="">-- All Activity Types --</option>
+                        <option value="apartment" {{ request('plan_type') == 'domestic' ? 'selected' : '' }}>Domestic</option>
+                        <option value="bungalow" {{ request('plan_type') == 'comercial' ? 'selected' : '' }}>Comercial </option>
+                        <option value="rowhouse" {{ request('plan_type') == 'riser_hadder' ? 'selected' : '' }}>Riser-Hadder</option>
+                        <option value="commercial" {{ request('plan_type') == 'dma' ? 'selected' : '' }}>DMA</option>
+                        <option value="farmhouse" {{ request('plan_type') == 'welded' ? 'selected' : '' }}>Welded</option>
+                        <option value="farmhouse" {{ request('plan_type') == 'o&m' ? 'selected' : '' }}>O&M</option>
+                    </select>
+                </div>
+
+                
+                <div class="filter-group">
+                    <label for="filter_order_application">Order/Application/Notification</label>
+                    <input type="text" name="order_application" id="filter_order_application" class="filter-input" 
+                           value="{{ request('order_application') }}" placeholder="Search order/application...">
+                </div>
+
+                   <div class="filter-group" style=" gap: 10px;">
+                    <button type="button" class="btn btn-primary" onclick="submitSearch()">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="clearAllFilters()">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            {{-- <div class="filter-row">
+             
+            </div> --}}
         </div>
     </div>
 
@@ -381,7 +506,7 @@
             </div>
             
             <div class="stat-card pdt-pending" onclick="filterByStatus('pdt_pending')">
-                <div class="stat-label">PDT Pending</div>
+                <div class="stat-label">PPT Pending</div>
                 <div class="stat-value">{{ $statusCounts['pdt_pending'] ?? 0 }}</div>
                 <div class="stat-percentage">{{ $statusCounts['total'] > 0 ? round(($statusCounts['pdt_pending'] ?? 0) / $statusCounts['total'] * 100, 1) : 0 }}%</div>
             </div>
@@ -447,11 +572,29 @@
             <button type="button" class="btn btn-secondary" onclick="clearAllFilters()">
                 <i class="fas fa-times"></i> Clear All Filters
             </button>
+
+              <button type="button" class="btn btn-danger" id="delete-selected-btn" onclick="deleteSelected()" style="display: none;">
+                <i class="fas fa-trash-alt"></i> Delete Selected (<span id="selected-count">0</span>)
+            </button>
         </div>
+
+          {{-- Multiple Delete Form --}}
+        <form id="bulk-delete-form" action="{{ route('png.bulk-delete') }}" method="POST" style="display: none;">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" name="selected_ids" id="selected-ids">
+        </form>
 
         @if(session('success'))
             <div class="alert alert-success" role="alert">
                 {{ session('success') }}
+            </div>
+        @endif
+
+         @if(session('warning'))
+            <div class="alert alert-warning" role="alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{ session('warning') }}
             </div>
         @endif
 
@@ -460,56 +603,6 @@
                 {{ session('error') }}
             </div>
         @endif
-
-        <!-- Filter Section -->
-        <div class="filter-section">
-            <div class="filter-title">Search & Filter Options</div>
-            <div class="filter-row">
-                <div class="filter-group">
-                    <label for="filter_contact_numbers">Contact Numbers</label>
-                    <input type="text" name="contact_no_filter" id="filter_contact_numbers" class="filter-input" 
-                           value="{{ request('contact_no_filter') }}" placeholder="Search contact numbers...">
-                </div>
-                
-                <div class="filter-group">
-                    <label for="filter_locations">Locations</label>
-                    <input type="text" name="address_filter" id="filter_locations" class="filter-input" 
-                           value="{{ request('address_filter') }}" placeholder="Search locations...">
-                </div>
-                
-             <div class="filter-group">
-    <label for="filter_plan_type">Plan Type</label>
-    <select name="plan_type" id="filter_plan_type" class="filter-select">
-        <option value="">-- All Plan Types --</option>
-        <option value="apartment" {{ request('plan_type') == 'apartment' ? 'selected' : '' }}>Apartment</option>
-        <option value="bungalow" {{ request('plan_type') == 'bungalow' ? 'selected' : '' }}>Bungalow</option>
-        <option value="rowhouse" {{ request('plan_type') == 'rowhouse' ? 'selected' : '' }}>RowHouse</option>
-        <option value="commercial" {{ request('plan_type') == 'commercial' ? 'selected' : '' }}>Commercial</option>
-        <option value="farmhouse" {{ request('plan_type') == 'farmhouse' ? 'selected' : '' }}>FarmHouse</option>
-    </select>
-</div>
-
-                
-                <div class="filter-group">
-                    <label for="filter_order_application">Order/Application/Notification</label>
-                    <input type="text" name="order_application" id="filter_order_application" class="filter-input" 
-                           value="{{ request('order_application') }}" placeholder="Search order/application...">
-                </div>
-
-                   <div class="filter-group" style=" gap: 10px;">
-                    <button type="button" class="btn btn-primary" onclick="submitSearch()">
-                        <i class="fas fa-search"></i> Search
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="clearAllFilters()">
-                        <i class="fas fa-times"></i> Clear
-                    </button>
-                </div>
-            </div>
-
-            {{-- <div class="filter-row">
-             
-            </div> --}}
-        </div>
 
         <!-- Single Form for All Searches -->
         <form id="search-form" action="{{ route('png.index') }}" method="GET" style="display: none;">
@@ -544,6 +637,13 @@
                 <table class="data-table">
                     <thead>
                         <tr>
+                            <th class="basic-info-header" style="width: 50px;">
+                                <div class="header-search-container">
+                                    <div class="header-title">
+                                        <input type="checkbox" id="select-all" onchange="toggleSelectAll(this)" title="Select All">
+                                    </div>
+                                </div>
+                            </th>
                             <!-- Agreement Date Column -->
                             <th class="basic-info-header">
                                 <div class="header-search-container">
@@ -697,6 +797,9 @@
                     <tbody>
                         @forelse($pngs as $png)
                             <tr>
+                                  <td style="text-align: center;">
+            <input type="checkbox" class="select-item" value="{{ $png->id }}" onchange="updateDeleteButton()">
+        </td>
                                 <td>{{ $png->agreement_date ? $png->agreement_date->format('d-m-Y') : 'N/A' }}</td>
                                 <td>{{ $png->customer_no ?? 'N/A' }}</td>
                                 <td>{{ $png->service_order_no ?? 'N/A' }}</td>
@@ -721,24 +824,24 @@
                                         N/A
                                     @endif
                                 </td>
-                                <td>
-                                    <div class="action-icons">
-                                        <a href="{{ route('png.show', $png) }}" class="action-icon icon-info" title="View">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ route('png.edit', $png) }}" class="action-icon icon-edit" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('png.destroy', $png) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="action-icon icon-delete" title="Delete" 
-                                                    onclick="return confirm('Are you sure you want to delete this PNG job?')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
+                                 <td>
+            <div class="action-icons">
+                <a href="{{ route('png.show', $png) }}" class="action-icon icon-info" title="View">
+                    <i class="fas fa-eye"></i>
+                </a>
+                <a href="{{ route('png.edit', $png) }}" class="action-icon icon-edit" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <form action="{{ route('png.destroy', $png) }}" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="action-icon icon-delete" title="Delete" 
+                            onclick="return confirm('Are you sure you want to delete this PNG job?')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </td>
                             </tr>
                         @empty
                             <tr>
@@ -764,8 +867,8 @@
                             <th class="technical-info-header">Connections Status</th>
                             <th class="technical-info-header">Plumber Name</th>
                             <th class="technical-info-header">Plumbing Date</th>
-                            <th class="technical-info-header">PDT Date</th>
-                            <th class="technical-info-header">PDT Witness By</th>
+                            <th class="technical-info-header">PPT Date</th>
+                            <th class="technical-info-header">PPT Witness By</th>
                             <th class="technical-info-header">Ground Connections Date</th>
                             <th class="technical-info-header">Ground Connections Witness By</th>
                             <th class="technical-info-header">Mukkadam Name</th>
@@ -913,6 +1016,71 @@
         
         form.submit();
     }
+
+    function toggleSelectAll(selectAllCheckbox) {
+    const itemCheckboxes = document.querySelectorAll('.select-item');
+    itemCheckboxes.forEach(checkbox => {
+        checkbox.checked = selectAllCheckbox.checked;
+    });
+    updateDeleteButton();
+}
+
+// Update delete button visibility and count
+function updateDeleteButton() {
+    const selectedCheckboxes = document.querySelectorAll('.select-item:checked');
+    const deleteBtn = document.getElementById('delete-selected-btn');
+    const countSpan = document.getElementById('selected-count');
+    const selectAllCheckbox = document.getElementById('select-all');
+    
+    const selectedCount = selectedCheckboxes.length;
+    const totalCheckboxes = document.querySelectorAll('.select-item').length;
+    
+    // Update delete button visibility and count
+    if (selectedCount > 0) {
+        deleteBtn.style.display = 'inline-flex';
+        countSpan.textContent = selectedCount;
+    } else {
+        deleteBtn.style.display = 'none';
+    }
+    
+    // Update select-all checkbox state
+    if (selectedCount === 0) {
+        selectAllCheckbox.indeterminate = false;
+        selectAllCheckbox.checked = false;
+    } else if (selectedCount === totalCheckboxes) {
+        selectAllCheckbox.indeterminate = false;
+        selectAllCheckbox.checked = true;
+    } else {
+        selectAllCheckbox.indeterminate = true;
+    }
+}
+
+// Delete selected items
+function deleteSelected() {
+    const selectedCheckboxes = document.querySelectorAll('.select-item:checked');
+    
+    if (selectedCheckboxes.length === 0) {
+        alert('Please select at least one item to delete.');
+        return;
+    }
+    
+    const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+    const confirmMessage = `Are you sure you want to delete ${selectedIds.length} PNG job(s)? This action cannot be undone.`;
+    
+    if (confirm(confirmMessage)) {
+        document.getElementById('selected-ids').value = selectedIds.join(',');
+        document.getElementById('bulk-delete-form').submit();
+    }
+}
+
+// Clear selection when filters are applied
+function clearSelection() {
+    document.querySelectorAll('.select-item').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    document.getElementById('select-all').checked = false;
+    updateDeleteButton();
+}
 
     // For immediate submission (dropdowns, dates)
     function submitSearch() {

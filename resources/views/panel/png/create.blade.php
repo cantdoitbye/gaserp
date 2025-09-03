@@ -345,9 +345,9 @@
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label">Plan Type</label>
+                            <label class="form-label">Activity Type</label>
                             <select name="plan_type" class="form-control @error('plan_type') is-invalid @enderror">
-                                <option value="">Select Plan Type</option>
+                                <option value="">Select Activity Type</option>
                                 @foreach(\App\Models\Png::getPlanTypeOptions() as $key => $value)
                                     <option value="{{ $key }}" {{ old('plan_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
                                 @endforeach
