@@ -3,329 +3,292 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Exports\PngExport;
-use App\Http\Requests\PngRequest;
-use App\Imports\PngImport;
 use App\Models\Png;
 use App\Models\PngMeasurementType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\PngImport;
+use App\Exports\PngExport;
 
 class PngController extends Controller
 {
- /**
+    /**
      * Display a listing of the resource.
      */
+    public function index(Request $request)
+    {
+        $query = Png::query();
 
-public function index(Request $request)
-{
-    $query = Png::with(['measurementType']);
+        // --- EXISTING FILTERS ---
+        if ($request->filled('contact_no_filter')) {
+            $query->where('customer_contact_no', 'like', '%' . $request->contact_no_filter . '%');
+        }
+        if ($request->filled('address_filter')) {
+            $query->where('address', 'like', '%' . $request->address_filter . '%');
+        }
+        if ($request->filled('plan_type')) {
+            $query->where('plan_type', $request->plan_type);
+        }
+        if ($request->filled('order_application')) {
+            $search = $request->order_application;
+            $query->where(function($q) use ($search) {
+                $q->where('service_order_no', 'like', "%{$search}%")
+                ->orWhere('application_no', 'like', "%{$search}%");
+            });
+        }
+        // Note: Your HTML uses 'address', but your old controller used 'address_filter'
+        if ($request->filled('address')) {
+            $query->where('address', 'like', '%' . $request->address . '%');
+        }
 
-    // Generate status counts for the report (before applying filters)
-    $statusCounts = [
-        'total' => Png::count(),
-        'workable' => Png::where('connections_status', 'workable')->count(),
-        'not_workable' => Png::where('connections_status', 'not_workable')->count(),
-        'plb_done' => Png::where('connections_status', 'plb_done')->count(),
-        'pdt_pending' => Png::where('connections_status', 'pdt_pending')->count(),
-        'gc_pending' => Png::where('connections_status', 'gc_pending')->count(),
-        'mmt_pending' => Png::where('connections_status', 'mmt_pending')->count(),
-        'conv_pending' => Png::where('connections_status', 'conv_pending')->count(),
-        'comm' => Png::where('connections_status', 'comm')->count(),
-        'report_pending' => Png::where('connections_status', 'report_pending')->count(),
-        'bill_pending' => Png::where('connections_status', 'bill_pending')->count(),
-        'bill_received' => Png::where('connections_status', 'bill_received')->count(),
-    ];
-
-    // Text-based searches
-    if ($request->filled('customer_name')) {
-        $query->where('customer_name', 'LIKE', '%' . $request->customer_name . '%');
-    }
-
-    if ($request->filled('service_order_no')) {
-        $query->where('service_order_no', 'LIKE', '%' . $request->service_order_no . '%');
-    }
-
-    if ($request->filled('customer_no')) {
-        $query->where('customer_no', 'LIKE', '%' . $request->customer_no . '%');
-    }
-
-    if ($request->filled('application_no')) {
-        $query->where('application_no', 'LIKE', '%' . $request->application_no . '%');
-    }
-
-    if ($request->filled('contact_no')) {
-        $query->where('contact_no', 'LIKE', '%' . $request->contact_no . '%');
-    }
-
-    if ($request->filled('address')) {
-        $query->where('address', 'LIKE', '%' . $request->address . '%');
-    }
-
-    if ($request->filled('plumber_name')) {
-        $query->where('plb_name', 'LIKE', '%' . $request->plumber_name . '%');
-    }
-
-    if ($request->filled('pdt_witness_by')) {
-        $query->where('pdt_witness_by', 'LIKE', '%' . $request->pdt_witness_by . '%');
-    }
-
-    if ($request->filled('mmt_witness_by')) {
-        $query->where('mmt_witness_by', 'LIKE', '%' . $request->mmt_witness_by . '%');
-    }
-
-    if ($request->filled('meter_number')) {
-        $query->where('meter_number', 'LIKE', '%' . $request->meter_number . '%');
-    }
-
-    if ($request->filled('ra_bill_no')) {
-        $query->where('ra_bill_no', 'LIKE', '%' . $request->ra_bill_no . '%');
-    }
-
-    // Dropdown/Select filters
-    if ($request->filled('area')) {
-        $query->where('area', $request->area);
-    }
-
-    if ($request->filled('scheme')) {
-        $query->where('scheme', $request->scheme);
-    }
-
-    if ($request->filled('connections_status')) {
-        $query->where('connections_status', $request->connections_status);
-    }
-
-    if ($request->filled('conversion_status')) {
-        $query->where('conversion_status', $request->conversion_status);
-    }
-
-    if ($request->filled('png_measurement_type_id')) {
-        $query->where('png_measurement_type_id', $request->png_measurement_type_id);
-    }
-
-    // Date range filters
-    if ($request->filled('agreement_date_from')) {
-        $query->whereDate('agreement_date', '>=', $request->agreement_date_from);
-    }
-
-    if ($request->filled('agreement_date_to')) {
-        $query->whereDate('agreement_date', '<=', $request->agreement_date_to);
-    }
-
-    if ($request->filled('conversion_date_from')) {
-        $query->whereDate('conversion_date', '>=', $request->conversion_date_from);
-    }
-
-    if ($request->filled('conversion_date_to')) {
-        $query->whereDate('conversion_date', '<=', $request->conversion_date_to);
-    }
-
-    // SLA Days filter
-    if ($request->filled('sla_days')) {
-        $slaDays = $request->sla_days;
+        // --- NEW TABLE HEADER FILTERS ---
         
-        // Only include records that have an agreement_date
-        $query->whereNotNull('agreement_date')
-              ->whereRaw('DATEDIFF(NOW(), agreement_date) = ?', [$slaDays]);
+        // Agreement Date (From)
+        if ($request->filled('agreement_date_from')) {
+            $query->whereDate('agreement_date', '>=', $request->agreement_date_from);
+        }
+
+        // Service Order No
+        if ($request->filled('service_order_no')) {
+            $query->where('service_order_no', 'like', '%' . $request->service_order_no . '%');
+        }
+
+        // Application No
+        if ($request->filled('application_no')) {
+            $query->where('application_no', 'like', '%' . $request->application_no . '%');
+        }
+
+        // Contact No (The inline table one)
+        if ($request->filled('contact_no')) {
+            $query->where('customer_contact_no', 'like', '%' . $request->contact_no . '%');
+        }
+
+        // Area
+        if ($request->filled('area')) {
+            $query->where('area', $request->area);
+        }
+
+        // Scheme
+        if ($request->filled('scheme')) {
+            $query->where('scheme', $request->scheme);
+        }
+
+        // SLA Days (Assuming this is a calculated field, filtering might be tricky. 
+        // If it's a column in DB, use this:)
+        if ($request->filled('sla_days')) {
+            $query->where('sla_days', $request->sla_days);
+        }
+
+        // 2. Inline Table Filters
+        if ($request->filled('customer_no')) {
+            $query->where('customer_no', 'like', '%' . $request->customer_no . '%');
+        }
+        
+        if ($request->filled('customer_name')) {
+            $query->where('customer_name', 'like', '%' . $request->customer_name . '%');
+        }
+        if ($request->filled('connections_status')) {
+            $query->where('connections_status', $request->connections_status);
+        }
+
+        // 3. Status Counts (Ensure these reflect the current filters)
+        $countQuery = clone $query; 
+        $statusCounts = [
+            'total'       => (clone $countQuery)->count(),
+            'workable'    => (clone $countQuery)->where('connections_status', 'workable')->count(),
+            'not_workable'    => (clone $countQuery)->where('connections_status', 'not_workable')->count(),
+            'plb_done'    => (clone $countQuery)->where('connections_status', 'plb_done')->count(),
+            'pdt_pending'    => (clone $countQuery)->where('connections_status', 'pdt_pending')->count(),
+            'gc_pending'    => (clone $countQuery)->where('connections_status', 'gc_pending')->count(),
+            'mmt_pending'    => (clone $countQuery)->where('connections_status', 'mmt_pending')->count(),
+            'conv_pending'    => (clone $countQuery)->where('connections_status', 'conv_pending')->count(),
+            'comm'   => (clone $countQuery)->where('connections_status', 'comm')->count(),
+            'report_pending'   => (clone $countQuery)->where('connections_status', 'report_pending')->count(),
+            'bill_pending'   => (clone $countQuery)->where('connections_status', 'bill_pending')->count(),
+            'bill_received'   => (clone $countQuery)->where('connections_status', 'bill_received')->count(),
+        ];
+
+        // 4. Correct Sorting Logic
+        $sortField = $request->get('sort', 'created_at');
+        $sortDirection = $request->get('direction', 'desc');
+        $query->orderBy('created_at', 'desc');
+
+        $pngs = $query->paginate(15)->withQueryString();
+
+        return view('panel.png.index', compact('pngs', 'statusCounts'));
     }
-
-    // Legacy date filter support (for backward compatibility)
-    if ($request->filled('start_date_from') && $request->filled('start_date_to')) {
-        $query->whereBetween('agreement_date', [$request->start_date_from, $request->start_date_to]);
-    }
-
-    // Sorting
-    $sortField = $request->input('sort', 'created_at');
-    $sortDirection = $request->input('direction', 'desc');
-    
-    // Map form field names to database field names
-    $fieldMapping = [
-        'name' => 'customer_name',
-        'plumber_name' => 'plb_name',
-        'plumbing_date' => 'plb_date',
-    ];
-    
-    $actualSortField = $fieldMapping[$sortField] ?? $sortField;
-    
-    // Allowed sort fields for security
-    $allowedSortFields = [
-        'created_at', 'updated_at', 'agreement_date', 'customer_name', 'area', 
-        'connections_status', 'conversion_status', 'plb_name', 'plb_date',
-        'conversion_date', 'service_order_no', 'customer_no'
-    ];
-    
-    if (!in_array($actualSortField, $allowedSortFields)) {
-        $actualSortField = 'created_at';
-        $sortDirection = 'desc';
-    }
-
-    $query->orderBy($actualSortField, $sortDirection);
-
-    // Pagination
-    $pngs = $query->paginate(15)->withQueryString();
-
-    // Get measurement types for filter dropdown
-    $measurementTypes = PngMeasurementType::orderBy('name')->get(['id', 'name']);
-
-    return view('panel.png.index', compact('pngs', 'measurementTypes', 'statusCounts'));
-}
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        $measurementTypes = PngMeasurementType::active()->get();
-        return view('panel.png.create', compact('measurementTypes'));
+        // Remove dependency on measurement types for static fields
+        return view('panel.png.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
- public function store(Request $request)
-{
-    try {
-        // $data = $request->validated();
-        $data = $request->all();
+    public function store(Request $request)
+    {
+        try {
+            $data = $request->all();
 
-        // Handle file uploads - convert arrays to JSON strings
-        if ($request->hasFile('scan_copy')) {
-            $data['scan_copy_path'] = $request->file('scan_copy')->store('png_scan_copies', 'public');
-        }
+            // Validate required fields
+            $request->validate([
+                'service_order_no' => 'required|string|max:255',
+                'customer_name' => 'required|string|max:255',
+                'agreement_date' => 'required|date',
+                'start_date' => 'nullable|date',
+                'plb_date' => 'nullable|date',
+                'gc_date' => 'nullable|date',
+                'mmt_date' => 'nullable|date',
+                'conversion_date' => 'nullable|date',
+            ]);
 
-        if ($request->hasFile('autocad_drawing')) {
-            $data['autocad_drawing_path'] = $request->file('autocad_drawing')->store('png_autocad_drawings', 'public');
-        }
-
-        if ($request->hasFile('certificate')) {
-            $data['certificate_path'] = $request->file('certificate')->store('png_certificates', 'public');
-        }
-
-        // Handle Job Cards - store as JSON
-        if ($request->hasFile('job_cards')) {
-            $jobCardsPaths = [];
-            foreach ($request->file('job_cards') as $file) {
-                $path = $file->store('png_job_cards', 'public');
-                $jobCardsPaths[] = [
-                    'name' => $file->getClientOriginalName(),
-                    'path' => $path,
-                    'size' => $file->getSize(),
-                    'type' => $file->getClientMimeType()
-                ];
+            // Handle file uploads
+            if ($request->hasFile('scan_copy')) {
+                $data['scan_copy_path'] = $request->file('scan_copy')->store('png_scan_copies', 'public');
             }
-            // Convert array to JSON string
-            $data['job_cards_paths'] = json_encode($jobCardsPaths);
-        }
 
-        // Handle AutoCad DWG files - store as JSON
-        if ($request->hasFile('autocad_dwg')) {
-            $autocadPaths = [];
-            foreach ($request->file('autocad_dwg') as $file) {
-                $path = $file->store('png_autocad_dwg', 'public');
-                $autocadPaths[] = [
-                    'name' => $file->getClientOriginalName(),
-                    'path' => $path,
-                    'size' => $file->getSize(),
-                    'type' => $file->getClientMimeType()
-                ];
+            if ($request->hasFile('autocad_drawing')) {
+                $data['autocad_drawing_path'] = $request->file('autocad_drawing')->store('png_autocad_drawings', 'public');
             }
-            // Convert array to JSON string
-            $data['autocad_dwg_paths'] = json_encode($autocadPaths);
-        }
 
-        // Handle Site Visit Reports - store as JSON
-        if ($request->hasFile('site_visit_reports')) {
-            $reportsPaths = [];
-            foreach ($request->file('site_visit_reports') as $file) {
-                $path = $file->store('png_site_visit_reports', 'public');
-                $reportsPaths[] = [
-                    'name' => $file->getClientOriginalName(),
-                    'path' => $path,
-                    'size' => $file->getSize(),
-                    'type' => $file->getClientMimeType()
-                ];
+            if ($request->hasFile('certificate')) {
+                $data['certificate_path'] = $request->file('certificate')->store('png_certificates', 'public');
             }
-            // Convert array to JSON string
-            $data['site_visit_reports_paths'] = json_encode($reportsPaths);
-        }
 
-        // Handle Other Documents - store as JSON
-        if ($request->hasFile('other_documents')) {
-            $otherDocs = [];
-            foreach ($request->file('other_documents') as $file) {
-                $path = $file->store('png_other_documents', 'public');
-                $otherDocs[] = [
-                    'name' => $file->getClientOriginalName(),
-                    'path' => $path,
-                    'size' => $file->getSize(),
-                    'type' => $file->getClientMimeType()
-                ];
+            // Handle multiple file uploads
+            if ($request->hasFile('job_cards')) {
+                $jobCardsPaths = [];
+                foreach ($request->file('job_cards') as $file) {
+                    $path = $file->store('png_job_cards', 'public');
+                    $jobCardsPaths[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'size' => $file->getSize(),
+                        'type' => $file->getClientMimeType()
+                    ];
+                }
+                $data['job_cards_paths'] = json_encode($jobCardsPaths);
             }
-            // Convert array to JSON string
-            $data['other_documents_paths'] = json_encode($otherDocs);
-        }
 
-        // Handle additional documents - store as JSON
-        if ($request->hasFile('additional_documents')) {
-            $additionalDocs = [];
-            foreach ($request->file('additional_documents') as $file) {
-                $path = $file->store('png_additional_docs', 'public');
-                $additionalDocs[] = [
-                    'name' => $file->getClientOriginalName(),
-                    'path' => $path,
-                    'size' => $file->getSize(),
-                    'type' => $file->getClientMimeType()
-                ];
+            if ($request->hasFile('autocad_dwg')) {
+                $autocadPaths = [];
+                foreach ($request->file('autocad_dwg') as $file) {
+                    $path = $file->store('png_autocad_dwg', 'public');
+                    $autocadPaths[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'size' => $file->getSize(),
+                        'type' => $file->getClientMimeType()
+                    ];
+                }
+                $data['autocad_dwg_paths'] = json_encode($autocadPaths);
             }
-            // Convert array to JSON string
-            $data['additional_documents'] = json_encode($additionalDocs);
+
+            if ($request->hasFile('site_visit_reports')) {
+                $siteVisitPaths = [];
+                foreach ($request->file('site_visit_reports') as $file) {
+                    $path = $file->store('png_site_visit_reports', 'public');
+                    $siteVisitPaths[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'size' => $file->getSize(),
+                        'type' => $file->getClientMimeType()
+                    ];
+                }
+                $data['site_visit_reports_paths'] = json_encode($siteVisitPaths);
+            }
+
+            if ($request->hasFile('other_documents')) {
+                $otherDocs = [];
+                foreach ($request->file('other_documents') as $file) {
+                    $path = $file->store('png_other_documents', 'public');
+                    $otherDocs[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'size' => $file->getSize(),
+                        'type' => $file->getClientMimeType()
+                    ];
+                }
+                $data['other_documents_paths'] = json_encode($otherDocs);
+            }
+
+            // Auto-calculate totals if individual measurements are provided
+            if ($request->filled([
+                'gi_guard_to_main_valve_half_inch',
+                'gi_main_valve_to_meter_half_inch', 
+                'gi_meter_to_geyser_half_inch',
+                'gi_geyser_point_half_inch',
+                'extra_kitchen_point'
+            ])) {
+                $data['total_gi'] = ($data['gi_guard_to_main_valve_half_inch'] ?? 0) +
+                                   ($data['gi_main_valve_to_meter_half_inch'] ?? 0) +
+                                   ($data['gi_meter_to_geyser_half_inch'] ?? 0) +
+                                   ($data['gi_geyser_point_half_inch'] ?? 0) +
+                                   ($data['extra_kitchen_point'] ?? 0);
+            }
+
+            if ($request->filled(['open_cut_20mm', 'boring_20mm'])) {
+                $data['total_mdpe_pipe_20mm'] = ($data['open_cut_20mm'] ?? 0) + ($data['boring_20mm'] ?? 0);
+            }
+
+            // Clean empty numeric fields
+            $numericFields = [
+                'gi_guard_to_main_valve_half_inch', 'gi_main_valve_to_meter_half_inch',
+                'gi_meter_to_geyser_half_inch', 'gi_geyser_point_half_inch', 'extra_kitchen_point',
+                'total_gi', 'high_press_1_6_reg', 'low_press_2_5_reg', 'reg_qty', 'gas_tap',
+                'valve_half_inch', 'gi_coupling_half_inch', 'gi_elbow_half_inch', 'clamp_half_inch',
+                'gi_tee_half_inch', 'anaconda', 'open_cut_20mm', 'boring_20mm', 'total_mdpe_pipe_20mm',
+                'tee_20mm', 'rcc_guard_20mm', 'gf_coupler_20mm', 'gf_saddle_32x20mm',
+                'gf_saddle_63x20mm', 'gf_saddle_63x32mm', 'gf_saddle_125x32', 'gf_saddle_90x20mm',
+                'gf_reducer_32x20mm', 'conversion_payment', 'meter_reading'
+            ];
+
+            foreach ($numericFields as $field) {
+                if (isset($data[$field]) && $data[$field] === '') {
+                    $data[$field] = null;
+                }
+            }
+            $notNullableDefaults = [
+                'geyser_point' => 0,
+                'extra_kitchen' => 0,
+                'sla_days' => 0,
+            ];
+
+            foreach ($notNullableDefaults as $field => $default) {
+                if (!isset($data[$field]) || $data[$field] === null) {
+                    $data[$field] = $default;
+                }
+            }
+
+            $png = Png::create($data);
+
+            return redirect()->route('png.index')
+                ->with('success', 'PNG job created successfully.');
+
+        } catch (\Exception $e) {
+            Log::error('PNG Creation Error: ' . $e->getMessage(), [
+                'request_data' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()->back()
+                ->withInput()
+                ->with('error', "Error occurred: {$e->getMessage()}");
         }
-
-        // Handle measurements array - store as measurements_data (matching your model)
-        if (isset($data['measurements']) && is_array($data['measurements'])) {
-            $data['measurements_data'] = $data['measurements'];
-            unset($data['measurements']); // Remove the original measurements key
-        }
-
-        // Map form field names to model field names if needed
-        if (isset($data['plumber_name'])) {
-            $data['plb_name'] = $data['plumber_name']; // Map to your model field
-        }
-        
-        if (isset($data['plumbing_date'])) {
-            $data['plb_date'] = $data['plumbing_date']; // Map to your model field
-        }
-
-        // Handle required_document_types array - keep as array since model will cast it
-        // No need to json_encode since the model handles this with casting
-
-        // Remove the dd() statement and create the record
-        $png = Png::create($data);
-
-        return redirect()->route('png.index')
-            ->with('success', 'PNG job created successfully.');
-
-    } catch (\Exception $e) {
-        
-        // Log the error for debugging
-        \Log::error('PNG Creation Error: ' . $e->getMessage(), [
-            'request_data' => $request->all(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        
-        return redirect()->back()
-            ->withInput()
-            ->with('error', "Error occurred: {$e->getMessage()}");
     }
-}
 
     /**
      * Display the specified resource.
      */
     public function show(Png $png)
     {
-        $png->load('measurementType');
         return view('panel.png.show', compact('png'));
     }
 
@@ -334,249 +297,175 @@ public function index(Request $request)
      */
     public function edit(Png $png)
     {
-        $png->load('measurementType');
-        $measurementTypes = PngMeasurementType::active()->get();
-        return view('panel.png.edit', compact('png', 'measurementTypes'));
+        return view('panel.png.edit', compact('png'));
     }
 
-  /**
- * Update the specified PNG job in storage.
- *
- * @param  \Illuminate\Http\Request  $request
- * @param  \App\Models\Png  $png
- * @return \Illuminate\Http\Response
- */
-public function update(Request $request, Png $png)
-{
-    try {
-        $data = $request->all();
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Png $png)
+    {
+        try {
+            $data = $request->all();
 
-        // Handle single file uploads (replace existing)
-        if ($request->hasFile('scan_copy')) {
-            // Delete old file if exists
-            if ($png->scan_copy_path && Storage::disk('public')->exists($png->scan_copy_path)) {
-                Storage::disk('public')->delete($png->scan_copy_path);
+            // Validate required fields
+            $request->validate([
+                'service_order_no' => 'required|string|max:255',
+                'customer_name' => 'required|string|max:255',
+                'agreement_date' => 'required|date',
+                'start_date' => 'nullable|date',
+                'plb_date' => 'nullable|date',
+                'gc_date' => 'nullable|date',
+                'mmt_date' => 'nullable|date',
+                'conversion_date' => 'nullable|date',
+            ]);
+
+            // Handle file uploads (same as store method)
+            if ($request->hasFile('scan_copy')) {
+                // Delete old file if exists
+                if ($png->scan_copy_path) {
+                    Storage::disk('public')->delete($png->scan_copy_path);
+                }
+                $data['scan_copy_path'] = $request->file('scan_copy')->store('png_scan_copies', 'public');
             }
-            $data['scan_copy_path'] = $request->file('scan_copy')->store('png_scan_copies', 'public');
-        }
 
-        if ($request->hasFile('autocad_drawing')) {
-            // Delete old file if exists
-            if ($png->autocad_drawing_path && Storage::disk('public')->exists($png->autocad_drawing_path)) {
-                Storage::disk('public')->delete($png->autocad_drawing_path);
+            if ($request->hasFile('autocad_drawing')) {
+                if ($png->autocad_drawing_path) {
+                    Storage::disk('public')->delete($png->autocad_drawing_path);
+                }
+                $data['autocad_drawing_path'] = $request->file('autocad_drawing')->store('png_autocad_drawings', 'public');
             }
-            $data['autocad_drawing_path'] = $request->file('autocad_drawing')->store('png_autocad_drawings', 'public');
-        }
 
-        if ($request->hasFile('certificate')) {
-            // Delete old file if exists
-            if ($png->certificate_path && Storage::disk('public')->exists($png->certificate_path)) {
-                Storage::disk('public')->delete($png->certificate_path);
+            if ($request->hasFile('certificate')) {
+                if ($png->certificate_path) {
+                    Storage::disk('public')->delete($png->certificate_path);
+                }
+                $data['certificate_path'] = $request->file('certificate')->store('png_certificates', 'public');
             }
-            $data['certificate_path'] = $request->file('certificate')->store('png_certificates', 'public');
-        }
 
-        // Handle Job Cards - append to existing files
-        if ($request->hasFile('job_cards')) {
-            $existingJobCards = $png->job_cards_paths ?? [];
-            $newJobCards = [];
-            
-            foreach ($request->file('job_cards') as $file) {
-                $path = $file->store('png_job_cards', 'public');
-                $newJobCards[] = [
-                    'name' => $file->getClientOriginalName(),
-                    'path' => $path,
-                    'size' => $file->getSize(),
-                    'type' => $file->getClientMimeType()
-                ];
+            // Handle multiple file uploads (similar to store)
+            if ($request->hasFile('job_cards')) {
+                $jobCardsPaths = [];
+                foreach ($request->file('job_cards') as $file) {
+                    $path = $file->store('png_job_cards', 'public');
+                    $jobCardsPaths[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'size' => $file->getSize(),
+                        'type' => $file->getClientMimeType()
+                    ];
+                }
+                // Merge with existing files if needed
+                $existingFiles = $png->job_cards_paths ?? [];
+                $data['job_cards_paths'] = json_encode(array_merge($existingFiles, $jobCardsPaths));
             }
-            
-            // Merge existing and new files
-            $data['job_cards_paths'] = json_encode(array_merge($existingJobCards, $newJobCards));
-        }
 
-        // Handle AutoCad DWG files - append to existing files
-        if ($request->hasFile('autocad_dwg')) {
-            $existingAutocadFiles = $png->autocad_dwg_paths ?? [];
-            $newAutocadFiles = [];
-            
-            foreach ($request->file('autocad_dwg') as $file) {
-                $path = $file->store('png_autocad_dwg', 'public');
-                $newAutocadFiles[] = [
-                    'name' => $file->getClientOriginalName(),
-                    'path' => $path,
-                    'size' => $file->getSize(),
-                    'type' => $file->getClientMimeType()
-                ];
+            // Auto-calculate totals
+            if ($request->filled([
+                'gi_guard_to_main_valve_half_inch',
+                'gi_main_valve_to_meter_half_inch', 
+                'gi_meter_to_geyser_half_inch',
+                'gi_geyser_point_half_inch',
+                'extra_kitchen_point'
+            ])) {
+                $data['total_gi'] = ($data['gi_guard_to_main_valve_half_inch'] ?? 0) +
+                                   ($data['gi_main_valve_to_meter_half_inch'] ?? 0) +
+                                   ($data['gi_meter_to_geyser_half_inch'] ?? 0) +
+                                   ($data['gi_geyser_point_half_inch'] ?? 0) +
+                                   ($data['extra_kitchen_point'] ?? 0);
             }
-            
-            // Merge existing and new files
-            $data['autocad_dwg_paths'] = json_encode(array_merge($existingAutocadFiles, $newAutocadFiles));
-        }
 
-        // Handle Site Visit Reports - append to existing files
-        if ($request->hasFile('site_visit_reports')) {
-            $existingReports = $png->site_visit_reports_paths ?? [];
-            $newReports = [];
-            
-            foreach ($request->file('site_visit_reports') as $file) {
-                $path = $file->store('png_site_visit_reports', 'public');
-                $newReports[] = [
-                    'name' => $file->getClientOriginalName(),
-                    'path' => $path,
-                    'size' => $file->getSize(),
-                    'type' => $file->getClientMimeType()
-                ];
+            if ($request->filled(['open_cut_20mm', 'boring_20mm'])) {
+                $data['total_mdpe_pipe_20mm'] = ($data['open_cut_20mm'] ?? 0) + ($data['boring_20mm'] ?? 0);
             }
-            
-            // Merge existing and new files
-            $data['site_visit_reports_paths'] = json_encode(array_merge($existingReports, $newReports));
-        }
 
-        // Handle Other Documents - append to existing files
-        if ($request->hasFile('other_documents')) {
-            $existingOtherDocs = $png->other_documents_paths ?? [];
-            $newOtherDocs = [];
-            
-            foreach ($request->file('other_documents') as $file) {
-                $path = $file->store('png_other_documents', 'public');
-                $newOtherDocs[] = [
-                    'name' => $file->getClientOriginalName(),
-                    'path' => $path,
-                    'size' => $file->getSize(),
-                    'type' => $file->getClientMimeType()
-                ];
+            // Clean empty numeric fields
+            $numericFields = [
+                'gi_guard_to_main_valve_half_inch', 'gi_main_valve_to_meter_half_inch',
+                'gi_meter_to_geyser_half_inch', 'gi_geyser_point_half_inch', 'extra_kitchen_point',
+                'total_gi', 'high_press_1_6_reg', 'low_press_2_5_reg', 'reg_qty', 'gas_tap',
+                'valve_half_inch', 'gi_coupling_half_inch', 'gi_elbow_half_inch', 'clamp_half_inch',
+                'gi_tee_half_inch', 'anaconda', 'open_cut_20mm', 'boring_20mm', 'total_mdpe_pipe_20mm',
+                'tee_20mm', 'rcc_guard_20mm', 'gf_coupler_20mm', 'gf_saddle_32x20mm',
+                'gf_saddle_63x20mm', 'gf_saddle_63x32mm', 'gf_saddle_125x32', 'gf_saddle_90x20mm',
+                'gf_reducer_32x20mm', 'conversion_payment', 'meter_reading'
+            ];
+
+            foreach ($numericFields as $field) {
+                if (isset($data[$field]) && $data[$field] === '') {
+                    $data[$field] = null;
+                }
             }
+
+            $png->update($data);
+
+            return redirect()->route('png.index')
+                ->with('success', 'PNG job updated successfully.');
+
+        } catch (\Exception $e) {
+            Log::error('PNG Update Error: ' . $e->getMessage(), [
+                'request_data' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
             
-            // Merge existing and new files
-            $data['other_documents_paths'] = json_encode(array_merge($existingOtherDocs, $newOtherDocs));
+            return redirect()->back()
+                ->withInput()
+                ->with('error', "Error occurred: {$e->getMessage()}");
         }
-
-        // Handle Additional Documents - append to existing files
-        if ($request->hasFile('additional_documents')) {
-            $existingAdditionalDocs = $png->additional_documents ?? [];
-            $newAdditionalDocs = [];
-            
-            foreach ($request->file('additional_documents') as $file) {
-                $path = $file->store('png_additional_docs', 'public');
-                $newAdditionalDocs[] = [
-                    'name' => $file->getClientOriginalName(),
-                    'path' => $path,
-                    'size' => $file->getSize(),
-                    'type' => $file->getClientMimeType()
-                ];
-            }
-            
-            // Merge existing and new files
-            $data['additional_documents'] = json_encode(array_merge($existingAdditionalDocs, $newAdditionalDocs));
-        }
-
-        // Handle measurements array - store as measurements_data (matching your model)
-        if (isset($data['measurements']) && is_array($data['measurements'])) {
-            $data['measurements_data'] = $data['measurements'];
-            unset($data['measurements']); // Remove the original measurements key
-        }
-
-        // Map form field names to model field names if needed
-        if (isset($data['plumber_name'])) {
-            $data['plb_name'] = $data['plumber_name']; // Map to your model field
-        }
-        
-        if (isset($data['plumbing_date'])) {
-            $data['plb_date'] = $data['plumbing_date']; // Map to your model field
-        }
-
-        // Handle required_document_types array - keep as array since model will cast it
-        // No need to json_encode since the model handles this with casting
-
-        // Update the PNG record
-        $png->update($data);
-
-        return redirect()->route('png.show', $png->id)
-            ->with('success', 'PNG job updated successfully.');
-
-    } catch (\Exception $e) {
-        
-        // Log the error for debugging
-        \Log::error('PNG Update Error: ' . $e->getMessage(), [
-            'png_id' => $png->id,
-            'request_data' => $request->all(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        
-        return redirect()->back()
-            ->withInput()
-            ->with('error', "Error occurred: {$e->getMessage()}");
     }
-}
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Png $png)
     {
-        // Delete associated files
-        if ($png->scan_copy_path) {
-            Storage::disk('public')->delete($png->scan_copy_path);
-        }
+        try {
+            // Delete associated files
+            if ($png->scan_copy_path) {
+                Storage::disk('public')->delete($png->scan_copy_path);
+            }
+            if ($png->autocad_drawing_path) {
+                Storage::disk('public')->delete($png->autocad_drawing_path);
+            }
+            if ($png->certificate_path) {
+                Storage::disk('public')->delete($png->certificate_path);
+            }
 
-        if ($png->autocad_drawing_path) {
-            Storage::disk('public')->delete($png->autocad_drawing_path);
-        }
-
-        if ($png->certificate_path) {
-            Storage::disk('public')->delete($png->certificate_path);
-        }
-
-        // Delete job cards
-        if ($png->job_cards_paths) {
-            foreach ($png->job_cards_paths as $jobCard) {
-                if (isset($jobCard['path'])) {
-                    Storage::disk('public')->delete($jobCard['path']);
+            // Delete multiple files
+            if ($png->job_cards_paths) {
+                foreach ($png->job_cards_paths as $file) {
+                    if (isset($file['path'])) {
+                        Storage::disk('public')->delete($file['path']);
+                    }
                 }
             }
+
+            $png->delete();
+
+            return redirect()->route('png.index')
+                ->with('success', 'PNG job deleted successfully.');
+
+        } catch (\Exception $e) {
+            Log::error('PNG Deletion Error: ' . $e->getMessage());
+            
+            return redirect()->route('png.index')
+                ->with('error', 'Error occurred while deleting PNG job.');
         }
+    }
 
-        // Delete AutoCad DWG files
-        if ($png->autocad_dwg_paths) {
-            foreach ($png->autocad_dwg_paths as $dwgFile) {
-                if (isset($dwgFile['path'])) {
-                    Storage::disk('public')->delete($dwgFile['path']);
-                }
-            }
+     /**
+     * Download Excel import template
+     */
+    public function downloadTemplate()
+    {
+        try {
+            return Excel::download(new \App\Exports\PngImportTemplate, 'png_import_template.xlsx');
+        } catch (\Exception $e) {
+            Log::error('PNG Template Download Error: ' . $e->getMessage());
+            
+            return redirect()->back()
+                ->with('error', 'Error downloading template: ' . $e->getMessage());
         }
-
-        // Delete site visit reports
-        if ($png->site_visit_reports_paths) {
-            foreach ($png->site_visit_reports_paths as $report) {
-                if (isset($report['path'])) {
-                    Storage::disk('public')->delete($report['path']);
-                }
-            }
-        }
-
-        // Delete other documents
-        if ($png->other_documents_paths) {
-            foreach ($png->other_documents_paths as $doc) {
-                if (isset($doc['path'])) {
-                    Storage::disk('public')->delete($doc['path']);
-                }
-            }
-        }
-
-        // Delete additional documents (legacy)
-        if ($png->additional_documents) {
-            foreach ($png->additional_documents as $doc) {
-                if (isset($doc['path'])) {
-                    Storage::disk('public')->delete($doc['path']);
-                }
-            }
-        }
-
-        $png->delete();
-
-        return redirect()->route('png.index')
-            ->with('success', 'PNG job deleted successfully.');
     }
 
     /**
@@ -590,19 +479,61 @@ public function update(Request $request, Png $png)
     /**
      * Import PNG data from Excel
      */
-    public function import(Request $request)
+  public function import(Request $request)
     {
         $request->validate([
-            'excel_file' => 'required|file|mimes:xlsx,xls|max:10240',
+            'excel_file' => 'required|mimes:xlsx,xls,csv|max:2048',
         ]);
 
         try {
-            Excel::import(new PngImport, $request->file('excel_file'));
+            $import = new PngImport;
+            Excel::import($import, $request->file('excel_file'));
+            
+            $summary = $import->getImportSummary();
+            
+            $message = "Import completed! ";
+            $message .= "Success: {$summary['success_count']}, ";
+            $message .= "Skipped: {$summary['skip_count']}, ";
+            $message .= "Errors: {$summary['error_count']}";
+            
+            if ($summary['error_count'] > 0) {
+                // Log detailed errors
+                Log::warning('PNG Import had errors', $summary['errors']);
+                
+                // Show first few errors to user
+                $errorPreview = array_slice($summary['errors'], 0, 5);
+                $message .= "\n\nFirst few errors:\n" . implode("\n", $errorPreview);
+                
+                if ($summary['error_count'] > 5) {
+                    $message .= "\n\n... and " . ($summary['error_count'] - 5) . " more errors. Check logs for details.";
+                }
+                
+                return redirect()->route('png.index')
+                    ->with('warning', $message);
+            }
+            
             return redirect()->route('png.index')
-                ->with('success', 'PNG data imported successfully.');
+                ->with('success', $message);
+                
         } catch (\Exception $e) {
+            Log::error('PNG Import Critical Error: ' . $e->getMessage(), [
+                'file' => $request->file('file')->getClientOriginalName(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            $errorMessage = 'Critical import error: ' . $e->getMessage();
+            
+            // Provide helpful hints based on common error patterns
+            if (strpos($e->getMessage(), 'string') !== false) {
+                $errorMessage .= "\n\nHint: Check that your Excel columns match the expected format. Service Order Number should be text, not numbers.";
+            }
+            
+            if (strpos($e->getMessage(), 'date') !== false) {
+                $errorMessage .= "\n\nHint: Make sure date columns are properly formatted in Excel (YYYY-MM-DD or MM/DD/YYYY).";
+            }
+            
             return redirect()->back()
-                ->with('error', 'Error importing data: ' . $e->getMessage());
+                ->with('error', $errorMessage);
         }
     }
 
@@ -611,54 +542,232 @@ public function update(Request $request, Png $png)
      */
     public function export(Request $request)
     {
-        return Excel::download(new PngExport($request), 'png-data-' . date('Y-m-d-H-i-s') . '.xlsx');
+        try {
+            return Excel::download(new PngExport($request->all()), 'png_data_' . date('Y-m-d') . '.xlsx');
+        } catch (\Exception $e) {
+            Log::error('PNG Export Error: ' . $e->getMessage());
+            
+            return redirect()->back()
+                ->with('error', 'Error exporting data: ' . $e->getMessage());
+        }
     }
 
     /**
-     * Get summary statistics for dashboard
+     * Get PNG statistics for dashboard
      */
     public function getStats()
     {
         $stats = [
-            'total_jobs' => Png::count(),
-            'workable_jobs' => Png::where('connections_status', 'workable')->count(),
-            'completed_jobs' => Png::where('conversion_status', 'conv_done')->count(),
-            'pending_jobs' => Png::whereIn('connections_status', ['pdt_pending', 'gc_pending', 'mmt_pending'])->count(),
-            'this_month_jobs' => Png::whereMonth('created_at', now()->month)->count(),
+            'total' => Png::count(),
+            'by_status' => Png::selectRaw('connections_status, COUNT(*) as count')
+                ->groupBy('connections_status')
+                ->pluck('count', 'connections_status'),
+            'by_plan_type' => Png::selectRaw('plan_type, COUNT(*) as count')
+                ->groupBy('plan_type')
+                ->pluck('count', 'plan_type'),
+            'by_booking_method' => Png::selectRaw('booking_by, COUNT(*) as count')
+                ->groupBy('booking_by')
+                ->pluck('count', 'booking_by'),
+            'monthly_trends' => Png::selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, COUNT(*) as count')
+                ->groupBy('year', 'month')
+                ->orderBy('year', 'desc')
+                ->orderBy('month', 'desc')
+                ->take(12)
+                ->get()
         ];
 
         return response()->json($stats);
     }
 
     /**
-     * Get measurement types by PNG type (AJAX)
+     * Bulk status update
      */
-    public function getMeasurementTypesByPngType(Request $request)
+    public function bulkStatusUpdate(Request $request)
     {
-        $pngType = $request->input('png_type');
-        
-        $measurementTypes = PngMeasurementType::active()
-            ->byPngType($pngType)
-            ->get(['id', 'name', 'description']);
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:pngs,id',
+            'status' => 'required|string'
+        ]);
 
-        return response()->json($measurementTypes);
+        try {
+            Png::whereIn('id', $request->ids)
+                ->update(['connections_status' => $request->status]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status updated for ' . count($request->ids) . ' records.'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating status: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
-     * Get measurement fields for a type (AJAX)
+     * Download file
      */
-    public function getMeasurementFields(Request $request)
+    public function downloadFile($type, $filename)
     {
-        $measurementTypeId = $request->input('measurement_type_id');
-        $measurementType = PngMeasurementType::find($measurementTypeId);
+        $path = "png_{$type}/" . $filename;
         
-        if (!$measurementType) {
-            return response()->json(['error' => 'Measurement type not found'], 404);
+        if (!Storage::disk('public')->exists($path)) {
+            abort(404);
         }
+        
+        return Storage::disk('public')->download($path);
+    }
 
-        return response()->json([
-            'measurement_type' => $measurementType,
-            'fields' => $measurementType->measurement_fields
+
+/**
+     * Bulk delete multiple PNG records
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'selected_ids' => 'required|string',
         ]);
+
+        try {
+            // Parse the comma-separated IDs
+            $selectedIds = explode(',', $request->selected_ids);
+            $selectedIds = array_filter(array_map('trim', $selectedIds));
+
+            if (empty($selectedIds)) {
+                return redirect()->back()
+                    ->with('error', 'No valid IDs provided for deletion.');
+            }
+
+            // Validate that all IDs are numeric
+            foreach ($selectedIds as $id) {
+                if (!is_numeric($id)) {
+                    return redirect()->back()
+                        ->with('error', 'Invalid ID format provided.');
+                }
+            }
+
+            // Get the PNG records to be deleted for logging
+            $pngsToDelete = Png::whereIn('id', $selectedIds)->get();
+            
+            if ($pngsToDelete->isEmpty()) {
+                return redirect()->back()
+                    ->with('warning', 'No PNG jobs found with the provided IDs.');
+            }
+
+            $actualCount = $pngsToDelete->count();
+            $requestedCount = count($selectedIds);
+
+            // Log the bulk deletion attempt
+            \Log::info('Bulk PNG deletion initiated', [
+                'user_id' => auth()->id(),
+                'requested_ids' => $selectedIds,
+                'found_records' => $actualCount,
+                'records' => $pngsToDelete->pluck('service_order_no', 'id')->toArray()
+            ]);
+
+            // Delete associated files first (if any)
+            foreach ($pngsToDelete as $png) {
+                // Delete scan copy
+                if ($png->scan_copy_path && 
+Storage::disk('public')->exists($png->scan_copy_path)) {
+                    Storage::disk('public')->delete($png->scan_copy_path);
+                }
+
+                // Delete autocad drawing
+                if ($png->autocad_drawing_path && 
+Storage::disk('public')->exists($png->autocad_drawing_path)) {
+                    Storage::disk('public')->delete($png->autocad_drawing_path);
+                }
+
+                // Delete certificate
+                if ($png->certificate_path && 
+Storage::disk('public')->exists($png->certificate_path)) {
+                    Storage::disk('public')->delete($png->certificate_path);
+                }
+
+                // Delete job cards files
+                if ($png->job_cards_paths) {
+                    $jobCardPaths = is_string($png->job_cards_paths) 
+                        ? json_decode($png->job_cards_paths, true) 
+                        : $png->job_cards_paths;
+                    
+                    if (is_array($jobCardPaths)) {
+                        foreach ($jobCardPaths as $path) {
+                            if (is_array($path) && isset($path['path'])) {
+                                $filePath = $path['path'];
+                            } else {
+                                $filePath = $path;
+                            }
+                            
+                            if ($filePath && Storage::disk('public')->exists($filePath)) {
+                                Storage::disk('public')->delete($filePath);
+                            }
+                        }
+                    }
+                }
+
+                // Delete other document files
+                if ($png->other_documents_paths) {
+                    $otherDocPaths = is_string($png->other_documents_paths) 
+                        ? json_decode($png->other_documents_paths, true) 
+                        : $png->other_documents_paths;
+                    
+                    if (is_array($otherDocPaths)) {
+                        foreach ($otherDocPaths as $path) {
+                            if (is_array($path) && isset($path['path'])) {
+                                $filePath = $path['path'];
+                            } else {
+                                $filePath = $path;
+                            }
+                            
+                            if ($filePath && Storage::disk('public')->exists($filePath)) {
+                                Storage::disk('public')->delete($filePath);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Perform the bulk deletion
+            $deletedCount = Png::whereIn('id', $selectedIds)->delete();
+
+            // Log the result
+            \Log::info('Bulk PNG deletion completed', [
+                'user_id' => auth()->id(),
+                'requested_count' => $requestedCount,
+                'found_count' => $actualCount,
+                'deleted_count' => $deletedCount
+            ]);
+
+            // Prepare success/warning message
+            $message = "Successfully deleted {$deletedCount} PNG job(s).";
+            
+            if ($requestedCount > $actualCount) {
+                $notFoundCount = $requestedCount - $actualCount;
+                $message .= " Note: {$notFoundCount} job(s) were not found and may have been 
+already deleted.";
+                $messageType = 'warning';
+            } else {
+                $messageType = 'success';
+            }
+
+            return redirect()->route('png.index')
+                ->with($messageType, $message);
+
+        } catch (\Exception $e) {
+            \Log::error('Bulk PNG deletion failed', [
+                'user_id' => auth()->id(),
+                'error' => $e->getMessage(),
+                'requested_ids' => $request->selected_ids,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'An error occurred while deleting the PNG jobs: ' . 
+$e->getMessage());
+        }
     }
 }

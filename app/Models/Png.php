@@ -7,17 +7,33 @@ use Illuminate\Database\Eloquent\Model;
 
 class Png extends Model
 {
-
- use HasFactory;
+    use HasFactory;
 
     protected $fillable = [
         // Basic Information (matching Excel layout)
-        'name',
+        'po_number',
+        'service_order_no',
         'agreement_date',
+        'booking_by',
+        'start_date',
+        'plan_type',
+        'customer',
         'customer_no',
         'customer_name',
-        'service_order_no',
         'application_no',
+        'notification_numbers',
+        'house_no',
+        'street_1',
+        'street_2', 
+        'street_3',
+        'street_4',
+        'customer_contact_no',
+        'geyser_point',
+        'extra_kitchen',
+        'sla_days',
+        'current_remarks',
+        
+        // Service and Location Information
         'name',
         'contact_no',
         'address',
@@ -25,67 +41,41 @@ class Png extends Model
         'scheme',
         'geyser',
         'kitchen',
-        'sla_days',
         
-        // Service information
-        'service_order_no',
-        'po_number',
-        'start_date',
-        'booking_by',
-        'plan_type',
-        'customer_name',
-        'customer',
-        'customer_contact_no',
-        'notification_numbers',
-        'house_no',
-        'street_1',
-        'street_2', 
-        'street_3',
-        'street_4',
-        
-        // Technical Information
+        // Technical and Status Information
         'connections_status',
-        'plb_name',
-        'plb_date',
-        'pdt_date',
-        'pdt_witness_by',
-        'ground_connections_date',
-        'ground_connections_witness_by',
-        'isolation_name',
-        'mmt_date',
-        'mmt_witness_by',
-        'conversion_technician_name',
-        'conversion_date',
-        'conversion_status',
-        'report_submission_date',
-        'meter_number',
-        'ra_bill_no',
-        'remarks',
-        
-        // Team information
-        'pe_status',
+        'witnesses_name_date',
+        'previous_remarks',
         'reported',
         'plb_name',
         'plb_date',
+        'pdt_date',
         'pdt_tpi',
         'gc_date',
         'gc_tpi',
+        'mmt_date',
         'mmt_tpi',
+        'conversion_date',
+        'conversion_technician',
         'conversion_payment',
+        'meter_number',
         'meter_reading',
         'plumber',
-        'witnesses_name_date',
         'witnesses_name_date_2',
-        'current_remarks',
-        'previous_remarks',
+        'date_of_report',
+        
+        // Claims and Administrative
         'nepl_claim',
         'offline_drawing',
         'gc_done_by',
         'v_lookup',
+        'created_at_field',
+        'updated_at_field',
         
-        // Dynamic measurements
+        // Dynamic measurements - keeping for future use (commented out in migration)
         'png_measurement_type_id',
         'measurements_data',
+        'dynamic_measurements_backup',
         
         // File paths
         'scan_copy_path',
@@ -96,37 +86,112 @@ class Png extends Model
         'site_visit_reports_paths',
         'other_documents_paths',
         'additional_documents',
-
-        'png_type'
+        
+        // Excel Specific Measurement Fields
+        // GI (Galvanized Iron) Measurements 
+        'gi_guard_to_main_valve_half_inch',
+        'gi_main_valve_to_meter_half_inch',
+        'gi_meter_to_geyser_half_inch',
+        'gi_geyser_point_half_inch',
+        'extra_kitchen_point',
+        'total_gi',
+        
+        // Regulators and Components
+        'high_press_1_6_reg',
+        'low_press_2_5_reg',
+        'reg_qty',
+        'gas_tap',
+        'valve_half_inch',
+        'gi_coupling_half_inch',
+        'gi_elbow_half_inch',
+        'clamp_half_inch',
+        'gi_tee_half_inch',
+        'anaconda',
+        
+        // Pipe and Excavation
+        'open_cut_20mm',
+        'boring_20mm',
+        'total_mdpe_pipe_20mm',
+        'tee_20mm',
+        'rcc_guard_20mm',
+        
+        // GF (Gas Fittings) Components
+        'gf_coupler_20mm',
+        'gf_saddle_32x20mm',
+        'gf_saddle_63x20mm',
+        'gf_saddle_63x32mm',
+        'gf_saddle_125x32',
+        'gf_saddle_90x20mm',
+        'gf_reducer_32x20mm',
+        
+        // Other fields
+        'png_type',
+        'ra_bill_no',
+        'remarks'
     ];
 
-    // protected $guarded = [];
-
     protected $casts = [
+        // Date fields
         'agreement_date' => 'date',
         'start_date' => 'date',
         'plb_date' => 'date',
         'pdt_date' => 'date',
-        'ground_connections_date' => 'date',
+        'gc_date' => 'date',
         'mmt_date' => 'date',
         'conversion_date' => 'date',
-        'report_submission_date' => 'date',
-        // 'plb_date' => 'date',
-        'gc_date' => 'date',
+        'date_of_report' => 'date',
+        'created_at_field' => 'datetime',
+        'updated_at_field' => 'datetime',
+        
+        // Decimal fields
+        'gi_guard_to_main_valve_half_inch' => 'decimal:2',
+        'gi_main_valve_to_meter_half_inch' => 'decimal:2',
+        'gi_meter_to_geyser_half_inch' => 'decimal:2',
+        'gi_geyser_point_half_inch' => 'decimal:2',
+        'extra_kitchen_point' => 'decimal:2',
+        'total_gi' => 'decimal:2',
+        'open_cut_20mm' => 'decimal:2',
+        'boring_20mm' => 'decimal:2',
+        'total_mdpe_pipe_20mm' => 'decimal:2',
+        'conversion_payment' => 'decimal:2',
+        'meter_reading' => 'decimal:2',
+        
+        // Integer fields
+        'high_press_1_6_reg' => 'integer',
+        'low_press_2_5_reg' => 'integer',
+        'reg_qty' => 'integer',
+        'gas_tap' => 'integer',
+        'valve_half_inch' => 'integer',
+        'gi_coupling_half_inch' => 'integer',
+        'gi_elbow_half_inch' => 'integer',
+        'clamp_half_inch' => 'integer',
+        'gi_tee_half_inch' => 'integer',
+        'anaconda' => 'integer',
+        'tee_20mm' => 'integer',
+        'rcc_guard_20mm' => 'integer',
+        'gf_coupler_20mm' => 'integer',
+        'gf_saddle_32x20mm' => 'integer',
+        'gf_saddle_63x20mm' => 'integer',
+        'gf_saddle_63x32mm' => 'integer',
+        'gf_saddle_125x32' => 'integer',
+        'gf_saddle_90x20mm' => 'integer',
+        'gf_reducer_32x20mm' => 'integer',
+        'geyser' => 'integer',
+        'kitchen' => 'integer',
+        'sla_days' => 'integer',
+        
+        // JSON fields (for file storage and backup data)
         'measurements_data' => 'array',
         'additional_documents' => 'array',
         'job_cards_paths' => 'array',
         'autocad_dwg_paths' => 'array',
         'site_visit_reports_paths' => 'array',
         'other_documents_paths' => 'array',
-        'geyser' => 'integer',
-        'kitchen' => 'integer',
-        'sla_days' => 'integer',
-        'meter_reading' => 'decimal:2'
+        'dynamic_measurements_backup' => 'array'
     ];
 
     /**
-     * Get the measurement type for this PNG job
+     * Get the measurement type for this PNG job (keeping for backward compatibility)
      */
     public function measurementType()
     {
@@ -153,9 +218,23 @@ class Png extends Model
     }
 
     /**
-     * Get Conversion Status options
+     * Get Plan Type options (from Excel)
      */
-    public static function getConversionStatusOptions()
+    public static function getPlanTypeOptions()
+    {
+        return [
+            'domestic' => 'Domestic',
+            'commercial' => 'Commercial',
+            'riser_hadder' => 'Riser-Hadder',
+            'dma' => 'DMA',
+            'welded' => 'Welded',
+            'o&m' => 'O&M'
+        ];
+
+        
+    }
+
+     public static function getConversionStatusOptions()
     {
         return [
             'conv_done' => 'CONV Done',
@@ -164,10 +243,7 @@ class Png extends Model
         ];
     }
 
-    /**
-     * Get Area options (from Excel dropdown)
-     */
-    public static function getAreaOptions()
+      public static function getAreaOptions()
     {
         return [
             'bungalow' => 'Bungalow',
@@ -177,10 +253,7 @@ class Png extends Model
         ];
     }
 
-    /**
-     * Get Scheme options
-     */
-    public static function getSchemeOptions()
+      public static function getSchemeOptions()
     {
         return [
             'bungalow' => 'Bungalow',
@@ -191,227 +264,123 @@ class Png extends Model
     }
 
     /**
-     * Get Plan Type options 
+     * Get Booking By options (from Excel)
      */
-    public static function getPlanTypeOptions()
+    public static function getBookingByOptions()
     {
         return [
-            'apartment' => 'Apartment',
-            'bungalow' => 'Bungalow',
-            'rowhouse' => 'RowHouse',
-            'commercial' => 'Commercial',
-            'farmhouse' => 'FarmHouse'
-        ];
-    }
-
-    /**
-     * Get PE Status options
-     */
-    public static function getPeStatusOptions()
-    {
-        return [
+            'pinal' => 'PINAL',
+            'ggl' => 'GGL',
             'online' => 'Online',
-            'tapping' => 'Tapping',
-            'pending' => 'Pending',
-            'reported' => 'Reported'
+            'offline' => 'Offline'
         ];
     }
 
     /**
-     * Get Reported options
+     * Get Reported Status options
      */
     public static function getReportedOptions()
     {
         return [
-            'reported' => 'Reported',
-            'not_reported' => 'Not Reported'
+            'reported' => 'REPORTED'
         ];
     }
 
     /**
-     * Get PLB Name options
+     * Get Offline Drawing status options
      */
-    public static function getPlbNameOptions()
+    public static function getOfflineDrawingOptions()
     {
         return [
-            'plb1' => 'PLB Team 1',
-            'plb2' => 'PLB Team 2',
-            'plb3' => 'PLB Team 3'
+            'done' => 'DONE'
         ];
     }
 
     /**
-     * Get GC TPI options
+     * Calculate total GI measurement
      */
-    public static function getGcTpiOptions()
+    public function calculateTotalGi()
+    {
+        return ($this->gi_guard_to_main_valve_half_inch ?? 0) +
+               ($this->gi_main_valve_to_meter_half_inch ?? 0) +
+               ($this->gi_meter_to_geyser_half_inch ?? 0) +
+               ($this->gi_geyser_point_half_inch ?? 0) +
+               ($this->extra_kitchen_point ?? 0);
+    }
+
+    /**
+     * Calculate total MDPE pipe
+     */
+    public function calculateTotalMdpe()
+    {
+        return ($this->open_cut_20mm ?? 0) + ($this->boring_20mm ?? 0);
+    }
+
+    /**
+     * Get all measurement fields as an array for export/import
+     */
+    public function getMeasurementFieldsArray()
     {
         return [
-            'tpi1' => 'TPI Inspector 1',
-            'tpi2' => 'TPI Inspector 2',
-            'tpi3' => 'TPI Inspector 3'
-        ];
-    }
-
-    /**
-     * Get Plumber options
-     */
-    public static function getPlumberOptions()
-    {
-        return [
-            'plumber1' => 'Plumber Team A',
-            'plumber2' => 'Plumber Team B',
-            'plumber3' => 'Plumber Team C'
-        ];
-    }
-
-    /**
-     * Get Conversion Technician options
-     */
-    public static function getConversionTechnicianOptions()
-    {
-        return [
-            'tech1' => 'Technician 1',
-            'tech2' => 'Technician 2',
-            'tech3' => 'Technician 3'
-        ];
-    }
-
-    /**
-     * Get Conversion Payment options
-     */
-    public static function getConversionPaymentOptions()
-    {
-        return [
-            'monthly' => 'Monthly',
-            'quarterly' => 'Quarterly',
-            'yearly' => 'Yearly'
-        ];
-    }
-
-    /**
-     * Get calculated SLA days from agreement date
-     */
-    public function getSlaCalculatedDaysAttribute()
-    {
-        if (!$this->agreement_date) {
-            return null;
-        }
-        
-        return now()->diffInDays($this->agreement_date, false);
-    }
-
-    /**
-     * Get SLA days status with color coding
-     */
-    public function getSlaStatusAttribute()
-    {
-        $calculatedDays = $this->sla_calculated_days;
-        $targetSla = $this->sla_days;
-        
-        if ($calculatedDays === null || $targetSla === null) {
-            return ['status' => 'unknown', 'class' => 'text-muted'];
-        }
-        
-        if ($calculatedDays <= $targetSla) {
-            return ['status' => 'on_time', 'class' => 'text-success'];
-        } else {
-            $overdueDays = $calculatedDays - $targetSla;
-            return [
-                'status' => 'overdue', 
-                'class' => 'text-danger',
-                'overdue_days' => $overdueDays
-            ];
-        }
-    }
-    public function getCalculatedTotal()
-    {
-        if (!$this->measurements_data || !$this->measurementType) {
-            return 0;
-        }
-
-        $total = 0;
-        $fields = $this->measurementType->measurement_fields;
-        
-        foreach ($fields as $field) {
-            if (isset($field['calculated']) && $field['calculated']) {
-                continue; // Skip calculated fields in calculation
-            }
+            // GI Measurements
+            'gi_guard_to_main_valve_half_inch' => $this->gi_guard_to_main_valve_half_inch,
+            'gi_main_valve_to_meter_half_inch' => $this->gi_main_valve_to_meter_half_inch,
+            'gi_meter_to_geyser_half_inch' => $this->gi_meter_to_geyser_half_inch,
+            'gi_geyser_point_half_inch' => $this->gi_geyser_point_half_inch,
+            'extra_kitchen_point' => $this->extra_kitchen_point,
+            'total_gi' => $this->total_gi,
             
-            if ($field['type'] === 'decimal') {
-                $value = $this->measurements_data[$field['name']] ?? 0;
-                $total += (float) $value;
-            }
-        }
-        
-        return $total;
-    }
-
-    /**
-     * Get measurement value by field name
-     */
-    public function getMeasurement($fieldName, $default = null)
-    {
-        return $this->measurements_data[$fieldName] ?? $default;
-    }
-
-    /**
-     * Set measurement value
-     */
-    public function setMeasurement($fieldName, $value)
-    {
-        $measurements = $this->measurements_data ?? [];
-        $measurements[$fieldName] = $value;
-        $this->measurements_data = $measurements;
-    }
-
-    /**
-     * Get full address
-     */
-    public function getFullAddressAttribute()
-    {
-        $addressParts = array_filter([
-            $this->house_no,
-            $this->street_1,
-            $this->street_2,
-            $this->street_3,
-            $this->street_4,
-            $this->address
-        ]);
-        
-        return implode(', ', $addressParts);
+            // Regulators and Components
+            'high_press_1_6_reg' => $this->high_press_1_6_reg,
+            'low_press_2_5_reg' => $this->low_press_2_5_reg,
+            'reg_qty' => $this->reg_qty,
+            'gas_tap' => $this->gas_tap,
+            'valve_half_inch' => $this->valve_half_inch,
+            'gi_coupling_half_inch' => $this->gi_coupling_half_inch,
+            'gi_elbow_half_inch' => $this->gi_elbow_half_inch,
+            'clamp_half_inch' => $this->clamp_half_inch,
+            'gi_tee_half_inch' => $this->gi_tee_half_inch,
+            'anaconda' => $this->anaconda,
+            
+            // Pipe and Excavation
+            'open_cut_20mm' => $this->open_cut_20mm,
+            'boring_20mm' => $this->boring_20mm,
+            'total_mdpe_pipe_20mm' => $this->total_mdpe_pipe_20mm,
+            'tee_20mm' => $this->tee_20mm,
+            'rcc_guard_20mm' => $this->rcc_guard_20mm,
+            
+            // GF Components
+            'gf_coupler_20mm' => $this->gf_coupler_20mm,
+            'gf_saddle_32x20mm' => $this->gf_saddle_32x20mm,
+            'gf_saddle_63x20mm' => $this->gf_saddle_63x20mm,
+            'gf_saddle_63x32mm' => $this->gf_saddle_63x32mm,
+            'gf_saddle_125x32' => $this->gf_saddle_125x32,
+            'gf_saddle_90x20mm' => $this->gf_saddle_90x20mm,
+            'gf_reducer_32x20mm' => $this->gf_reducer_32x20mm,
+        ];
     }
 
     /**
      * Scope for filtering by connections status
      */
-    public function scopeConnectionsStatus($query, $status)
+    public function scopeByConnectionsStatus($query, $status)
     {
         return $query->where('connections_status', $status);
     }
 
     /**
-     * Scope for filtering by area
+     * Scope for filtering by plan type
      */
-    public function scopeArea($query, $area)
+    public function scopeByPlanType($query, $planType)
     {
-        return $query->where('area', $area);
+        return $query->where('plan_type', $planType);
     }
 
     /**
-     * Scope for filtering by conversion status
+     * Scope for filtering by booking method
      */
-    public function scopeConversionStatus($query, $status)
+    public function scopeByBookingBy($query, $bookingBy)
     {
-        return $query->where('conversion_status', $status);
+        return $query->where('booking_by', $bookingBy);
     }
-
-    /**
-     * Scope for date range filtering
-     */
-    public function scopeDateRange($query, $startDate, $endDate, $dateField = 'agreement_date')
-    {
-        return $query->whereBetween($dateField, [$startDate, $endDate]);
-    }
-
-
 }

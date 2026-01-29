@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{asset('panel')}}/base.css"/>
     <link rel="stylesheet" href="{{asset('panel')}}/main.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     @yield('styles')
     
     <style>
@@ -314,10 +316,10 @@
             <span>NEPL Dashboard</span>
         </a>
 
-        <a href="{{ route('service-types.index') }}" class="menu-item {{ request()->routeIs('service-types.*') ? 'active' : '' }}">
+        {{-- <a href="{{ route('service-types.index') }}" class="menu-item {{ request()->routeIs('service-types.*') ? 'active' : '' }}">
             <i class="fas fa-cogs"></i>
             <span>Service Type</span>
-        </a>
+        </a> --}}
 
         <a href="{{ route('projects.index') }}" class="menu-item {{ request()->routeIs('projects.*') ? 'active' : '' }}">
             <i class="fas fa-project-diagram"></i>
@@ -335,7 +337,7 @@
         </a>
 
         <!-- Legal Desk Menu -->
-        <div class="menu-container">
+        {{-- <div class="menu-container">
             <div class="main-menu {{ request()->routeIs('legal-desk.*') || request()->routeIs('legal-document-types.*') || request()->routeIs('project-legal-documents.*') || request()->routeIs('legal-notifications.*') ? 'active' : '' }}" id="legal-toggle">
                 <i class="fas fa-gavel"></i>
                 <span>Legal Desk</span>
@@ -359,16 +361,24 @@
                     <span>Notifications</span>
                 </a>
             </div>
-        </div>
+        </div> --}}
 
-        <a href="#" class="menu-item {{ request()->routeIs('purchase.*') ? 'active' : '' }}">
+        <a href="{{ route('purchase-assets.index') }}" class="menu-item {{ 
+request()->routeIs('purchase.*') ? 'active' : '' }}">
             <i class="fas fa-shopping-cart"></i>
             <span>Purchase Desk</span>
         </a>
 
-        <a href="#" class="menu-item {{ request()->routeIs('sales.*') ? 'active' : '' }}">
+        <a href="{{ route('sales-financial.index') }}" class="menu-item {{ 
+request()->routeIs('sales.*') ? 'active' : '' }}">
             <i class="fas fa-chart-line"></i>
             <span>Sales Desk</span>
+        </a>
+
+ <a href="{{ route('consumption.index') }}" class="menu-item {{ request()->routeIs('sales.*') ? 
+'active' : '' }}">
+            <i class="fas fa-chart-line"></i>
+            <span>Consumption</span>
         </a>
 
         <!-- PNG Data Tracker Menu -->
@@ -397,7 +407,7 @@
        
 
         <!-- Commercial Data Tracker Menu -->
-        <div class="menu-container">
+        {{-- <div class="menu-container">
             <div class="main-menu {{ request()->is('commercial*') ? 'active' : '' }}" id="commercial-toggle">
                 <i class="fas fa-building"></i>
                 <span>Commercial Tracker</span>
@@ -417,10 +427,10 @@
                     <span>Import Excel</span>
                 </a>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Riser Data Tracker Menu -->
-        <div class="menu-container">
+        {{-- <div class="menu-container">
             <div class="main-menu {{ request()->is('riser*') ? 'active' : '' }}" id="riser-toggle">
                 <i class="fas fa-arrows-alt-v"></i>
                 <span>Riser Tracker</span>
@@ -440,10 +450,10 @@
                     <span>Import Excel</span>
                 </a>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Ladder Data Tracker Menu -->
-        <div class="menu-container">
+        {{-- <div class="menu-container">
             <div class="main-menu {{ request()->is('ladder*') ? 'active' : '' }}" id="ladder-toggle">
                 <i class="fas fa-project-diagram"></i>
                 <span>Hadder Tracker</span>
@@ -463,7 +473,7 @@
                     <span>Import Excel</span>
                 </a>
             </div>
-        </div>
+        </div> --}}
 
         <!-- PE Tracker Menu -->
         <div class="menu-container">

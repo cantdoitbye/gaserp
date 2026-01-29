@@ -8,7 +8,7 @@
 <div class="main-container">
     <div class="top-bar">
         <div class="breadcrumb">
-            <a href="{{ route('pe-tracker.index') }}">PNG Tracker</a>
+            <a href="{{ route('png.index') }}">PNG Tracker</a>
             <span>/</span>
             <span>Import Data</span>
         </div>
@@ -22,21 +22,36 @@
     <h1 class="page-title">Import PNG Tracker Data</h1>
 
     <div class="content-card">
+        {{-- Success Messages --}}
         @if(session('success'))
             <div class="alert alert-success" role="alert">
+                <i class="fas fa-check-circle"></i>
                 {{ session('success') }}
             </div>
         @endif
 
+        {{-- Warning Messages --}}
+        @if(session('warning'))
+            <div class="alert alert-warning" role="alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{ session('warning') }}
+            </div>
+        @endif
+
+        {{-- Error Messages --}}
         @if(session('error'))
             <div class="alert alert-danger" role="alert">
+                <i class="fas fa-times-circle"></i>
                 {{ session('error') }}
             </div>
         @endif
 
+        {{-- Validation Errors --}}
         @if($errors->any())
-            <div class="alert alert-danger">
-                <ul style="margin: 0; padding-left: 20px;">
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-times-circle"></i>
+                <strong>Please fix the following errors:</strong>
+                <ul style="margin: 10px 0 0 0; padding-left: 20px;">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -44,27 +59,68 @@
             </div>
         @endif
 
+        {{-- Import Errors (Detailed) --}}
+        @if(session('import_errors'))
+            <div class="alert alert-danger alert-detailed" role="alert">
+                <div class="alert-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Import Completed with Errors</strong>
+                    <button type="button" class="toggle-details" onclick="toggleErrorDetails()">
+                        <span id="toggle-text">Show Details</span>
+                        <i class="fas fa-chevron-down" id="toggle-icon"></i>
+                    </button>
+                </div>
+                
+                <div class="alert-summary">
+                    {{ session('import_summary', 'Some records could not be imported due to data validation errors.') }}
+                </div>
+                
+                <div class="error-details" id="error-details" style="display: none;">
+                    <div class="error-list">
+                        @foreach(session('import_errors') as $error)
+                            <div class="error-item">
+                                <i class="fas fa-times-circle error-icon"></i>
+                                {{ $error }}
+                            </div>
+                        @endforeach
+                    </div>
+                    
+                    <div class="error-help">
+                        <h5><i class="fas fa-lightbulb"></i> Common Solutions:</h5>
+                        <ul>
+                            <li><strong>Invalid connection status:</strong> Use one of: workable, not_workable, plb_done, pdt_pending, gc_pending, mmt_pending, conv_pending, comm, report_pending, bill_pending, bill_received, reported</li>
+                            <li><strong>Invalid plan type:</strong> Use one of: apartment, bungalow, rowhouse, commercial, individual, farmhouse</li>
+                            <li><strong>Date format issues:</strong> Use YYYY-MM-DD format (e.g., 2024-01-15)</li>
+                            <li><strong>Text too long:</strong> Keep text fields under 255 characters</li>
+                            <li><strong>Invalid numbers:</strong> Use only numeric values for measurement fields</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <div class="import-section">
             <div class="import-instructions">
                 <h3><i class="fas fa-info-circle"></i> Import Instructions</h3>
                 <div class="instruction-content">
-                    <p>Follow these guidelines to successfully import your PE Tracker data:</p>
+                    <p>Follow these guidelines to successfully import your PNG data:</p>
                     <ul>
                         <li><strong>File Format:</strong> Only Excel files (.xlsx, .xls) are supported</li>
-                        <li><strong>Required Columns:</strong> Date, Site Names, and Activity are mandatory</li>
-                        <li><strong>Date Format:</strong> Use DD-MM-YYYY format (e.g., 29-May-24 or 29-05-2024)</li>
-                        <li><strong>Activity Values:</strong> Must be one of: LAYING, COMMISSIONING, EXCAVATION, FLUSHING, JOINT, SR INSTALLATION</li>
+                        <li><strong>Connection Status:</strong> Must be one of: workable, not_workable, plb_done, pdt_pending, gc_pending, mmt_pending, conv_pending, comm, report_pending, bill_pending, bill_received, reported</li>
+                        <li><strong>Activity Type:</strong> Must be one of: domestic, commercial, riser_hadder, dma, welded, o&m</li>
+                        <li><strong>Date Format:</strong> Use YYYY-MM-DD format (e.g., 2024-01-15)</li>
                         <li><strong>Numeric Fields:</strong> All measurement fields should contain only numbers (use 0 or leave blank for no data)</li>
+                        <li><strong>Text Length:</strong> Keep text fields under 255 characters</li>
                         <li><strong>File Size:</strong> Maximum file size is 10MB</li>
-                        <li><strong>First Row:</strong> Should contain column headers matching the expected format</li>
+                        <li><strong>Empty Cells:</strong> Leave cells blank if no data available (don't use ?, -, N/A)</li>
                     </ul>
                 </div>
             </div>
 
             <div class="sample-download">
                 <h3><i class="fas fa-download"></i> Download Sample Template</h3>
-                <p>Download a sample Excel template with the correct column structure:</p>
-                <a href="{{ asset('samples/pe-tracker-template.xlsx') }}" class="btn btn-outline-primary" download>
+                <p>Download a sample Excel template with the correct column structure and valid data examples:</p>
+                <a href="{{ route('png.download-template') }}" class="btn btn-outline-primary" download>
                     <i class="fas fa-file-excel"></i> Download Sample Template
                 </a>
             </div>
@@ -78,7 +134,7 @@
                         <div class="upload-content">
                             <i class="fas fa-cloud-upload-alt upload-icon"></i>
                             <h4>Choose Excel File or Drag & Drop</h4>
-                            <p>Select your PE Tracker Excel file to import data</p>
+                            <p>Select your PNG Excel file to import data</p>
                             <input type="file" name="excel_file" id="excel_file" accept=".xlsx,.xls" required>
                             <label for="excel_file" class="file-label">Choose File</label>
                         </div>
@@ -102,14 +158,21 @@
                             <label class="option-label">
                                 <input type="checkbox" name="skip_duplicates" value="1" checked>
                                 <span class="checkmark"></span>
-                                Skip duplicate records (based on Date, DPR No, and Site Names)
+                                Skip duplicate records (based on Service Order No)
                             </label>
                         </div>
                         <div class="option-group">
                             <label class="option-label">
-                                <input type="checkbox" name="update_existing" value="1">
+                                <input type="checkbox" name="update_duplicates" value="1">
                                 <span class="checkmark"></span>
                                 Update existing records if duplicates found
+                            </label>
+                        </div>
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" name="validate_only" value="1">
+                                <span class="checkmark"></span>
+                                Validate only (check for errors without importing)
                             </label>
                         </div>
                     </div>
@@ -118,60 +181,54 @@
                         <button type="submit" class="btn btn-primary" id="import-btn">
                             <i class="fas fa-upload"></i> Import Data
                         </button>
-                        <a href="{{ route('pe-tracker.index') }}" class="btn btn-secondary">
+                        <a href="{{ route('png.index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Back to List
                         </a>
                     </div>
                 </form>
             </div>
 
-            <div class="expected-columns">
-                <h3><i class="fas fa-list"></i> Expected Column Structure</h3>
-                <div class="columns-grid">
-                    <div class="column-category">
-                        <h4>Basic Information</h4>
-                        <ul>
-                            <li>Date <span class="required-mark">*</span></li>
-                            <li>DPR No</li>
-                            <li>Site Names <span class="required-mark">*</span></li>
-                            <li>Activity <span class="required-mark">*</span></li>
-                            <li>Mukadam Name</li>
-                            <li>Supervisor</li>
-                            <li>TPI Name</li>
-                            <li>RA Bill No</li>
-                        </ul>
+            <div class="data-validation-guide">
+                <h3><i class="fas fa-check-shield"></i> Data Validation Guide</h3>
+                <div class="validation-grid">
+                    <div class="validation-category">
+                        <h4>Connection Status Values</h4>
+                        <div class="value-list">
+                            <span class="value-item valid">workable</span>
+                            <span class="value-item valid">not_workable</span>
+                            <span class="value-item valid">plb_done</span>
+                            <span class="value-item valid">pdt_pending</span>
+                            <span class="value-item valid">gc_pending</span>
+                            <span class="value-item valid">mmt_pending</span>
+                            <span class="value-item valid">conv_pending</span>
+                            <span class="value-item valid">comm</span>
+                            <span class="value-item valid">report_pending</span>
+                            <span class="value-item valid">bill_pending</span>
+                            <span class="value-item valid">bill_received</span>
+                            <span class="value-item valid">reported</span>
+                        </div>
                     </div>
-                    <div class="column-category">
-                        <h4>Laying Measurements</h4>
-                        <ul>
-                            <li>32 MM Laying Open Cut</li>
-                            <li>63 MM Laying Open Cut</li>
-                            <li>90 MM Laying Open Cut</li>
-                            <li>125 MM Laying Open Cut</li>
-                            <li>32 MM Manual Boring</li>
-                            <li>63 MM Manual Boring</li>
-                            <li>90 MM Manual Boring</li>
-                            <li>125 MM Manual Boring</li>
-                        </ul>
-                    </div>
-                    <div class="column-category">
-                        <h4>Additional Work</h4>
-                        <ul>
-                            <li>Breaking Hard Rock</li>
-                            <li>Excavation Beyond 2M</li>
-                            <li>RCC Cutting/Breaking</li>
-                            <li>PCC Cutting/Breaking</li>
-                            <li>Installation Work</li>
-                            <li>Pipe Fittings</li>
-                            <li>Testing Data</li>
-                            <li>And many more...</li>
-                        </ul>
+                    
+                    <div class="validation-category">
+                        <h4>Plan Type Values</h4>
+                        <div class="value-list">
+                            <span class="value-item valid">domestic</span>
+                            <span class="value-item valid">commercial</span>
+                            <span class="value-item valid">riser_hadder</span>
+                            <span class="value-item valid">dma</span>
+                            <span class="value-item valid">welded</span>
+                            <span class="value-item valid">o&m</span>
+                        </div>
+                        
+                        {{--<h5>Also Accepted (Auto-converted):</h5>
+                        <div class="value-list">
+                            <span class="value-item auto-convert">bunglow → bungalow</span>
+                            <span class="value-item auto-convert">villa → bungalow</span>
+                            <span class="value-item auto-convert">flat → apartment</span>
+                            <span class="value-item auto-convert">row house → rowhouse</span>
+                        </div>--}}
                     </div>
                 </div>
-                <p class="column-note">
-                    <span class="required-mark">*</span> Required fields. 
-                    All other fields are optional and can be left blank if no data is available.
-                </p>
             </div>
         </div>
     </div>
@@ -234,7 +291,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Show loading state
-        importBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Importing...';
+        const validateOnly = document.querySelector('input[name="validate_only"]:checked');
+        if (validateOnly) {
+            importBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validating...';
+        } else {
+            importBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Importing...';
+        }
         importBtn.disabled = true;
     });
 
@@ -293,9 +355,203 @@ document.addEventListener('DOMContentLoaded', function() {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 });
+
+// Toggle error details
+function toggleErrorDetails() {
+    const details = document.getElementById('error-details');
+    const toggleText = document.getElementById('toggle-text');
+    const toggleIcon = document.getElementById('toggle-icon');
+    
+    if (details.style.display === 'none') {
+        details.style.display = 'block';
+        toggleText.textContent = 'Hide Details';
+        toggleIcon.className = 'fas fa-chevron-up';
+    } else {
+        details.style.display = 'none';
+        toggleText.textContent = 'Show Details';
+        toggleIcon.className = 'fas fa-chevron-down';
+    }
+}
 </script>
 
 <style>
+/* Alert Styles */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    position: relative;
+}
+
+.alert i {
+    margin-right: 8px;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-detailed {
+    padding: 0;
+    overflow: hidden;
+}
+
+.alert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.alert-summary {
+    padding: 15px;
+    font-weight: 500;
+}
+
+.toggle-details {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+.error-details {
+    border-top: 1px solid rgba(0,0,0,0.1);
+    background-color: rgba(0,0,0,0.02);
+}
+
+.error-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.error-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 13px;
+}
+
+.error-item:last-child {
+    border-bottom: none;
+}
+
+.error-icon {
+    color: #dc3545;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.error-help {
+    padding: 15px;
+    background-color: rgba(0,0,0,0.05);
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.error-help h5 {
+    margin: 0 0 10px 0;
+    color: #495057;
+}
+
+.error-help ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.error-help li {
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+/* Validation Guide Styles */
+.data-validation-guide {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 25px;
+}
+
+.data-validation-guide h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.validation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.validation-category h4 {
+    margin-bottom: 15px;
+    color: #495057;
+    font-size: 16px;
+}
+
+.validation-category h5 {
+    margin: 15px 0 10px 0;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.value-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.value-item {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.value-item.valid {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.value-item.auto-convert {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+/* Import Section Styles */
 .import-section {
     display: flex;
     flex-direction: column;
@@ -305,7 +561,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .import-instructions,
 .sample-download,
 .upload-form,
-.expected-columns {
+.data-validation-guide {
     background: #f8f9fa;
     border: 1px solid #dee2e6;
     border-radius: 8px;
@@ -314,8 +570,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .import-instructions h3,
 .sample-download h3,
-.upload-form h3,
-.expected-columns h3 {
+.upload-form h3 {
     margin-top: 0;
     margin-bottom: 15px;
     color: #495057;
@@ -436,98 +691,5 @@ document.addEventListener('DOMContentLoaded', function() {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
-
-.import-options {
-    margin-bottom: 20px;
-}
-
-.import-options h4 {
-    margin-bottom: 15px;
-    color: #495057;
-}
-
-.option-group {
-    margin-bottom: 10px;
-}
-
-.option-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    font-weight: 500;
-    color: #495057;
-}
-
-.columns-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.column-category h4 {
-    margin-bottom: 10px;
-    color: #495057;
-    font-size: 16px;
-}
-
-.column-category ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.column-category li {
-    padding: 5px 0;
-    border-bottom: 1px solid #dee2e6;
-    font-size: 14px;
-}
-
-.column-category li:last-child {
-    border-bottom: none;
-}
-
-.required-mark {
-    color: #dc3545;
-    font-weight: bold;
-}
-
-.column-note {
-    background: #fff3cd;
-    border: 1px solid #ffeaa7;
-    padding: 10px;
-    border-radius: 4px;
-    font-size: 14px;
-    color: #856404;
-}
-
-.alert-danger {
-    background: #f8d7da;
-    border: 1px solid #f5c6cb;
-    color: #721c24;
-    padding: 15px;
-    border-radius: 6px;
-    margin-bottom: 20px;
-}
-
-@media (max-width: 768px) {
-    .file-upload-area {
-        padding: 30px 15px;
-    }
-    
-    .upload-icon {
-        font-size: 36px;
-    }
-    
-    .columns-grid {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
 @endsection

@@ -116,35 +116,13 @@
     color: rgba(255,255,255,0.8);
 }
 
-/* Filter Section Enhancements */
+/* Filter Section */
 .filter-section {
-    background: #ffffff; /* Brighter background */
-    padding: 24px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-    border: 1px solid #e0e6ed;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.filter-row {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    align-items: flex-end; /* Aligns buttons with the bottom of inputs */
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    flex: 1; /* Allows inputs to grow */
-    min-width: 150px; /* Prevents inputs from getting too small */
-}
-
-.filter-group label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #555;
-    margin-bottom: 5px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
 }
 
 .filter-title {
@@ -154,31 +132,37 @@
     color: #333;
 }
 
-/* Specific styling for the actions container */
-.filter-actions {
+.filter-row {
     display: flex;
-    gap: 10px;
-    margin: 13px 0;
-    padding-bottom: 2px; /* Fine-tune alignment with input height */
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+}
+
+.filter-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 5px;
 }
 
 .filter-input, .filter-select {
-    height: 40px; /* Uniform height */
-    padding: 8px 12px;
-    border: 1px solid #ced4da;
-    border-radius: 6px;
-    transition: all 0.2s;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
 }
 
-.btn {
-    height: 40px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 20px;
-    border-radius: 6px;
-    font-weight: 500;
-    cursor: pointer;
+.filter-input:focus, .filter-select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 }
 
 /* Table Section Headers */
@@ -256,45 +240,6 @@
 .status-report-pending { background-color: #ffeaa7; color: #856404; }
 .status-bill-pending { background-color: #f8d7da; color: #721c24; }
 .status-bill-received { background-color: #d4edda; color: #155724; }
-
-/* Modern Header Filter Design */
-.header-search-container {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    padding: 5px;
-}
-
-.header-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #333;
-    white-space: nowrap;
-}
-
-.header-search, .header-select, .clear-filters-btn {
-    width: 100%;
-    padding: 6px 8px;
-    font-size: 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    transition: all 0.3s ease;
-    outline: none;
-}
-
-.header-search:focus, .header-select:focus {
-    background-color: #fff;
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
-}
-
-/* Datepicker specific styling */
-.flatpickr-input {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-} 
 
 .status-conv-done { background-color: #d4edda; color: #155724; }
 
@@ -389,199 +334,6 @@
         flex-direction: column;
     }
 }
-
-.select-item, #select-all {
-    transform: scale(1.2);
-    margin: 0;
-}
-
-#delete-selected-btn {
-    background-color: #dc3545;
-    border-color: #dc3545;
-    transition: all 0.2s ease;
-}
-
-#delete-selected-btn:hover {
-    background-color: #c82333;
-    border-color: #bd2130;
-    transform: translateY(-1px);
-}
-
-.header-search-container {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.header-title {
-    font-weight: 600;
-    font-size: 12px;
-    white-space: nowrap;
-}
-
-/* Highlight selected rows */
-tr:has(.select-item:checked) {
-    background-color: #fff3cd !important;
-}
-
-tr:has(.select-item:checked):hover {
-    background-color: #ffeaa7 !important;
-}
-
-/* Checkbox column styling */
-th:first-child, td:first-child {
-    position: sticky;
-    left: 0;
-    background-color: inherit;
-    z-index: 5;
-}
-
-th:first-child {
-    z-index: 15;
-}
-
-/* Improve checkbox visibility */
-.select-item:checked {
-    accent-color: #007bff;
-}
-
-#select-all:indeterminate {
-    accent-color: #ffc107;
-}
-
-/* Mobile responsiveness for checkboxes */
-@media (max-width: 768px) {
-    .select-item, #select-all {
-        transform: scale(1.5);
-    }
-    
-    #delete-selected-btn {
-        width: 100%;
-        justify-content: center;
-        margin-top: 10px;
-    }
-}
-/* Container for alerts to give them some breathing room */
-.alert-container {
-    margin: 20px 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.alert {
-    position: relative;
-    padding: 1rem 1.25rem;
-    margin-bottom: 1rem;
-    border: 1px solid transparent;
-    border-radius: 0.5rem;
-    display: flex;
-    align-items: flex-start; /* Aligns icon to the top if text is long */
-    gap: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    line-height: 1.5;
-}
-
-/* Left Accent Border */
-.alert::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 5px;
-    border-radius: 0.5rem 0 0 0.5rem;
-}
-
-/* Success Design */
-.alert-success {
-    background-color: #f0fff4;
-    border-color: #c6f6d5;
-    color: #22543d;
-}
-.alert-success::before { background-color: #38a169; }
-
-/* Warning Design (Your Import Case) */
-.alert-warning {
-    background-color: #fffaf0;
-    border-color: #feebc8;
-    color: #744210;
-}
-.alert-warning::before { background-color: #ed8936; }
-
-/* Danger/Error Design */
-.alert-danger {
-    background-color: #fff5f5;
-    border-color: #fed7d7;
-    color: #822727;
-}
-.alert-danger::before { background-color: #e53e3e; }
-
-/* Handling the specific "Import Errors" text */
-.alert div {
-    flex: 1;
-}
-
-.alert strong {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 700;
-}
-
-/* If the error list is very long, wrap it in a scrollable area */
-.alert-details {
-    margin-top: 8px;
-    font-size: 0.9rem;
-    max-height: 150px;
-    overflow-y: auto;
-    white-space: pre-line; /* Keeps line breaks from your row errors */
-    padding-right: 10px;
-}
-
-/* Custom scrollbar for the alert details */
-.alert-details::-webkit-scrollbar { width: 4px; }
-.alert-details::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
-/* Modal Overlay */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    display: none; /* Hidden by default */
-    align-items: center; justify-content: center;
-    z-index: 9999;
-}
-
-/* Modal Box */
-.delete-modal {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    width: 400px;
-    text-align: center;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-    animation: slideUp 0.3s ease-out;
-}
-
-@keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-.modal-icon {
-    font-size: 3rem;
-    color: #e53e3e;
-    margin-bottom: 1rem;
-}
-
-.modal-title { font-size: 1.25rem; font-weight: 700; color: #1a202c; margin-bottom: 0.5rem; }
-.modal-text { color: #718096; margin-bottom: 1.5rem; }
-
-.modal-actions { display: flex; gap: 10px; justify-content: center; }
-
-.btn-cancel { background: #edf2f7; color: #4a5568; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; }
-.btn-confirm-delete { background: #e53e3e; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; }
-
-.btn-cancel:hover { background: #e2e8f0; }
-.btn-confirm-delete:hover { background: #c53030; }
 </style>
 @endsection
 
@@ -595,55 +347,6 @@ th:first-child {
             <button class="icon-button"><i class="fas fa-bell"></i></button>
             <button class="icon-button"><i class="fas fa-question-circle"></i></button>
             <div class="user-avatar">{{ auth()->user()->initials ?? 'U' }}</div>
-        </div>
-    </div>
-
-    <!-- Filter Section -->
-    <div class="content-card">
-        <div class="filter-section">
-            <div class="filter-title">Search & Filter Options</div>
-            <div class="filter-row">
-                <div class="filter-group">
-                    <label for="filter_contact_numbers">Contact Numbers</label>
-                    <input type="text" inputmode="numeric" name="contact_no_filter" id="filter_contact_numbers" 
-                    class="filter-input" value="{{ request('contact_no_filter') }}" placeholder="Numbers only..."
-                    oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                </div>
-                
-                <div class="filter-group">
-                    <label for="filter_locations">Locations</label>
-                    <input type="text" name="address_filter" id="filter_locations" class="filter-input" 
-                        value="{{ request('address_filter') }}" placeholder="Search locations...">
-                </div>
-                
-                <div class="filter-group">
-                    <label for="filter_plan_type">Activity Type</label>
-                    <select name="plan_type" id="filter_plan_type" class="filter-select">
-                        <option value="">-- All Activity Types --</option>
-                        <option value="domestic" {{ request('plan_type') == 'domestic' ? 'selected' : '' }}>Domestic</option>
-                        <option value="commercial" {{ request('plan_type') == 'commercial' ? 'selected' : '' }}>Commercial </option>
-                        <option value="riser_hadder" {{ request('plan_type') == 'riser_hadder' ? 'selected' : '' }}>Riser-Hadder</option>
-                        <option value="dma" {{ request('plan_type') == 'dma' ? 'selected' : '' }}>DMA</option>
-                        <option value="welded" {{ request('plan_type') == 'welded' ? 'selected' : '' }}>Welded</option>
-                        <option value="o&m" {{ request('plan_type') == 'o&m' ? 'selected' : '' }}>O&M</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="filter_order_application">Order/Application/Notification</label>
-                    <input type="text" name="order_application" id="filter_order_application" class="filter-input" 
-                        value="{{ request('order_application') }}" placeholder="Search order...">
-                </div>
-
-                <div class="filter-actions">
-                    <button type="button" class="btn btn-primary" onclick="submitSearch()">
-                        <i class="fas fa-search"></i>&nbsp;Search
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="clearAllFilters()">
-                        <i class="fas fa-times"></i>&nbsp;Clear
-                    </button>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -678,7 +381,7 @@ th:first-child {
             </div>
             
             <div class="stat-card pdt-pending" onclick="filterByStatus('pdt_pending')">
-                <div class="stat-label">PPT Pending</div>
+                <div class="stat-label">PDT Pending</div>
                 <div class="stat-value">{{ $statusCounts['pdt_pending'] ?? 0 }}</div>
                 <div class="stat-percentage">{{ $statusCounts['total'] > 0 ? round(($statusCounts['pdt_pending'] ?? 0) / $statusCounts['total'] * 100, 1) : 0 }}%</div>
             </div>
@@ -744,50 +447,62 @@ th:first-child {
             <button type="button" class="btn btn-secondary" onclick="clearAllFilters()">
                 <i class="fas fa-times"></i> Clear All Filters
             </button>
-
-              <button type="button" class="btn btn-danger" id="delete-selected-btn" onclick="deleteSelected()" style="display: none;">
-                <i class="fas fa-trash-alt"></i> Delete Selected (<span id="selected-count">0</span>)
-            </button>
         </div>
 
-          {{-- Multiple Delete Form --}}
-        <form id="bulk-delete-form" action="{{ route('png.bulk-delete') }}" method="POST" style="display: none;">
-            @csrf
-            @method('DELETE')
-            <input type="hidden" name="selected_ids" id="selected-ids">
-        </form>
+        @if(session('success'))
+            <div class="alert alert-success" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
 
-        <div class="alert-container">
-            @if(session('success'))
-                <div class="alert alert-success" role="alert">
-                    <i class="fas fa-check-circle" style="margin-top: 4px;"></i>
-                    <div>{{ session('success') }}</div>
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-title">Search & Filter Options</div>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="filter_contact_numbers">Contact Numbers</label>
+                    <input type="text" name="contact_no_filter" id="filter_contact_numbers" class="filter-input" 
+                           value="{{ request('contact_no_filter') }}" placeholder="Search contact numbers...">
                 </div>
-            @endif
+                
+                <div class="filter-group">
+                    <label for="filter_locations">Locations</label>
+                    <input type="text" name="address_filter" id="filter_locations" class="filter-input" 
+                           value="{{ request('address_filter') }}" placeholder="Search locations...">
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filter_plan_type">Plan Type</label>
+                    <select name="plan_type" id="filter_plan_type" class="filter-select">
+                        <option value="">-- All Plan Types --</option>
+                        <option value="d_connections" {{ request('plan_type') == 'd_connections' ? 'selected' : '' }}>D-Connections</option>
+                        <option value="commercial" {{ request('plan_type') == 'commercial' ? 'selected' : '' }}>Commercial</option>
+                        <option value="riser_approach" {{ request('plan_type') == 'riser_approach' ? 'selected' : '' }}>Riser/Approach</option>
+                        <option value="ladder" {{ request('plan_type') == 'ladder' ? 'selected' : '' }}>Ladder</option>
+                        <option value="other_contractor" {{ request('plan_type') == 'other_contractor' ? 'selected' : '' }}>Other Contractor</option>
+                        <option value="o_m" {{ request('plan_type') == 'o_m' ? 'selected' : '' }}>O&M</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filter_order_application">Order/Application/Notification</label>
+                    <input type="text" name="order_application" id="filter_order_application" class="filter-input" 
+                           value="{{ request('order_application') }}" placeholder="Search order/application...">
+                </div>
 
-            @if(session('warning'))
-                <div class="alert alert-warning" role="alert">
-                    <i class="fas fa-exclamation-triangle" style="margin-top: 4px;"></i>
-                    <div>
-                        <strong>Notification</strong>
-                        <div class="alert-details">
-                            {{ session('warning') }}
-                        </div>
-                    </div>
+                   <div class="filter-group" style=" gap: 10px;">
+                    <button type="button" class="btn btn-primary" onclick="submitSearch()">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="clearAllFilters()">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
                 </div>
-            @endif
+            </div>
 
-            @if(session('error'))
-                <div class="alert alert-danger" role="alert">
-                    <i class="fas fa-times-circle" style="margin-top: 4px;"></i>
-                    <div>
-                        <strong>Error Occurred</strong>
-                        <div class="alert-details">
-                            {{ session('error') }}
-                        </div>
-                    </div>
-                </div>
-            @endif
+            {{-- <div class="filter-row">
+             
+            </div> --}}
         </div>
 
         <!-- Single Form for All Searches -->
@@ -823,22 +538,6 @@ th:first-child {
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th class="basic-info-header" style="width: 50px;">
-                                <div class="header-search-container">
-                                    <div class="header-title">
-                                        <input type="checkbox" id="select-all" onchange="toggleSelectAll(this)" title="Select All">
-                                    </div>
-                                </div>
-                            </th>
-                            <!-- Actions Column -->
-                            <th class="basic-info-header">
-                                <div class="header-search-container">
-                                    <div class="header-title">Actions</div>
-                                    <button type="button" class="clear-filters-btn" onclick="clearAllFilters()" title="Clear all filters">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </th>
                             <!-- Agreement Date Column -->
                             <th class="basic-info-header">
                                 <div class="header-search-container">
@@ -850,10 +549,10 @@ th:first-child {
                                             @endif
                                         </a>
                                     </div>
-                                    <input type="text" name="agreement_date_from" id="date_picker" class="header-search" 
-                                        value="{{ request('agreement_date_from') }}" 
-                                        placeholder="Pick Date..." 
-                                        autocomplete="off">
+                                    <input type="date" name="agreement_date_from" class="header-search" 
+                                           value="{{ request('agreement_date_from') }}" 
+                                           placeholder="From" title="Date From"
+                                           onchange="updateFormAndSubmit(this)">
                                 </div>
                             </th>
 
@@ -978,35 +677,26 @@ th:first-child {
                                 </div>
                             </th>
 
+                            <!-- Actions Column -->
+                            <th class="basic-info-header">
+                                <div class="header-search-container">
+                                    <div class="header-title">Actions</div>
+                                    <button type="button" class="clear-filters-btn" onclick="clearAllFilters()" title="Clear all filters">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($pngs as $png)
                             <tr>
-                                <td style="text-align: center;">
-                                    <input type="checkbox" class="select-item" value="{{ $png->id }}" onchange="updateDeleteButton()">
-                                </td>
-                                <td>
-                                    <div class="action-icons">
-                                        <a href="{{ route('png.show', $png) }}" class="action-icon icon-info" title="View"><i class="fas fa-eye"></i></a>
-                                        <a href="{{ route('png.edit', $png) }}" class="action-icon icon-edit" title="Edit"><i class="fas fa-edit"></i></a>
-                                        
-                                        <form id="delete-form-{{ $png->id }}" action="{{ route('png.destroy', $png) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" class="action-icon icon-delete" title="Delete" 
-                                                    onclick="openDeleteModal('delete-form-{{ $png->id }}')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
                                 <td>{{ $png->agreement_date ? $png->agreement_date->format('d-m-Y') : 'N/A' }}</td>
                                 <td>{{ $png->customer_no ?? 'N/A' }}</td>
                                 <td>{{ $png->service_order_no ?? 'N/A' }}</td>
                                 <td>{{ $png->application_no ?? 'N/A' }}</td>
                                 <td><strong>{{ $png->customer_name }}</strong></td>
-                                <td>{{ $png->customer_contact_no ?? 'N/A' }}</td>
+                                <td>{{ $png->contact_no ?? 'N/A' }}</td>
                                 <td title="{{ $png->address }}">{{ Str::limit($png->address, 25) }}</td>
                                 <td>
                                     @if($png->area)
@@ -1024,6 +714,24 @@ th:first-child {
                                     @else
                                         N/A
                                     @endif
+                                </td>
+                                <td>
+                                    <div class="action-icons">
+                                        <a href="{{ route('png.show', $png) }}" class="action-icon icon-info" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('png.edit', $png) }}" class="action-icon icon-edit" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('png.destroy', $png) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="action-icon icon-delete" title="Delete" 
+                                                    onclick="return confirm('Are you sure you want to delete this PNG job?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
@@ -1050,8 +758,8 @@ th:first-child {
                             <th class="technical-info-header">Connections Status</th>
                             <th class="technical-info-header">Plumber Name</th>
                             <th class="technical-info-header">Plumbing Date</th>
-                            <th class="technical-info-header">PPT Date</th>
-                            <th class="technical-info-header">PPT Witness By</th>
+                            <th class="technical-info-header">PDT Date</th>
+                            <th class="technical-info-header">PDT Witness By</th>
                             <th class="technical-info-header">Ground Connections Date</th>
                             <th class="technical-info-header">Ground Connections Witness By</th>
                             <th class="technical-info-header">Mukkadam Name</th>
@@ -1174,61 +882,10 @@ th:first-child {
         </div>
     </div>
 </div>
-<div id="deleteModalOverlay" class="modal-overlay">
-    <div class="delete-modal">
-        <div class="modal-icon"><i class="fas fa-exclamation-circle"></i></div>
-        <div class="modal-title">Are you sure?</div>
-        <div class="modal-text">This action cannot be undone. This will permanently delete the record.</div>
-        <div class="modal-actions">
-            <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-            <button type="button" class="btn-confirm-delete" id="finalDeleteBtn">Yes, Delete</button>
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('scripts')
 <script>
-    let formToSubmit = null;
-
-    function openDeleteModal(formId) {
-        formToSubmit = formId;
-        document.getElementById('deleteModalOverlay').style.display = 'flex';
-    }
-
-    function closeDeleteModal() {
-        document.getElementById('deleteModalOverlay').style.display = 'none';
-    }
-
-    // Attach event listener to the "Yes, Delete" button in the modal
-    document.getElementById('finalDeleteBtn').addEventListener('click', function() {
-        if (formToSubmit) {
-            document.getElementById(formToSubmit).submit();
-        }
-    });
-
-    // Close modal if user clicks outside of the white box
-    window.onclick = function(event) {
-        let overlay = document.getElementById('deleteModalOverlay');
-        if (event.target == overlay) {
-            closeDeleteModal();
-        }
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize Datepicker
-        flatpickr("#date_picker", {
-            dateFormat: "Y-m-d",
-            altInput: true,
-            altFormat: "d-m-Y", // Shows user-friendly date, sends Y-m-d to server
-            allowInput: true,
-            onChange: function(selectedDates, dateStr, instance) {
-                // Manually trigger the update when a date is picked
-                const input = document.getElementById('date_picker');
-                updateFormAndSubmit(input);
-            }
-        });
-    });
-
     let searchTimeout;
 
     // Simple unified search function for all inputs
@@ -1250,71 +907,6 @@ th:first-child {
         
         form.submit();
     }
-
-    function toggleSelectAll(selectAllCheckbox) {
-    const itemCheckboxes = document.querySelectorAll('.select-item');
-    itemCheckboxes.forEach(checkbox => {
-        checkbox.checked = selectAllCheckbox.checked;
-    });
-    updateDeleteButton();
-}
-
-// Update delete button visibility and count
-function updateDeleteButton() {
-    const selectedCheckboxes = document.querySelectorAll('.select-item:checked');
-    const deleteBtn = document.getElementById('delete-selected-btn');
-    const countSpan = document.getElementById('selected-count');
-    const selectAllCheckbox = document.getElementById('select-all');
-    
-    const selectedCount = selectedCheckboxes.length;
-    const totalCheckboxes = document.querySelectorAll('.select-item').length;
-    
-    // Update delete button visibility and count
-    if (selectedCount > 0) {
-        deleteBtn.style.display = 'inline-flex';
-        countSpan.textContent = selectedCount;
-    } else {
-        deleteBtn.style.display = 'none';
-    }
-    
-    // Update select-all checkbox state
-    if (selectedCount === 0) {
-        selectAllCheckbox.indeterminate = false;
-        selectAllCheckbox.checked = false;
-    } else if (selectedCount === totalCheckboxes) {
-        selectAllCheckbox.indeterminate = false;
-        selectAllCheckbox.checked = true;
-    } else {
-        selectAllCheckbox.indeterminate = true;
-    }
-}
-
-// Delete selected items
-function deleteSelected() {
-    const selectedCheckboxes = document.querySelectorAll('.select-item:checked');
-    
-    if (selectedCheckboxes.length === 0) {
-        alert('Please select at least one item to delete.');
-        return;
-    }
-    
-    const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value);
-    const confirmMessage = `Are you sure you want to delete ${selectedIds.length} PNG job(s)? This action cannot be undone.`;
-    
-    if (confirm(confirmMessage)) {
-        document.getElementById('selected-ids').value = selectedIds.join(',');
-        document.getElementById('bulk-delete-form').submit();
-    }
-}
-
-// Clear selection when filters are applied
-function clearSelection() {
-    document.querySelectorAll('.select-item').forEach(checkbox => {
-        checkbox.checked = false;
-    });
-    document.getElementById('select-all').checked = false;
-    updateDeleteButton();
-}
 
     // For immediate submission (dropdowns, dates)
     function submitSearch() {
@@ -1467,12 +1059,6 @@ function clearSelection() {
     document.addEventListener('DOMContentLoaded', function() {
         syncTableScroll();
         updateFilterIndicators();
-    });
-    document.getElementById('filter_contact_numbers').addEventListener('keypress', function (e) {
-        // Block any key that isn't a digit (0-9)
-        if (e.which < 48 || e.which > 57) {
-            e.preventDefault();
-        }
     });
 </script>
 @endsection

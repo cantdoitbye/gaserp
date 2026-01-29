@@ -1,5 +1,7 @@
 @extends('panel.layouts.app')
 
+@section('title', 'Add New PNG Job')
+
 @section('styles')
 <link rel="stylesheet" href="{{ asset('panel/pe-tracker.css') }}">
 <style>
@@ -162,7 +164,7 @@
 .file-preview-item {
     display: flex;
     align-items: center;
-    justify-content: between;
+    justify-content: space-between;
     background: white;
     border: 1px solid #dee2e6;
     border-radius: 6px;
@@ -203,6 +205,158 @@
     color: #6c757d;
     margin-top: 5px;
 }
+
+/* Auto-calculation styling */
+.measurement-input {
+    transition: background-color 0.3s ease;
+}
+
+.measurement-input:focus {
+    background-color: #fff3cd;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    color: #495057;
+    font-weight: 600;
+}
+
+.section-header::before {
+    content: "📏";
+    margin-right: 8px;
+}
+
+/* Multi-Step Progress Styles */
+.step-progress {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
+}
+
+.step-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 60%;
+    width: 80%;
+    height: 2px;
+    background-color: #dee2e6;
+    z-index: 0;
+}
+
+.step-item.active:not(:last-child)::after {
+    background-color: #007bff;
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #dee2e6;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.step-item.active .step-number {
+    background-color: #007bff;
+    color: white;
+}
+
+.step-item.completed .step-number {
+    background-color: #28a745;
+    color: white;
+}
+
+.step-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.step-item.active .step-label {
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* Multi-Step Container */
+.multi-step-container {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.step-content {
+    display: none;
+}
+
+.step-content.active {
+    display: block;
+}
+
+.step-content h4 {
+    color: #495057;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Conditional Fields */
+.conditional-fields {
+    margin-top: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.1);
+}
+
+.checkbox-label {
+    font-weight: 500;
+    color: #495057;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+/* Step Navigation */
+.step-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #dee2e6;
+}
+
+.step-navigation button:only-child {
+    margin-left: auto;
+}
 </style>
 @endsection
 
@@ -221,13 +375,1025 @@
 
     <div class="form-card">
         <div class="form-header">
-            New PNG Job Order Details
+            New PNG Job Order Details - Excel Fields Layout
         </div>
         <div class="form-body">
 
             @if(session('success'))
                 <div class="alert alert-success" role="alert" style="margin: 15px 0; padding: 15px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; color: #155724;">
                     <strong>Success!</strong> {{ session('success') }}
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger" role="alert" style="margin: 15px 0; padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px; color: #721c24;">
+                    <strong>Error!</strong> {{ session('error') }}
+                </div>
+            @endif
+
+            <form action="{{ route('png.store') }}" method="POST" enctype="multipart/form-data" onsubmit="debugFormSubmission(event)">
+                @csrf
+                
+                <!-- Form Tabs -->
+                <div class="form-tabs">
+                    <button type="button" class="form-tab active" onclick="showTab('basic-info')">Basic Information</button>
+                    <button type="button" class="form-tab" onclick="showTab('location-details')">Location & Details</button>
+                    <button type="button" class="form-tab" onclick="showTab('technical-info')">Technical Information</button>
+                    <button type="button" class="form-tab" onclick="showTab('measurements')">Measurements & Fittings</button>
+                    <button type="button" class="form-tab" onclick="showTab('files-documents')">Files & Documents</button>
+                </div>
+
+                <!-- Basic Information Tab -->
+                <div id="basic-info" class="tab-content active">
+                    <div class="form-section-title">Basic Information</div>
+                    
+                    <div class="form-row">
+
+                       <div class="form-group">
+    <label class="form-label">Project</label>
+    <select name="project_id" class="form-control @error('project_id') is-invalid @enderror">
+        <option value="">Select Project</option>
+        @foreach(\App\Models\Project::all() as $project)
+            <option value="{{ $project->id }}" {{ old('project_id') == $project->id ? 'selected' : '' }}>
+                {{ $project->name }}
+            </option>
+        @endforeach
+    </select>
+    @error('project_id')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
+
+                        <div class="form-group">
+                            <label class="form-label">PO Number</label>
+                            <input type="text" name="po_number" class="form-control @error('po_number') is-invalid @enderror" value="{{ old('po_number') }}">
+                            @error('po_number')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Service Order No <span class="required">*</span></label>
+                            <input type="text" name="service_order_no" class="form-control @error('service_order_no') is-invalid @enderror" value="{{ old('service_order_no') }}" required>
+                            @error('service_order_no')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Agreement Date <span class="required">*</span></label>
+                            <input type="date" name="agreement_date" class="form-control @error('agreement_date') is-invalid @enderror" value="{{ old('agreement_date') }}" required>
+                            @error('agreement_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Booking By</label>
+                            <select name="booking_by" class="form-control @error('booking_by') is-invalid @enderror">
+                                <option value="">Select Booking Method</option>
+                                @foreach(\App\Models\Png::getBookingByOptions() as $key => $value)
+                                    <option value="{{ $key }}" {{ old('booking_by') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                @endforeach
+                            </select>
+                            @error('booking_by')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" name="start_date" class="form-control @error('start_date') is-invalid @enderror" value="{{ old('start_date') }}">
+                            @error('start_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Activity Type</label>
+                            <select name="plan_type" class="form-control @error('plan_type') is-invalid @enderror">
+                                <option value="">Select Activity Type</option>
+                                @foreach(\App\Models\Png::getPlanTypeOptions() as $key => $value)
+                                    <option value="{{ $key }}" {{ old('plan_type') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                @endforeach
+                            </select>
+                            @error('plan_type')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Customer Name <span class="required">*</span></label>
+                            <input type="text" name="customer_name" class="form-control @error('customer_name') is-invalid @enderror" value="{{ old('customer_name') }}" required>
+                            @error('customer_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Customer No</label>
+                            <input type="text" name="customer_no" class="form-control @error('customer_no') is-invalid @enderror" value="{{ old('customer_no') }}">
+                            @error('customer_no')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Application No</label>
+                            <input type="text" name="application_no" class="form-control @error('application_no') is-invalid @enderror" value="{{ old('application_no') }}">
+                            @error('application_no')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Notification Numbers</label>
+                            <input type="text" name="notification_numbers" class="form-control @error('notification_numbers') is-invalid @enderror" value="{{ old('notification_numbers') }}">
+                            @error('notification_numbers')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location & Details Tab -->
+                <div id="location-details" class="tab-content">
+                    <div class="form-section-title">Location & Customer Details</div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">House No</label>
+                            <input type="text" name="house_no" class="form-control @error('house_no') is-invalid @enderror" value="{{ old('house_no') }}">
+                            @error('house_no')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Customer Contact No</label>
+                            <input type="text" name="customer_contact_no" class="form-control @error('customer_contact_no') is-invalid @enderror" value="{{ old('customer_contact_no') }}">
+                            @error('customer_contact_no')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Street 1</label>
+                            <input type="text" name="street_1" class="form-control @error('street_1') is-invalid @enderror" value="{{ old('street_1') }}">
+                            @error('street_1')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Street 2</label>
+                            <input type="text" name="street_2" class="form-control @error('street_2') is-invalid @enderror" value="{{ old('street_2') }}">
+                            @error('street_2')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Street 3</label>
+                            <input type="text" name="street_3" class="form-control @error('street_3') is-invalid @enderror" value="{{ old('street_3') }}">
+                            @error('street_3')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Street 4</label>
+                            <input type="text" name="street_4" class="form-control @error('street_4') is-invalid @enderror" value="{{ old('street_4') }}">
+                            @error('street_4')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Geyser Point</label>
+                            <input type="number" name="geyser_point" class="form-control @error('geyser_point') is-invalid @enderror" value="{{ old('geyser_point') }}">
+                            @error('geyser_point')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Extra Kitchen</label>
+                            <input type="number" name="extra_kitchen" class="form-control @error('extra_kitchen') is-invalid @enderror" value="{{ old('extra_kitchen') }}">
+                            @error('extra_kitchen')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">SLA Days</label>
+                            <input type="number" name="sla_days" class="form-control @error('sla_days') is-invalid @enderror" value="{{ old('sla_days') }}">
+                            @error('sla_days')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Connections Status</label>
+                            <select name="connections_status" class="form-control @error('connections_status') is-invalid @enderror">
+                                <option value="">Select Status</option>
+                                @foreach(\App\Models\Png::getConnectionsStatusOptions() as $key => $value)
+                                    <option value="{{ $key }}" {{ old('connections_status') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                @endforeach
+                            </select>
+                            @error('connections_status')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Information Tab -->
+                {{-- <div id="technical-info" class="tab-content">
+                    <div class="form-section-title">Technical Information & Dates</div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">PLB Name</label>
+                            <input type="text" name="plb_name" class="form-control @error('plb_name') is-invalid @enderror" value="{{ old('plb_name') }}">
+                            @error('plb_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">PLB Date</label>
+                            <input type="date" name="plb_date" class="form-control @error('plb_date') is-invalid @enderror" value="{{ old('plb_date') }}">
+                            @error('plb_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">PPT Date</label>
+                            <input type="date" name="pdt_date" class="form-control @error('pdt_date') is-invalid @enderror" value="{{ old('pdt_date') }}">
+                            @error('pdt_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">PPT TPI</label>
+                            <input type="text" name="pdt_tpi" class="form-control @error('pdt_tpi') is-invalid @enderror" value="{{ old('pdt_tpi') }}">
+                            @error('pdt_tpi')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">GC Date</label>
+                            <input type="date" name="gc_date" class="form-control @error('gc_date') is-invalid @enderror" value="{{ old('gc_date') }}">
+                            @error('gc_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">GC TPI</label>
+                            <input type="text" name="gc_tpi" class="form-control @error('gc_tpi') is-invalid @enderror" value="{{ old('gc_tpi') }}">
+                            @error('gc_tpi')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">MMT Date</label>
+                            <input type="date" name="mmt_date" class="form-control @error('mmt_date') is-invalid @enderror" value="{{ old('mmt_date') }}">
+                            @error('mmt_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">MMT TPI</label>
+                            <input type="text" name="mmt_tpi" class="form-control @error('mmt_tpi') is-invalid @enderror" value="{{ old('mmt_tpi') }}">
+                            @error('mmt_tpi')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Conversion Date</label>
+                            <input type="date" name="conversion_date" class="form-control @error('conversion_date') is-invalid @enderror" value="{{ old('conversion_date') }}">
+                            @error('conversion_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Conversion Technician</label>
+                            <input type="text" name="conversion_technician" class="form-control @error('conversion_technician') is-invalid @enderror" value="{{ old('conversion_technician') }}">
+                            @error('conversion_technician')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Conversion Payment</label>
+                            <input type="number" step="0.01" name="conversion_payment" class="form-control @error('conversion_payment') is-invalid @enderror" value="{{ old('conversion_payment') }}">
+                            @error('conversion_payment')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Meter Number</label>
+                            <input type="text" name="meter_number" class="form-control @error('meter_number') is-invalid @enderror" value="{{ old('meter_number') }}">
+                            @error('meter_number')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Meter Reading</label>
+                            <input type="number" step="0.01" name="meter_reading" class="form-control @error('meter_reading') is-invalid @enderror" value="{{ old('meter_reading') }}">
+                            @error('meter_reading')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Plumber</label>
+                            <input type="text" name="plumber" class="form-control @error('plumber') is-invalid @enderror" value="{{ old('plumber') }}">
+                            @error('plumber')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Witnesses Name & Date</label>
+                            <input type="text" name="witnesses_name_date" class="form-control @error('witnesses_name_date') is-invalid @enderror" value="{{ old('witnesses_name_date') }}">
+                            @error('witnesses_name_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Witnesses Name & Date 2</label>
+                            <input type="text" name="witnesses_name_date_2" class="form-control @error('witnesses_name_date_2') is-invalid @enderror" value="{{ old('witnesses_name_date_2') }}">
+                            @error('witnesses_name_date_2')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Reported</label>
+                            <select name="reported" class="form-control @error('reported') is-invalid @enderror">
+                                <option value="">Select Status</option>
+                                @foreach(\App\Models\Png::getReportedOptions() as $key => $value)
+                                    <option value="{{ $key }}" {{ old('reported') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                @endforeach
+                            </select>
+                            @error('reported')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Date of Report</label>
+                            <input type="date" name="date_of_report" class="form-control @error('date_of_report') is-invalid @enderror" value="{{ old('date_of_report') }}">
+                            @error('date_of_report')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group-full">
+                            <label class="form-label">Current Remarks</label>
+                            <textarea name="current_remarks" rows="3" class="form-control @error('current_remarks') is-invalid @enderror">{{ old('current_remarks') }}</textarea>
+                            @error('current_remarks')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group-full">
+                            <label class="form-label">Previous Remarks</label>
+                            <textarea name="previous_remarks" rows="3" class="form-control @error('previous_remarks') is-invalid @enderror">{{ old('previous_remarks') }}</textarea>
+                            @error('previous_remarks')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                </div> --}}
+
+                <!-- Technical Information Tab with Multi-Step -->
+<div id="technical-info" class="tab-content">
+    <div class="form-section-title">Technical Information - Multi Step Process</div>
+    
+    <!-- Step Progress Indicator -->
+    <div class="step-progress">
+        <div class="step-item active" data-step="1">
+            <div class="step-number">1</div>
+            <div class="step-label">Connection</div>
+        </div>
+        <div class="step-item" data-step="2">
+            <div class="step-number">2</div>
+            <div class="step-label">PLB</div>
+        </div>
+        <div class="step-item" data-step="3">
+            <div class="step-number">3</div>
+            <div class="step-label">PPT</div>
+        </div>
+        <div class="step-item" data-step="4">
+            <div class="step-number">4</div>
+            <div class="step-label">GC</div>
+        </div>
+        <div class="step-item" data-step="5">
+            <div class="step-number">5</div>
+            <div class="step-label">MMT</div>
+        </div>
+        <div class="step-item" data-step="6">
+            <div class="step-number">6</div>
+            <div class="step-label">Conversion</div>
+        </div>
+    </div>
+
+    <!-- Step Content Container -->
+    <div class="multi-step-container">
+        
+        <!-- Step 1: Connection Information -->
+        <div id="step-1" class="step-content active">
+            <h4>Connection Information</h4>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Connections Status</label>
+                    <select name="connections_status" class="form-control @error('connections_status') is-invalid @enderror">
+                        <option value="">Select Status</option>
+                        <option value="workable" {{ old('connections_status') == 'workable' ? 'selected' : '' }}>Workable</option>
+                        <option value="not_workable" {{ old('connections_status') == 'not_workable' ? 'selected' : '' }}>Not Workable</option>
+                        <option value="plb_done" {{ old('connections_status') == 'plb_done' ? 'selected' : '' }}>PLB Done</option>
+                        <option value="pdt_pending" {{ old('connections_status') == 'pdt_pending' ? 'selected' : '' }}>PPT Pending</option>
+                        <option value="gc_pending" {{ old('connections_status') == 'gc_pending' ? 'selected' : '' }}>GC Pending</option>
+                        <option value="mmt_pending" {{ old('connections_status') == 'mmt_pending' ? 'selected' : '' }}>MMT Pending</option>
+                        <option value="conv_pending" {{ old('connections_status') == 'conv_pending' ? 'selected' : '' }}>Conversion Pending</option>
+                        <option value="comm" {{ old('connections_status') == 'comm' ? 'selected' : '' }}>Commissioned</option>
+                        <option value="bill_pending" {{ old('connections_status') == 'bill_pending' ? 'selected' : '' }}>Bill Pending</option>
+                        <option value="bill_received" {{ old('connections_status') == 'bill_received' ? 'selected' : '' }}>Bill Received</option>
+                    </select>
+                    @error('connections_status')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="step-navigation">
+                <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next: PLB</button>
+            </div>
+        </div>
+
+        <!-- Step 2: PLB Information -->
+        <div id="step-2" class="step-content">
+            <h4>PLB (Plumbing) Information</h4>
+            
+            <!-- PLB Applicable Checkbox -->
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="plb_applicable" name="plb_applicable" value="1" onchange="togglePlbFields()">
+                    <label for="plb_applicable" class="checkbox-label">PLB Applicable</label>
+                </div>
+            </div>
+
+            <!-- PLB Fields (Initially Hidden) -->
+            <div id="plb_fields" class="conditional-fields" style="display: none;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">PLB Name</label>
+                        <input type="text" name="plb_name" class="form-control @error('plb_name') is-invalid @enderror" value="{{ old('plb_name') }}">
+                        @error('plb_name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">PLB Date</label>
+                        <input type="date" name="plb_date" class="form-control @error('plb_date') is-invalid @enderror" value="{{ old('plb_date') }}">
+                        @error('plb_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Witness By</label>
+                    <input type="text" name="plb_witness_by" class="form-control @error('plb_witness_by') is-invalid @enderror" value="{{ old('plb_witness_by') }}">
+                    @error('plb_witness_by')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="step-navigation">
+                <button type="button" class="btn btn-secondary" onclick="prevStep(1)">Previous</button>
+                <button type="button" class="btn btn-primary" onclick="nextStep(3)">Next: PPT</button>
+            </div>
+        </div>
+
+        <!-- Step 3: PPT Information -->
+        <div id="step-3" class="step-content">
+            <h4>PPT (Pipe Pneumatic Testing) Information</h4>
+            
+            <!-- PPT Applicable Checkbox -->
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="pdt_applicable" name="pdt_applicable" value="1" onchange="togglePdtFields()">
+                    <label for="pdt_applicable" class="checkbox-label">PPT Applicable</label>
+                </div>
+            </div>
+
+            <!-- PPT Fields (Initially Hidden) -->
+            <div id="pdt_fields" class="conditional-fields" style="display: none;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">PPT Date</label>
+                        <input type="date" name="pdt_date" class="form-control @error('pdt_date') is-invalid @enderror" value="{{ old('pdt_date') }}">
+                        @error('pdt_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">PPT TPI</label>
+                        <input type="text" name="pdt_tpi" class="form-control @error('pdt_tpi') is-invalid @enderror" value="{{ old('pdt_tpi') }}">
+                        @error('pdt_tpi')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Witness By</label>
+                    <input type="text" name="pdt_witness_by" class="form-control @error('pdt_witness_by') is-invalid @enderror" value="{{ old('pdt_witness_by') }}">
+                    @error('pdt_witness_by')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="step-navigation">
+                <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Previous</button>
+                <button type="button" class="btn btn-primary" onclick="nextStep(4)">Next: GC</button>
+            </div>
+        </div>
+
+        <!-- Step 4: GC Information -->
+        <div id="step-4" class="step-content">
+            <h4>GC (Ground Connection) Information</h4>
+            
+            <!-- GC Applicable Checkbox -->
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="gc_applicable" name="gc_applicable" value="1" onchange="toggleGcFields()">
+                    <label for="gc_applicable" class="checkbox-label">GC Applicable</label>
+                </div>
+            </div>
+
+            <!-- GC Fields (Initially Hidden) -->
+            <div id="gc_fields" class="conditional-fields" style="display: none;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">GC Date</label>
+                        <input type="date" name="gc_date" class="form-control @error('gc_date') is-invalid @enderror" value="{{ old('gc_date') }}">
+                        @error('gc_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">GC TPI</label>
+                        <input type="text" name="gc_tpi" class="form-control @error('gc_tpi') is-invalid @enderror" value="{{ old('gc_tpi') }}">
+                        @error('gc_tpi')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Witness By</label>
+                    <input type="text" name="ground_connections_witness_by" class="form-control @error('ground_connections_witness_by') is-invalid @enderror" value="{{ old('ground_connections_witness_by') }}">
+                    @error('ground_connections_witness_by')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="step-navigation">
+                <button type="button" class="btn btn-secondary" onclick="prevStep(3)">Previous</button>
+                <button type="button" class="btn btn-primary" onclick="nextStep(5)">Next: MMT</button>
+            </div>
+        </div>
+
+        <!-- Step 5: MMT Information -->
+        <div id="step-5" class="step-content">
+            <h4>MMT (Meter Management Test) Information</h4>
+            
+            <!-- MMT Applicable Checkbox -->
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="mmt_applicable" name="mmt_applicable" value="1" onchange="toggleMmtFields()">
+                    <label for="mmt_applicable" class="checkbox-label">MMT Applicable</label>
+                </div>
+            </div>
+
+            <!-- MMT Fields (Initially Hidden) -->
+            <div id="mmt_fields" class="conditional-fields" style="display: none;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">MMT Date</label>
+                        <input type="date" name="mmt_date" class="form-control @error('mmt_date') is-invalid @enderror" value="{{ old('mmt_date') }}">
+                        @error('mmt_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">MMT TPI</label>
+                        <input type="text" name="mmt_tpi" class="form-control @error('mmt_tpi') is-invalid @enderror" value="{{ old('mmt_tpi') }}">
+                        @error('mmt_tpi')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Witness By</label>
+                    <input type="text" name="mmt_witness_by" class="form-control @error('mmt_witness_by') is-invalid @enderror" value="{{ old('mmt_witness_by') }}">
+                    @error('mmt_witness_by')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="step-navigation">
+                <button type="button" class="btn btn-secondary" onclick="prevStep(4)">Previous</button>
+                <button type="button" class="btn btn-primary" onclick="nextStep(6)">Next: Conversion</button>
+            </div>
+        </div>
+
+        <!-- Step 6: Conversion Information -->
+        <div id="step-6" class="step-content">
+            <h4>Conversion Information</h4>
+            
+            <div class="form-group">
+                <label class="form-label">Conversion Status <span class="required">*</span></label>
+                <select name="conversion_status" class="form-control @error('conversion_status') is-invalid @enderror" onchange="toggleConversionFields()" required>
+                    <option value="">Select Status</option>
+                    <option value="pending" {{ old('conversion_status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="in_progress" {{ old('conversion_status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                    <option value="conv_done" {{ old('conversion_status') == 'conv_done' ? 'selected' : '' }}>Conv Done</option>
+                    <option value="comm" {{ old('conversion_status') == 'comm' ? 'selected' : '' }}>Done</option>
+                </select>
+                @error('conversion_status')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Conversion Done Fields (Only visible when status is "done") -->
+            <div id="conversion_done_fields" class="conditional-fields" style="display: none;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Conversion Technician Name <span class="required">*</span></label>
+                        <input type="text" name="conversion_technician_name" class="form-control @error('conversion_technician_name') is-invalid @enderror" value="{{ old('conversion_technician_name') }}">
+                        @error('conversion_technician_name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Conversion Date <span class="required">*</span></label>
+                        <input type="date" name="conversion_date" class="form-control @error('conversion_date') is-invalid @enderror" value="{{ old('conversion_date') }}">
+                        @error('conversion_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Technical Fields -->
+            <div class="form-section-title" style="margin-top: 30px;">Additional Information</div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Meter Number</label>
+                    <input type="text" name="meter_number" class="form-control @error('meter_number') is-invalid @enderror" value="{{ old('meter_number') }}">
+                    @error('meter_number')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Meter Reading</label>
+                    <input type="number" step="0.01" name="meter_reading" class="form-control @error('meter_reading') is-invalid @enderror" value="{{ old('meter_reading') }}">
+                    @error('meter_reading')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+            
+            <div class="form-row">
+                
+                <div class="form-group">
+                    <label class="form-label">RA Bill No</label>
+                    <input type="text" name="ra_bill_no" class="form-control @error('ra_bill_no') is-invalid @enderror" value="{{ old('ra_bill_no') }}">
+                    @error('ra_bill_no')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Remarks</label>
+                <textarea name="remarks" class="form-control @error('remarks') is-invalid @enderror" rows="3">{{ old('remarks') }}</textarea>
+                @error('remarks')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="step-navigation">
+                <button type="button" class="btn btn-secondary" onclick="prevStep(5)">Previous</button>
+                <button type="button" class="btn btn-success" onclick="completeTechnicalInfo()">Complete Technical Info</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+                <!-- Measurements & Fittings Tab -->
+                <div id="measurements" class="tab-content">
+                    <div class="form-section-title">Measurements & Fittings (Excel Fields)</div>
+                    
+                    <!-- GI (Galvanized Iron) Measurements Section -->
+                    <div class="measurement-category">
+                        <h5 class="section-header">GI (Galvanized Iron) Measurements</h5>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">GI Guard to Main Valve 1/2"</label>
+                                <input type="number" step="0.01" name="gi_guard_to_main_valve_half_inch" class="form-control measurement-input" value="{{ old('gi_guard_to_main_valve_half_inch') }}" onchange="calculateTotalGi()">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">GI Main Valve to Meter 1/2"</label>
+                                <input type="number" step="0.01" name="gi_main_valve_to_meter_half_inch" class="form-control measurement-input" value="{{ old('gi_main_valve_to_meter_half_inch') }}" onchange="calculateTotalGi()">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">GI Meter to Geyser 1/2"</label>
+                                <input type="number" step="0.01" name="gi_meter_to_geyser_half_inch" class="form-control measurement-input" value="{{ old('gi_meter_to_geyser_half_inch') }}" onchange="calculateTotalGi()">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">GI Geyser Point 1/2"</label>
+                                <input type="number" step="0.01" name="gi_geyser_point_half_inch" class="form-control measurement-input" value="{{ old('gi_geyser_point_half_inch') }}" onchange="calculateTotalGi()">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Extra Kitchen Point</label>
+                                <input type="number" step="0.01" name="extra_kitchen_point" class="form-control measurement-input" value="{{ old('extra_kitchen_point') }}" onchange="calculateTotalGi()">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Total GI</label>
+                                <input type="number" step="0.01" name="total_gi" id="total_gi" class="form-control calculated-field" value="{{ old('total_gi') }}" readonly>
+                                <small class="form-text text-muted">Auto-calculated from above fields</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Regulators and Components Section -->
+                    <div class="measurement-category">
+                        <h5 class="section-header">Regulators and Components</h5>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">High Press 1.6 Reg</label>
+                                <input type="number" name="high_press_1_6_reg" class="form-control" value="{{ old('high_press_1_6_reg') }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Low Press 2.5 Reg</label>
+                                <input type="number" name="low_press_2_5_reg" class="form-control" value="{{ old('low_press_2_5_reg') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Reg Qty</label>
+                                <input type="number" name="reg_qty" class="form-control" value="{{ old('reg_qty') }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Gas Tap</label>
+                                <input type="number" name="gas_tap" class="form-control" value="{{ old('gas_tap') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Valve 1/2"</label>
+                                <input type="number" name="valve_half_inch" class="form-control" value="{{ old('valve_half_inch') }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">GI Coupling 1/2"</label>
+                                <input type="number" name="gi_coupling_half_inch" class="form-control" value="{{ old('gi_coupling_half_inch') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">GI Elbow 1/2"</label>
+                                <input type="number" name="gi_elbow_half_inch" class="form-control" value="{{ old('gi_elbow_half_inch') }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Clamp 1/2"</label>
+                                <input type="number" name="clamp_half_inch" class="form-control" value="{{ old('clamp_half_inch') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">GI Tee 1/2"</label>
+                                <input type="number" name="gi_tee_half_inch" class="form-control" value="{{ old('gi_tee_half_inch') }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Anaconda</label>
+                                <input type="number" name="anaconda" class="form-control" value="{{ old('anaconda') }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pipe and Excavation Section -->
+                    <div class="measurement-category">
+                        <h5 class="section-header">Pipe and Excavation</h5>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Open Cut 20mm</label>
+                                <input type="number" step="0.01" name="open_cut_20mm" class="form-control pipe-input" value="{{ old('open_cut_20mm') }}" onchange="calculateTotalMdpe()">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Boring 20mm</label>
+                                <input type="number" step="0.01" name="boring_20mm" class="form-control pipe-input" value="{{ old('boring_20mm') }}" onchange="calculateTotalMdpe()">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Total MDPE Pipe 20mm</label>
+                                <input type="number" step="0.01" name="total_mdpe_pipe_20mm" id="total_mdpe_pipe_20mm" class="form-control calculated-field" value="{{ old('total_mdpe_pipe_20mm') }}" readonly>
+                                <small class="form-text text-muted">Auto-calculated (Open Cut + Boring)</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Tee 20mm</label>
+                                <input type="number" name="tee_20mm" class="form-control" value="{{ old('tee_20mm') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">RCC Guard 20mm</label>
+                                <input type="number" name="rcc_guard_20mm" class="form-control" value="{{ old('rcc_guard_20mm') }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GF (Gas Fittings) Components Section -->
+                    <div class="measurement-category">
+                        <h5 class="section-header">GF (Gas Fittings) Components</h5>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">GF Coupler 20mm</label>
+                                <input type="number" name="gf_coupler_20mm" class="form-control" value="{{ old('gf_coupler_20mm') }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">GF Saddle 32x20mm</label>
+                                <input type="number" name="gf_saddle_32x20mm" class="form-control" value="{{ old('gf_saddle_32x20mm') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">GF Saddle 63x20mm</label>
+                                <input type="number" name="gf_saddle_63x20mm" class="form-control" value="{{ old('gf_saddle_63x20mm') }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">GF Saddle 63x32mm</label>
+                                <input type="number" name="gf_saddle_63x32mm" class="form-control" value="{{ old('gf_saddle_63x32mm') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">GF Saddle 125x32</label>
+                                <input type="number" name="gf_saddle_125x32" class="form-control" value="{{ old('gf_saddle_125x32') }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">GF Saddle 90x20mm</label>
+                                <input type="number" name="gf_saddle_90x20mm" class="form-control" value="{{ old('gf_saddle_90x20mm') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">GF Reducer 32x20mm</label>
+                                <input type="number" name="gf_reducer_32x20mm" class="form-control" value="{{ old('gf_reducer_32x20mm') }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Administrative Section -->
+                    <div class="measurement-category">
+                        <h5 class="section-header">Administrative & Claims</h5>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">NEPL Claim</label>
+                                <input type="text" name="nepl_claim" class="form-control" value="{{ old('nepl_claim') }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Offline Drawing</label>
+                                <select name="offline_drawing" class="form-control">
+                                    <option value="">Select Status</option>
+                                    @foreach(\App\Models\Png::getOfflineDrawingOptions() as $key => $value)
+                                        <option value="{{ $key }}" {{ old('offline_drawing') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">GC Done By</label>
+                                <input type="text" name="gc_done_by" class="form-control" value="{{ old('gc_done_by') }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">V Lookup</label>
+                                <input type="text" name="v_lookup" class="form-control" value="{{ old('v_lookup') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">RA Bill No</label>
+                                <input type="text" name="ra_bill_no" class="form-control" value="{{ old('ra_bill_no') }}">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Files & Documents Tab -->
@@ -329,377 +1495,14 @@
                             @enderror
                         </div>
                     </div>
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="alert alert-danger" role="alert" style="margin: 15px 0; padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px; color: #721c24;">
-                    <strong>Error!</strong> {{ session('error') }}
-                </div>
-            @endif
-
-            <form action="{{ route('png.store') }}" method="POST" enctype="multipart/form-data" onsubmit="debugFormSubmission(event)">
-                @csrf
-                
-                <!-- Form Tabs -->
-                <div class="form-tabs">
-                    <button type="button" class="form-tab active" onclick="showTab('basic-info')">Basic Information</button>
-                    <button type="button" class="form-tab" onclick="showTab('technical-details')">Technical Information</button>
-                    <button type="button" class="form-tab" onclick="showTab('measurements')">Dynamic Measurements</button>
-                    <button type="button" class="form-tab" onclick="showTab('files-documents')">Files & Documents</button>
-                </div>
-
-                <!-- Basic Information Tab -->
-                <div id="basic-info" class="tab-content active">
-                    <div class="form-section-title">Basic Information (Excel Layout)</div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Agreement Date</label>
-                            <input type="date" name="agreement_date" class="form-control @error('agreement_date') is-invalid @enderror" value="{{ old('agreement_date') }}">
-                            @error('agreement_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Customer No</label>
-                            <input type="text" name="customer_no" class="form-control @error('customer_no') is-invalid @enderror" value="{{ old('customer_no') }}">
-                            @error('customer_no')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Order No</label>
-                            <input type="text" name="service_order_no" class="form-control @error('service_order_no') is-invalid @enderror" value="{{ old('service_order_no') }}">
-                            @error('service_order_no')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Application No</label>
-                            <input type="text" name="application_no" class="form-control @error('application_no') is-invalid @enderror" value="{{ old('application_no') }}">
-                            @error('application_no')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Name <span class="required">*</span></label>
-                            <input type="text" name="customer_name" class="form-control @error('customer_name') is-invalid @enderror" value="{{ old('customer_name') }}" required>
-                            @error('customer_name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Contact No</label>
-                            <input type="text" name="contact_no" class="form-control @error('contact_no') is-invalid @enderror" value="{{ old('contact_no') }}">
-                            @error('contact_no')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Address</label>
-                            <textarea name="address" rows="3" class="form-control @error('address') is-invalid @enderror">{{ old('address') }}</textarea>
-                            @error('address')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Area</label>
-                            <textarea name="area" rows="3" class="form-control @error('area') is-invalid @enderror">{{ old('area') }}</textarea>
-
-                            {{-- <select name="area" class="form-control @error('area') is-invalid @enderror">
-                                <option value="">Select Area</option>
-                                @foreach(\App\Models\Png::getAreaOptions() as $key => $value)
-                                    <option value="{{ $key }}" {{ old('area') == $key ? 'selected' : '' }}>
-                                        {{ $value }}
-                                    </option>
-                                @endforeach
-                            </select> --}}
-                            @error('area')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Scheme</label>
-                            <select name="scheme" class="form-control @error('scheme') is-invalid @enderror">
-                                <option value="">Select Scheme</option>
-                                @foreach(\App\Models\Png::getSchemeOptions() as $key => $value)
-                                    <option value="{{ $key }}" {{ old('scheme') == $key ? 'selected' : '' }}>
-                                        {{ $value }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('scheme')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        {{-- <div class="form-group">
-                            <label class="form-label">Geyser Points</label>
-                            <input type="number" name="geyser" class="form-control @error('geyser') is-invalid @enderror" value="{{ old('geyser', 0) }}" min="0">
-                            @error('geyser')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Kitchen Points</label>
-                            <input type="number" name="kitchen" class="form-control @error('kitchen') is-invalid @enderror" value="{{ old('kitchen', 0) }}" min="0">
-                            @error('kitchen')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div> --}}
-                    </div>
-
-                    <div class="form-row">
-                        {{-- <div class="form-group">
-                            <label class="form-label">Target SLA Days</label>
-                            <input type="number" name="sla_days" class="form-control @error('sla_days') is-invalid @enderror" value="{{ old('sla_days') }}" min="0" placeholder="e.g., 30">
-                            <small class="form-text text-muted">Target number of days for completion from agreement date</small>
-                            @error('sla_days')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Days Since Agreement</label>
-                            <input type="text" id="calculated_sla_days" class="form-control" readonly placeholder="Will be calculated automatically">
-                            <small class="form-text text-muted">Automatically calculated from agreement date</small>
-                        </div> --}}
-                    </div>
-                </div>
-
-                <!-- Technical Information Tab -->
-                <div id="technical-details" class="tab-content">
-                    <div class="form-section-title">Technical Information (Excel Layout)</div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Connections Status</label>
-                            <select name="connections_status" class="form-control @error('connections_status') is-invalid @enderror">
-                                <option value="">Select Status</option>
-                                @foreach(\App\Models\Png::getConnectionsStatusOptions() as $key => $value)
-                                    <option value="{{ $key }}" {{ old('connections_status') == $key ? 'selected' : '' }}>
-                                        {{ $value }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('connections_status')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Plumber Name</label>
-                            <input type="text" name="plumber_name" class="form-control @error('plumber_name') is-invalid @enderror" value="{{ old('plumber_name') }}">
-                            @error('plumber_name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Plumbing Date</label>
-                            <input type="date" name="plumbing_date" class="form-control @error('plumbing_date') is-invalid @enderror" value="{{ old('plumbing_date') }}">
-                            @error('plumbing_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">PPT Date</label>
-                            <input type="date" name="pdt_date" class="form-control @error('pdt_date') is-invalid @enderror" value="{{ old('pdt_date') }}">
-                            @error('pdt_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">PPT Witness By</label>
-                            <input type="text" name="pdt_witness_by" class="form-control @error('pdt_witness_by') is-invalid @enderror" value="{{ old('pdt_witness_by') }}">
-                            @error('pdt_witness_by')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Ground Connections Date</label>
-                            <input type="date" name="ground_connections_date" class="form-control @error('ground_connections_date') is-invalid @enderror" value="{{ old('ground_connections_date') }}">
-                            @error('ground_connections_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Ground Connections Witness By</label>
-                            <input type="text" name="ground_connections_witness_by" class="form-control @error('ground_connections_witness_by') is-invalid @enderror" value="{{ old('ground_connections_witness_by') }}">
-                            @error('ground_connections_witness_by')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Isolation Name</label>
-                            <input type="text" name="isolation_name" class="form-control @error('isolation_name') is-invalid @enderror" value="{{ old('isolation_name') }}">
-                            @error('isolation_name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">MMT Date</label>
-                            <input type="date" name="mmt_date" class="form-control @error('mmt_date') is-invalid @enderror" value="{{ old('mmt_date') }}">
-                            @error('mmt_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">MMT Witness By</label>
-                            <input type="text" name="mmt_witness_by" class="form-control @error('mmt_witness_by') is-invalid @enderror" value="{{ old('mmt_witness_by') }}">
-                            @error('mmt_witness_by')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Conversion Technician Name</label>
-                            <input type="text" name="conversion_technician_name" class="form-control @error('conversion_technician_name') is-invalid @enderror" value="{{ old('conversion_technician_name') }}">
-                            @error('conversion_technician_name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Conversion Date</label>
-                            <input type="date" name="conversion_date" class="form-control @error('conversion_date') is-invalid @enderror" value="{{ old('conversion_date') }}">
-                            @error('conversion_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Conversion Status</label>
-                            <select name="conversion_status" class="form-control @error('conversion_status') is-invalid @enderror">
-                                <option value="">Select Status</option>
-                                @foreach(\App\Models\Png::getConversionStatusOptions() as $key => $value)
-                                    <option value="{{ $key }}" {{ old('conversion_status') == $key ? 'selected' : '' }}>
-                                        {{ $value }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('conversion_status')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Report Submission Date</label>
-                            <input type="date" name="report_submission_date" class="form-control @error('report_submission_date') is-invalid @enderror" value="{{ old('report_submission_date') }}">
-                            @error('report_submission_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Meter Number</label>
-                            <input type="text" name="meter_number" class="form-control @error('meter_number') is-invalid @enderror" value="{{ old('meter_number') }}">
-                            @error('meter_number')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">RA Bill No</label>
-                            <input type="text" name="ra_bill_no" class="form-control @error('ra_bill_no') is-invalid @enderror" value="{{ old('ra_bill_no') }}">
-                            @error('ra_bill_no')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
 
                     <div class="form-row">
                         <div class="form-group-full">
-                            <label class="form-label">Remarks</label>
-                            <textarea name="remarks" rows="3" class="form-control @error('remarks') is-invalid @enderror">{{ old('remarks') }}</textarea>
+                            <label class="form-label">General Remarks</label>
+                            <textarea name="remarks" rows="4" class="form-control @error('remarks') is-invalid @enderror" placeholder="Add any additional remarks or notes">{{ old('remarks') }}</textarea>
                             @error('remarks')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dynamic Measurements Tab -->
-                <div id="measurements" class="tab-content">
-                    <div class="form-section-title">Dynamic Measurements & Fittings</div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">PNG Type <span class="required">*</span></label>
-                            <select name="png_type" id="png_type" class="form-control @error('png_type') is-invalid @enderror" onchange="loadMeasurementTypes()" required>
-                                <option value="">Select PNG Type</option>
-                                @foreach(\App\Models\PngMeasurementType::getPngTypeOptions() as $key => $value)
-                                    <option value="{{ $key }}" {{ old('png_type') == $key ? 'selected' : '' }}>
-                                        {{ $value }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('png_type')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Measurement Type <span class="required">*</span></label>
-                            <select name="png_measurement_type_id" id="measurement_type" class="form-control @error('png_measurement_type_id') is-invalid @enderror" onchange="loadMeasurementFields()" required>
-                                <option value="">Select Measurement Type</option>
-                            </select>
-                            @error('png_measurement_type_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div id="measurement-fields-container" style="display: none;">
-                        <!-- Dynamic measurement fields will be loaded here -->
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <button type="button" class="btn btn-info" onclick="window.open('{{ route('png-measurement-types.index') }}', '_blank')">
-                                <i class="fas fa-cog"></i> Manage Measurement Types
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -750,222 +1553,38 @@
         }
     }
 
-    function loadMeasurementTypes() {
-        const pngType = document.getElementById('png_type').value;
-        const measurementTypeSelect = document.getElementById('measurement_type');
+    function calculateTotalGi() {
+        const fields = [
+            'gi_guard_to_main_valve_half_inch',
+            'gi_main_valve_to_meter_half_inch',
+            'gi_meter_to_geyser_half_inch',
+            'gi_geyser_point_half_inch',
+            'extra_kitchen_point'
+        ];
         
-        // Clear existing options
-        measurementTypeSelect.innerHTML = '<option value="">Select Measurement Type</option>';
-        
-        if (!pngType) {
-            return;
-        }
-
-        // Fetch measurement types for selected PNG type
-        fetch(`{{ route('png-measurement-types.get-by-png-type') }}?png_type=${pngType}`)
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(type => {
-                    const option = document.createElement('option');
-                    option.value = type.id;
-                    option.textContent = type.name;
-                    if (type.description) {
-                        option.title = type.description;
-                    }
-                    measurementTypeSelect.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error('Error loading measurement types:', error);
-            });
-    }
-
-    function loadMeasurementFields() {
-        const measurementTypeId = document.getElementById('measurement_type').value;
-        const container = document.getElementById('measurement-fields-container');
-        
-        if (!measurementTypeId) {
-            container.style.display = 'none';
-            return;
-        }
-
-        // Fetch measurement fields for selected type
-        fetch(`{{ url('admin/png-measurement-types') }}/${measurementTypeId}/fields`)
-            .then(response => response.json())
-            .then(data => {
-                const fields = data.fields;
-                let html = '';
-                
-                // Group fields by category
-                const categories = {};
-                fields.forEach(field => {
-                    const category = field.category || 'general';
-                    if (!categories[category]) {
-                        categories[category] = [];
-                    }
-                    categories[category].push(field);
-                });
-
-                // Generate HTML for each category
-                Object.keys(categories).forEach(categoryName => {
-                    html += `
-                        <div class="measurement-category">
-                            <h5>${categoryName.charAt(0).toUpperCase() + categoryName.slice(1).replace('_', ' ')}</h5>
-                            <div class="form-row">
-                    `;
-                    
-                    categories[categoryName].forEach(field => {
-                        const isCalculated = field.calculated || false;
-                        const isRequired = field.required || false;
-                        const unit = field.unit ? ` (${field.unit})` : '';
-                        
-                        html += `
-                            <div class="form-group">
-                                <label class="form-label">
-                                    ${field.label}${unit}
-                                    ${isRequired ? '<span class="required">*</span>' : ''}
-                                </label>
-                        `;
-                        
-                        if (field.type === 'select') {
-                            html += `<select name="measurements[${field.name}]" class="form-control ${isCalculated ? 'calculated-field' : ''}" ${isRequired ? 'required' : ''} ${isCalculated ? 'readonly' : ''}>`;
-                            html += `<option value="">Select ${field.label}</option>`;
-                            if (field.options) {
-                                field.options.forEach(option => {
-                                    html += `<option value="${option}">${option}</option>`;
-                                });
-                            }
-                            html += `</select>`;
-                        } else if (field.type === 'textarea') {
-                            html += `<textarea name="measurements[${field.name}]" rows="3" class="form-control ${isCalculated ? 'calculated-field' : ''}" ${isRequired ? 'required' : ''} ${isCalculated ? 'readonly' : ''}></textarea>`;
-                        } else {
-                            const inputType = field.type === 'decimal' || field.type === 'number' ? 'number' : 'text';
-                            const step = field.type === 'decimal' ? '0.01' : '';
-                            html += `<input type="${inputType}" name="measurements[${field.name}]" class="form-control ${isCalculated ? 'calculated-field' : ''} measurement-input" ${step ? `step="${step}"` : ''} ${isRequired ? 'required' : ''} ${isCalculated ? 'readonly' : ''} data-category="${categoryName}" data-calculated="${isCalculated}">`;
-                        }
-                        
-                        if (isCalculated) {
-                            html += `<small class="form-text text-muted">This field is auto-calculated</small>`;
-                        }
-                        
-                        html += `</div>`;
-                    });
-                    
-                    html += `
-                            </div>
-                        </div>
-                    `;
-                });
-
-                container.innerHTML = html;
-                container.style.display = 'block';
-                
-                // Add event listeners for calculations
-                addCalculationListeners();
-            })
-            .catch(error => {
-                console.error('Error loading measurement fields:', error);
-            });
-    }
-
-    function addCalculationListeners() {
-        const inputs = document.querySelectorAll('.measurement-input');
-        inputs.forEach(input => {
-            input.addEventListener('input', calculateTotals);
-        });
-    }
-
-    function calculateTotals() {
-        // Calculate category totals
-        const categories = {};
-        const inputs = document.querySelectorAll('.measurement-input[data-calculated="false"]');
-        
-        inputs.forEach(input => {
-            const category = input.dataset.category;
-            const value = parseFloat(input.value) || 0;
-            
-            if (!categories[category]) {
-                categories[category] = 0;
-            }
-            categories[category] += value;
-        });
-
-        // Update calculated fields
-        const calculatedInputs = document.querySelectorAll('.measurement-input[data-calculated="true"]');
-        calculatedInputs.forEach(input => {
-            const category = input.dataset.category;
-            if (categories[category] !== undefined) {
-                input.value = categories[category].toFixed(2);
+        let total = 0;
+        fields.forEach(function(fieldName) {
+            const field = document.querySelector(`input[name="${fieldName}"]`);
+            if (field && field.value) {
+                total += parseFloat(field.value) || 0;
             }
         });
+        
+        document.getElementById('total_gi').value = total.toFixed(2);
+    }
+
+    function calculateTotalMdpe() {
+        const openCut = parseFloat(document.querySelector('input[name="open_cut_20mm"]').value) || 0;
+        const boring = parseFloat(document.querySelector('input[name="boring_20mm"]').value) || 0;
+        
+        document.getElementById('total_mdpe_pipe_20mm').value = (openCut + boring).toFixed(2);
     }
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
-        // Load measurement types if PNG type is already selected
-        const pngType = document.getElementById('png_type').value;
-        if (pngType) {
-            loadMeasurementTypes();
-        }
-
         // Initialize file upload handlers
         initializeFileUploads();
-        
-        // Initialize SLA calculation
-        initializeSlaCalculation();
     });
-
-    function initializeSlaCalculation() {
-        const agreementDateInput = document.querySelector('input[name="agreement_date"]');
-        const calculatedSlaField = document.getElementById('calculated_sla_days');
-        
-        if (agreementDateInput && calculatedSlaField) {
-            // Calculate on page load if date exists
-            calculateSladagen();
-            
-            // Recalculate when agreement date changes
-            agreementDateInput.addEventListener('change', calculateSlaagen);
-        }
-    }
-
-    function calculateSlaagen() {
-        const agreementDateInput = document.querySelector('input[name="agreement_date"]');
-        const calculatedSlaField = document.getElementById('calculated_sla_days');
-        
-        if (!agreementDateInput || !calculatedSlaField) return;
-        
-        const agreementDate = agreementDateInput.value;
-        if (!agreementDate) {
-            calculatedSlaField.value = '';
-            return;
-        }
-        
-        // Calculate days difference from agreement date to today
-        const agreement = new Date(agreementDate);
-        const today = new Date();
-        
-        // Reset time to start of day for accurate day calculation
-        agreement.setHours(0, 0, 0, 0);
-        today.setHours(0, 0, 0, 0);
-        
-        const diffTime = today - agreement;
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        
-        calculatedSlaField.value = diffDays + ' days';
-        
-        // Add visual feedback based on target SLA
-        const targetSlaInput = document.querySelector('input[name="sla_days"]');
-        if (targetSlaInput && targetSlaInput.value) {
-            const targetSla = parseInt(targetSlaInput.value);
-            if (diffDays <= targetSla) {
-                calculatedSlaField.style.color = '#28a745'; // Green
-                calculatedSlaField.style.fontWeight = '500';
-            } else {
-                calculatedSlaField.style.color = '#dc3545'; // Red
-                calculatedSlaField.style.fontWeight = '500';
-            }
-        }
-    }
 
     function initializeFileUploads() {
         const fileInputs = document.querySelectorAll('.file-input');
@@ -1012,9 +1631,6 @@
     function removeFileFromPreview(button, index) {
         const fileItem = button.closest('.file-preview-item');
         fileItem.remove();
-        
-        // Note: Removing individual files from input requires special handling
-        // For now, we just remove the preview item
     }
 
     function debugFormSubmission(event) {
@@ -1034,13 +1650,154 @@
         }
         
         // Check for required fields
-        const nameField = form.querySelector('input[name="name"]');
-        if (!nameField || !nameField.value.trim()) {
-            console.error('Name field is required but empty!');
+        const customerNameField = form.querySelector('input[name="customer_name"]');
+        if (!customerNameField || !customerNameField.value.trim()) {
+            console.error('Customer name field is required but empty!');
         }
         
         // Don't prevent submission, just log for debugging
         return true;
     }
+
+
+    // Multi-Step Navigation Functions
+function nextStep(stepNumber) {
+    // Hide current step
+    document.querySelectorAll('.step-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Show next step
+    document.getElementById('step-' + stepNumber).classList.add('active');
+    
+    // Update progress indicator
+    updateStepProgress(stepNumber);
+}
+
+function prevStep(stepNumber) {
+    // Hide current step
+    document.querySelectorAll('.step-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Show previous step
+    document.getElementById('step-' + stepNumber).classList.add('active');
+    
+    // Update progress indicator
+    updateStepProgress(stepNumber);
+}
+
+function updateStepProgress(activeStep) {
+    document.querySelectorAll('.step-item').forEach((item, index) => {
+        const stepNum = index + 1;
+        item.classList.remove('active', 'completed');
+        
+        if (stepNum === activeStep) {
+            item.classList.add('active');
+        } else if (stepNum < activeStep) {
+            item.classList.add('completed');
+        }
+    });
+}
+
+function completeTechnicalInfo() {
+    alert('Technical Information completed! You can now proceed to other tabs.');
+}
+
+// Toggle Functions for Conditional Fields
+function togglePlbFields() {
+    const checkbox = document.getElementById('plb_applicable');
+    const fields = document.getElementById('plb_fields');
+    
+    if (checkbox.checked) {
+        fields.style.display = 'block';
+    } else {
+        fields.style.display = 'none';
+        // Clear fields when hidden
+        fields.querySelectorAll('input').forEach(input => input.value = '');
+    }
+}
+
+function togglePdtFields() {
+    const checkbox = document.getElementById('pdt_applicable');
+    const fields = document.getElementById('pdt_fields');
+    
+    if (checkbox.checked) {
+        fields.style.display = 'block';
+    } else {
+        fields.style.display = 'none';
+        // Clear fields when hidden
+        fields.querySelectorAll('input').forEach(input => input.value = '');
+    }
+}
+
+function toggleGcFields() {
+    const checkbox = document.getElementById('gc_applicable');
+    const fields = document.getElementById('gc_fields');
+    
+    if (checkbox.checked) {
+        fields.style.display = 'block';
+    } else {
+        fields.style.display = 'none';
+        // Clear fields when hidden
+        fields.querySelectorAll('input').forEach(input => input.value = '');
+    }
+}
+
+function toggleMmtFields() {
+    const checkbox = document.getElementById('mmt_applicable');
+    const fields = document.getElementById('mmt_fields');
+    
+    if (checkbox.checked) {
+        fields.style.display = 'block';
+    } else {
+        fields.style.display = 'none';
+        // Clear fields when hidden
+        fields.querySelectorAll('input').forEach(input => input.value = '');
+    }
+}
+
+function toggleConversionFields() {
+    const statusSelect = document.querySelector('select[name="conversion_status"]');
+    const conversionFields = document.getElementById('conversion_done_fields');
+    
+    if (statusSelect.value === 'done') {
+        conversionFields.style.display = 'block';
+        // Make fields required when visible
+        conversionFields.querySelectorAll('input[name="conversion_technician_name"], input[name="conversion_date"]').forEach(input => {
+            input.setAttribute('required', 'required');
+        });
+    } else {
+        conversionFields.style.display = 'none';
+        // Remove required attribute and clear values when hidden
+        conversionFields.querySelectorAll('input').forEach(input => {
+            input.removeAttribute('required');
+            input.value = '';
+        });
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial step
+    updateStepProgress(1);
+    
+    // Check existing values and toggle fields accordingly
+    if (document.getElementById('plb_applicable').checked) {
+        togglePlbFields();
+    }
+    if (document.getElementById('pdt_applicable').checked) {
+        togglePdtFields();
+    }
+    if (document.getElementById('gc_applicable').checked) {
+        toggleGcFields();
+    }
+    if (document.getElementById('mmt_applicable').checked) {
+        toggleMmtFields();
+    }
+    
+    // Check conversion status
+    toggleConversionFields();
+});
 </script>
 @endsection

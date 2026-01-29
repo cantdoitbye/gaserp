@@ -234,6 +234,135 @@
     color: #6c757d;
     margin-top: 5px;
 }
+
+.step-progress {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
+}
+
+.step-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 60%;
+    width: 80%;
+    height: 2px;
+    background-color: #dee2e6;
+    z-index: 0;
+}
+
+.step-item.active:not(:last-child)::after {
+    background-color: #007bff;
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #dee2e6;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.step-item.active .step-number {
+    background-color: #007bff;
+    color: white;
+}
+
+.step-item.completed .step-number {
+    background-color: #28a745;
+    color: white;
+}
+
+.step-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.step-item.active .step-label {
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* Multi-Step Container */
+.multi-step-container {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.step-content {
+    display: none;
+}
+
+.step-content.active {
+    display: block;
+}
+
+.step-content h4 {
+    color: #495057;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Conditional Fields */
+.conditional-fields {
+    margin-top: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.1);
+}
+
+.checkbox-label {
+    font-weight: 500;
+    color: #495057;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+/* Step Navigation */
+.step-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #dee2e6;
+}
+
+.step-navigation button:only-child {
+    margin-left: auto;
+}
 </style>
 @endsection
 
@@ -285,6 +414,23 @@
                     <div class="form-section-title">Basic Information (Excel Layout)</div>
                     
                     <div class="form-row">
+
+                            <div class="form-group">
+    <label class="form-label">Project</label>
+    <select name="project_id" class="form-control @error('project_id') is-invalid @enderror">
+        <option value="">Select Project</option>
+        @foreach(\App\Models\Project::all() as $project)
+            <option value="{{ $project->id }}" {{ old('project_id') == $project->id ? 'selected' : '' }}>
+                {{ $project->name }}
+            </option>
+        @endforeach
+    </select>
+    @error('project_id')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
+
                         <div class="form-group">
                             <label class="form-label">Agreement Date</label>
                             <input type="date" name="agreement_date" class="form-control @error('agreement_date') is-invalid @enderror" value="{{ old('agreement_date', $png->agreement_date ? $png->agreement_date->format('Y-m-d') : '') }}">
@@ -384,7 +530,7 @@
                 </div>
 
                 <!-- Technical Information Tab -->
-                <div id="technical-details" class="tab-content">
+                {{-- <div id="technical-details" class="tab-content">
                     <div class="form-section-title">Technical Information (Excel Layout)</div>
 
                     <div class="form-row">
@@ -554,7 +700,371 @@
                             @enderror
                         </div>
                     </div>
+                </div> --}}
+
+                <div id="technical-details" class="tab-content">
+    <div class="form-section-title">Technical Information - Multi Step Process</div>
+    
+    <!-- Step Progress Indicator -->
+    <div class="step-progress">
+        <div class="step-item active" data-step="1">
+            <div class="step-number">1</div>
+            <div class="step-label">Connection</div>
+        </div>
+        <div class="step-item" data-step="2">
+            <div class="step-number">2</div>
+            <div class="step-label">PLB</div>
+        </div>
+        <div class="step-item" data-step="3">
+            <div class="step-number">3</div>
+            <div class="step-label">PPT</div>
+        </div>
+        <div class="step-item" data-step="4">
+            <div class="step-number">4</div>
+            <div class="step-label">GC</div>
+        </div>
+        <div class="step-item" data-step="5">
+            <div class="step-number">5</div>
+            <div class="step-label">MMT</div>
+        </div>
+        <div class="step-item" data-step="6">
+            <div class="step-number">6</div>
+            <div class="step-label">Conversion</div>
+        </div>
+    </div>
+
+    <!-- Step Content Container -->
+    <div class="multi-step-container">
+        
+        <!-- Step 1: Connection Information -->
+        <div id="step-1" class="step-content active">
+            <h4>Connection Information</h4>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Connections Status</label>
+                    <select name="connections_status" class="form-control @error('connections_status') is-invalid @enderror">
+                        <option value="">Select Status</option>
+                        <option value="workable" {{ old('connections_status', $png->connections_status) == 'workable' ? 'selected' : '' }}>Workable</option>
+                        <option value="not_workable" {{ old('connections_status', $png->connections_status) == 'not_workable' ? 'selected' : '' }}>Not Workable</option>
+                        <option value="plb_done" {{ old('connections_status', $png->connections_status) == 'plb_done' ? 'selected' : '' }}>PLB Done</option>
+                        <option value="pdt_pending" {{ old('connections_status', $png->connections_status) == 'pdt_pending' ? 'selected' : '' }}>PPT Pending</option>
+                        <option value="gc_pending" {{ old('connections_status', $png->connections_status) == 'gc_pending' ? 'selected' : '' }}>GC Pending</option>
+                        <option value="mmt_pending" {{ old('connections_status', $png->connections_status) == 'mmt_pending' ? 'selected' : '' }}>MMT Pending</option>
+                        <option value="conv_pending" {{ old('connections_status', $png->connections_status) == 'conv_pending' ? 'selected' : '' }}>Conversion Pending</option>
+                        <option value="comm" {{ old('connections_status', $png->connections_status) == 'comm' ? 'selected' : '' }}>Commissioned</option>
+                        <option value="bill_pending" {{ old('connections_status', $png->connections_status) == 'bill_pending' ? 'selected' : '' }}>Bill Pending</option>
+                        <option value="bill_received" {{ old('connections_status', $png->connections_status) == 'bill_received' ? 'selected' : '' }}>Bill Received</option>
+                    </select>
+                    @error('connections_status')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
+            </div>
+
+            <div class="step-navigation">
+                <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next: PLB</button>
+            </div>
+        </div>
+
+        <!-- Step 2: PLB Information -->
+        <div id="step-2" class="step-content">
+            <h4>PLB (Plumbing) Information</h4>
+            
+            <!-- PLB Applicable Checkbox -->
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="plb_applicable" name="plb_applicable" value="1" 
+                           {{ ($png->plb_name || $png->plb_date) ? 'checked' : '' }} 
+                           onchange="togglePlbFields()">
+                    <label for="plb_applicable" class="checkbox-label">PLB Applicable</label>
+                </div>
+            </div>
+
+            <!-- PLB Fields -->
+            <div id="plb_fields" class="conditional-fields" style="display: {{ ($png->plb_name || $png->plb_date) ? 'block' : 'none' }};">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">PLB Name</label>
+                        <input type="text" name="plb_name" class="form-control @error('plb_name') is-invalid @enderror" 
+                               value="{{ old('plb_name', $png->plb_name) }}">
+                        @error('plb_name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">PLB Date</label>
+                        <input type="date" name="plb_date" class="form-control @error('plb_date') is-invalid @enderror" 
+                               value="{{ old('plb_date', $png->plb_date ? $png->plb_date->format('Y-m-d') : '') }}">
+                        @error('plb_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Witness By</label>
+                    <input type="text" name="plb_witness_by" class="form-control @error('plb_witness_by') is-invalid @enderror" 
+                           value="{{ old('plb_witness_by', $png->plb_witness_by ?? '') }}">
+                    @error('plb_witness_by')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="step-navigation">
+                <button type="button" class="btn btn-secondary" onclick="prevStep(1)">Previous</button>
+                <button type="button" class="btn btn-primary" onclick="nextStep(3)">Next: PPT</button>
+            </div>
+        </div>
+
+        <!-- Step 3: PPT Information -->
+        <div id="step-3" class="step-content">
+            <h4>PPT (Pipe Pneumatic Testing) Information</h4>
+            
+            <!-- PPT Applicable Checkbox -->
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="pdt_applicable" name="pdt_applicable" value="1" 
+                           {{ ($png->pdt_date || $png->pdt_tpi) ? 'checked' : '' }} 
+                           onchange="togglePdtFields()">
+                    <label for="pdt_applicable" class="checkbox-label">PPT Applicable</label>
+                </div>
+            </div>
+
+            <!-- PPT Fields -->
+            <div id="pdt_fields" class="conditional-fields" style="display: {{ ($png->pdt_date || $png->pdt_tpi) ? 'block' : 'none' }};">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">PPT Date</label>
+                        <input type="date" name="pdt_date" class="form-control @error('pdt_date') is-invalid @enderror" 
+                               value="{{ old('pdt_date', $png->pdt_date ? $png->pdt_date->format('Y-m-d') : '') }}">
+                        @error('pdt_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">PPT TPI</label>
+                        <input type="text" name="pdt_tpi" class="form-control @error('pdt_tpi') is-invalid @enderror" 
+                               value="{{ old('pdt_tpi', $png->pdt_tpi) }}">
+                        @error('pdt_tpi')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Witness By</label>
+                    <input type="text" name="pdt_witness_by" class="form-control @error('pdt_witness_by') is-invalid @enderror" 
+                           value="{{ old('pdt_witness_by', $png->pdt_witness_by ?? '') }}">
+                    @error('pdt_witness_by')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="step-navigation">
+                <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Previous</button>
+                <button type="button" class="btn btn-primary" onclick="nextStep(4)">Next: GC</button>
+            </div>
+        </div>
+
+        <!-- Step 4: GC Information -->
+        <div id="step-4" class="step-content">
+            <h4>GC (Ground Connection) Information</h4>
+            
+            <!-- GC Applicable Checkbox -->
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="gc_applicable" name="gc_applicable" value="1" 
+                           {{ ($png->gc_date || $png->gc_tpi) ? 'checked' : '' }} 
+                           onchange="toggleGcFields()">
+                    <label for="gc_applicable" class="checkbox-label">GC Applicable</label>
+                </div>
+            </div>
+
+            <!-- GC Fields -->
+            <div id="gc_fields" class="conditional-fields" style="display: {{ ($png->gc_date || $png->gc_tpi) ? 'block' : 'none' }};">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">GC Date</label>
+                        <input type="date" name="gc_date" class="form-control @error('gc_date') is-invalid @enderror" 
+                               value="{{ old('gc_date', $png->gc_date ? $png->gc_date->format('Y-m-d') : '') }}">
+                        @error('gc_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">GC TPI</label>
+                        <input type="text" name="gc_tpi" class="form-control @error('gc_tpi') is-invalid @enderror" 
+                               value="{{ old('gc_tpi', $png->gc_tpi) }}">
+                        @error('gc_tpi')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Witness By</label>
+                    <input type="text" name="ground_connections_witness_by" class="form-control @error('ground_connections_witness_by') is-invalid @enderror" 
+                           value="{{ old('ground_connections_witness_by', $png->ground_connections_witness_by) }}">
+                    @error('ground_connections_witness_by')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="step-navigation">
+                <button type="button" class="btn btn-secondary" onclick="prevStep(3)">Previous</button>
+                <button type="button" class="btn btn-primary" onclick="nextStep(5)">Next: MMT</button>
+            </div>
+        </div>
+
+        <!-- Step 5: MMT Information -->
+        <div id="step-5" class="step-content">
+            <h4>MMT (Meter Management Test) Information</h4>
+            
+            <!-- MMT Applicable Checkbox -->
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="mmt_applicable" name="mmt_applicable" value="1" 
+                           {{ ($png->mmt_date || $png->mmt_tpi) ? 'checked' : '' }} 
+                           onchange="toggleMmtFields()">
+                    <label for="mmt_applicable" class="checkbox-label">MMT Applicable</label>
+                </div>
+            </div>
+
+            <!-- MMT Fields -->
+            <div id="mmt_fields" class="conditional-fields" style="display: {{ ($png->mmt_date || $png->mmt_tpi) ? 'block' : 'none' }};">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">MMT Date</label>
+                        <input type="date" name="mmt_date" class="form-control @error('mmt_date') is-invalid @enderror" 
+                               value="{{ old('mmt_date', $png->mmt_date ? $png->mmt_date->format('Y-m-d') : '') }}">
+                        @error('mmt_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">MMT TPI</label>
+                        <input type="text" name="mmt_tpi" class="form-control @error('mmt_tpi') is-invalid @enderror" 
+                               value="{{ old('mmt_tpi', $png->mmt_tpi) }}">
+                        @error('mmt_tpi')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Witness By</label>
+                    <input type="text" name="mmt_witness_by" class="form-control @error('mmt_witness_by') is-invalid @enderror" 
+                           value="{{ old('mmt_witness_by', $png->mmt_witness_by) }}">
+                    @error('mmt_witness_by')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="step-navigation">
+                <button type="button" class="btn btn-secondary" onclick="prevStep(4)">Previous</button>
+                <button type="button" class="btn btn-primary" onclick="nextStep(6)">Next: Conversion</button>
+            </div>
+        </div>
+
+        <!-- Step 6: Conversion Information -->
+        <div id="step-6" class="step-content">
+            <h4>Conversion Information</h4>
+            
+            <div class="form-group">
+                <label class="form-label">Conversion Status <span class="required">*</span></label>
+                <select name="conversion_status" class="form-control @error('conversion_status') is-invalid @enderror" onchange="toggleConversionFields()" required>
+                    <option value="">Select Status</option>
+                    <option value="pending" {{ old('conversion_status', $png->conversion_status) == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="in_progress" {{ old('conversion_status', $png->conversion_status) == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                    <option value="conv_done" {{ old('conversion_status', $png->conversion_status) == 'conv_done' ? 'selected' : '' }}>Conv Done</option>
+                    <option value="comm" {{ old('conversion_status', $png->conversion_status) == 'comm' ? 'selected' : '' }}>Done</option>
+                </select>
+                @error('conversion_status')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Conversion Done Fields (Only visible when status is "done") -->
+            <div id="conversion_done_fields" class="conditional-fields" style="display: {{ old('conversion_status', $png->conversion_status) == 'done' ? 'block' : 'none' }};">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Conversion Technician Name <span class="required">*</span></label>
+                        <input type="text" name="conversion_technician_name" class="form-control @error('conversion_technician_name') is-invalid @enderror" 
+                               value="{{ old('conversion_technician_name', $png->conversion_technician_name) }}">
+                        @error('conversion_technician_name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Conversion Date <span class="required">*</span></label>
+                        <input type="date" name="conversion_date" class="form-control @error('conversion_date') is-invalid @enderror" 
+                               value="{{ old('conversion_date', $png->conversion_date ? $png->conversion_date->format('Y-m-d') : '') }}">
+                        @error('conversion_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Technical Fields -->
+            <div class="form-section-title" style="margin-top: 30px;">Additional Information</div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Meter Number</label>
+                    <input type="text" name="meter_number" class="form-control @error('meter_number') is-invalid @enderror" 
+                           value="{{ old('meter_number', $png->meter_number) }}">
+                    @error('meter_number')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Meter Reading</label>
+                    <input type="number" step="0.01" name="meter_reading" class="form-control @error('meter_reading') is-invalid @enderror" 
+                           value="{{ old('meter_reading', $png->meter_reading) }}">
+                    @error('meter_reading')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+            
+            <div class="form-row">                
+                <div class="form-group">
+                    <label class="form-label">RA Bill No</label>
+                    <input type="text" name="ra_bill_no" class="form-control @error('ra_bill_no') is-invalid @enderror" 
+                           value="{{ old('ra_bill_no', $png->ra_bill_no) }}">
+                    @error('ra_bill_no')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Remarks</label>
+                <textarea name="remarks" class="form-control @error('remarks') is-invalid @enderror" rows="3">{{ old('remarks', $png->remarks) }}</textarea>
+                @error('remarks')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="step-navigation">
+                <button type="button" class="btn btn-secondary" onclick="prevStep(5)">Previous</button>
+                <button type="button" class="btn btn-success" onclick="completeTechnicalInfo()">Complete Technical Info</button>
+            </div>
+        </div>
+    </div>
+</div>
 
                 <!-- Dynamic Measurements Tab -->
                 <div id="measurements" class="tab-content">
@@ -675,13 +1185,24 @@
                                 <h5>Job Cards</h5>
                             </div>
                             
-                            @if($png->job_cards_paths && count($png->job_cards_paths) > 0)
+                            @php
+                                $files = is_string($png->job_cards_paths)
+                                    ? json_decode($png->job_cards_paths, true)
+                                    : $png->job_cards_paths;
+                            @endphp
+
+                            @if(!empty($files) && is_array($files))
                                 <div class="existing-files-list">
                                     <div class="existing-files-title">Existing Files:</div>
-                                    @foreach($png->job_cards_paths as $file)
+
+                                    @foreach($files as $file)
                                         <div class="existing-file">
-                                            <a href="{{ Storage::url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
-                                            <small>{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>
+                                            <a href="{{ Storage::url($file['path']) }}" target="_blank">
+                                                {{ $file['name'] ?? 'File' }}
+                                            </a>
+                                            <small>
+                                                {{ isset($file['size']) ? number_format($file['size'] / 1024, 2) . ' KB' : '' }}
+                                            </small>
                                         </div>
                                     @endforeach
                                 </div>
@@ -826,17 +1347,40 @@
                     <div class="form-row">
                         <div class="form-group-full">
                             <label class="form-label">Additional Documents</label>
-                            @if($png->additional_documents && count($png->additional_documents) > 0)
-                                <div class="existing-files-list">
-                                    <div class="existing-files-title">Existing Files:</div>
-                                    @foreach($png->additional_documents as $file)
-                                        <div class="existing-file">
-                                            <a href="{{ Storage::url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
-                                            <small>{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endif
+                            @php
+    $files = is_string($png->additional_documents)
+        ? json_decode($png->additional_documents, true)
+        : $png->additional_documents;
+@endphp
+
+@if(is_array($files) && count($files))
+    <div class="existing-files-list">
+        <div class="existing-files-title">Existing Files:</div>
+
+        @foreach($files as $file)
+            @php
+                // handle different storage formats
+                $path = is_array($file)
+                    ? ($file['path'] ?? $file['file'] ?? null)
+                    : $file;
+            @endphp
+
+            @if($path)
+                <div class="existing-file">
+                    <a href="{{ Storage::url($path) }}" target="_blank">
+                        {{ basename($path) }}
+                    </a>
+
+                    @if(is_array($file) && isset($file['size']))
+                        <small>{{ number_format($file['size'] / 1024, 2) }} KB</small>
+                    @endif
+                </div>
+            @endif
+        @endforeach
+    </div>
+@endif
+
+
                             <input type="file" name="additional_documents[]" class="form-control-file @error('additional_documents.*') is-invalid @enderror" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
                             <div class="form-file-info">Multiple files allowed. Accepted formats: PDF, DOC, DOCX, JPG, PNG (max: 5MB each) - New files will be added to existing</div>
                             @error('additional_documents.*')
@@ -1260,5 +1804,144 @@
         // Don't prevent submission, just log for debugging
         return true;
     }
+
+    function nextStep(stepNumber) {
+    // Hide current step
+    document.querySelectorAll('.step-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Show next step
+    document.getElementById('step-' + stepNumber).classList.add('active');
+    
+    // Update progress indicator
+    updateStepProgress(stepNumber);
+}
+
+function prevStep(stepNumber) {
+    // Hide current step
+    document.querySelectorAll('.step-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Show previous step
+    document.getElementById('step-' + stepNumber).classList.add('active');
+    
+    // Update progress indicator
+    updateStepProgress(stepNumber);
+}
+
+function updateStepProgress(activeStep) {
+    document.querySelectorAll('.step-item').forEach((item, index) => {
+        const stepNum = index + 1;
+        item.classList.remove('active', 'completed');
+        
+        if (stepNum === activeStep) {
+            item.classList.add('active');
+        } else if (stepNum < activeStep) {
+            item.classList.add('completed');
+        }
+    });
+}
+
+function completeTechnicalInfo() {
+    alert('Technical Information completed! You can now proceed to other tabs.');
+}
+
+// Toggle Functions for Conditional Fields
+function togglePlbFields() {
+    const checkbox = document.getElementById('plb_applicable');
+    const fields = document.getElementById('plb_fields');
+    
+    if (checkbox.checked) {
+        fields.style.display = 'block';
+    } else {
+        fields.style.display = 'none';
+        // Clear fields when hidden
+        fields.querySelectorAll('input').forEach(input => input.value = '');
+    }
+}
+
+function togglePdtFields() {
+    const checkbox = document.getElementById('pdt_applicable');
+    const fields = document.getElementById('pdt_fields');
+    
+    if (checkbox.checked) {
+        fields.style.display = 'block';
+    } else {
+        fields.style.display = 'none';
+        // Clear fields when hidden
+        fields.querySelectorAll('input').forEach(input => input.value = '');
+    }
+}
+
+function toggleGcFields() {
+    const checkbox = document.getElementById('gc_applicable');
+    const fields = document.getElementById('gc_fields');
+    
+    if (checkbox.checked) {
+        fields.style.display = 'block';
+    } else {
+        fields.style.display = 'none';
+        // Clear fields when hidden
+        fields.querySelectorAll('input').forEach(input => input.value = '');
+    }
+}
+
+function toggleMmtFields() {
+    const checkbox = document.getElementById('mmt_applicable');
+    const fields = document.getElementById('mmt_fields');
+    
+    if (checkbox.checked) {
+        fields.style.display = 'block';
+    } else {
+        fields.style.display = 'none';
+        // Clear fields when hidden
+        fields.querySelectorAll('input').forEach(input => input.value = '');
+    }
+}
+
+function toggleConversionFields() {
+    const statusSelect = document.querySelector('select[name="conversion_status"]');
+    const conversionFields = document.getElementById('conversion_done_fields');
+    
+    if (statusSelect.value === 'done') {
+        conversionFields.style.display = 'block';
+        // Make fields required when visible
+        conversionFields.querySelectorAll('input[name="conversion_technician_name"], input[name="conversion_date"]').forEach(input => {
+            input.setAttribute('required', 'required');
+        });
+    } else {
+        conversionFields.style.display = 'none';
+        // Remove required attribute and clear values when hidden
+        conversionFields.querySelectorAll('input').forEach(input => {
+            input.removeAttribute('required');
+            input.value = '';
+        });
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial step
+    updateStepProgress(1);
+    
+    // Check existing values and toggle fields accordingly
+    if (document.getElementById('plb_applicable').checked) {
+        togglePlbFields();
+    }
+    if (document.getElementById('pdt_applicable').checked) {
+        togglePdtFields();
+    }
+    if (document.getElementById('gc_applicable').checked) {
+        toggleGcFields();
+    }
+    if (document.getElementById('mmt_applicable').checked) {
+        toggleMmtFields();
+    }
+    
+    // Check conversion status
+    toggleConversionFields();
+});
 </script>
 @endsection
