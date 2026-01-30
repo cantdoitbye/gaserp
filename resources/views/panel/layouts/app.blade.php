@@ -15,9 +15,9 @@
     <style>
         /* Enhanced Sidebar Styles */
         .sidebar {
-            width: 280px;
+            width: 260px;
             height: 100vh;
-            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(180deg, #1a252f 0%, #2c3e50 100%);
             position: fixed;
             left: 0;
             top: 0;
@@ -25,116 +25,139 @@
             overflow-x: hidden;
             transition: all 0.3s ease;
             z-index: 1000;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            box-shadow: 4px 0 15px rgba(0,0,0,0.15);
         }
 
         .sidebar.collapsed {
-            width: 70px;
+            width: 65px;
         }
 
         .logo-container {
-            padding: 20px;
+            padding: 18px 15px;
             text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 8px;
+            background: rgba(0,0,0,0.2);
         }
 
         .logo-image {
             max-width: 100%;
             height: auto;
-            max-height: 60px;
-            border-radius: 8px;
+            max-height: 50px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar.collapsed .logo-image {
+            max-height: 35px;
         }
 
         .sidebar-toggle {
             position: absolute;
-            top: 20px;
-            right: -15px;
-            background: #e31e24;
+            top: 18px;
+            right: -12px;
+            background: linear-gradient(135deg, #e31e24 0%, #c41e24 100%);
             color: white;
-            width: 30px;
-            height: 30px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 3px 10px rgba(227,30,36,0.4);
             transition: all 0.3s ease;
+            border: 2px solid #fff;
         }
 
         .sidebar-toggle:hover {
-            background: #c41e24;
-            transform: scale(1.1);
+            background: linear-gradient(135deg, #c41e24 0%, #a01a1f 100%);
+            transform: scale(1.15);
+            box-shadow: 0 4px 15px rgba(227,30,36,0.6);
+        }
+
+        .sidebar-toggle i {
+            font-size: 11px;
+            transition: transform 0.3s ease;
         }
 
         /* Main Menu Items */
         .menu-item {
             display: flex;
             align-items: center;
-            padding: 12px 20px;
-            color: rgba(255,255,255,0.8);
+            padding: 10px 16px;
+            color: rgba(255,255,255,0.75);
             text-decoration: none;
-            transition: all 0.3s ease;
-            border-radius: 8px;
-            margin: 1px 10px;
+            transition: all 0.25s ease;
+            border-radius: 6px;
+            margin: 2px 12px;
             position: relative;
+            font-size: 14px;
+            font-weight: 500;
         }
 
         .menu-item:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.08);
             color: white;
-            transform: translateX(5px);
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .menu-item.active {
-            background: #e31e24;
+            background: linear-gradient(135deg, #e31e24 0%, #c41e24 100%);
             color: white;
-            box-shadow: 0 2px 10px rgba(227,30,36,0.3);
+            box-shadow: 0 3px 12px rgba(227,30,36,0.35);
+            font-weight: 600;
         }
 
         .menu-item i {
-            width: 25px;
+            width: 22px;
             text-align: center;
             margin-right: 12px;
-            font-size: 16px;
+            font-size: 15px;
+            flex-shrink: 0;
         }
 
         /* Menu Containers for Dropdown Items */
         .menu-container {
-            margin: 1px 0;
+            margin: 2px 0;
         }
 
         .main-menu {
             display: flex;
             align-items: center;
-            padding: 12px 20px;
-            color: rgba(255,255,255,0.8);
+            padding: 10px 16px;
+            color: rgba(255,255,255,0.75);
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             cursor: pointer;
-            border-radius: 8px;
-            margin: 1px 10px;
+            border-radius: 6px;
+            margin: 2px 12px;
             position: relative;
+            font-size: 14px;
+            font-weight: 500;
         }
 
         .main-menu:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.08);
             color: white;
-            transform: translateX(5px);
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .main-menu.active {
-            background: #e31e24;
+            background: linear-gradient(135deg, #e31e24 0%, #c41e24 100%);
             color: white;
-            box-shadow: 0 2px 10px rgba(227,30,36,0.3);
+            box-shadow: 0 3px 12px rgba(227,30,36,0.35);
+            font-weight: 600;
         }
 
         .main-menu i {
-            width: 25px;
+            width: 22px;
             text-align: center;
             margin-right: 12px;
-            font-size: 16px;
+            font-size: 15px;
+            flex-shrink: 0;
         }
 
         /* Dropdown Arrow */
@@ -143,13 +166,15 @@
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             position: absolute;
-            right: 20px;
+            right: 16px;
             transition: transform 0.3s ease;
-            font-size: 12px;
+            font-size: 10px;
+            opacity: 0.7;
         }
 
         .main-menu.active::after {
             transform: rotate(180deg);
+            opacity: 1;
         }
 
         /* Submenu Styles */
@@ -157,92 +182,132 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease;
-            background: rgba(0,0,0,0.2);
-            margin: 0 10px 1px 10px;
-            border-radius: 8px;
+            background: rgba(0,0,0,0.15);
+            margin: 0 12px 2px 12px;
+            border-radius: 6px;
         }
 
         .submenu.show {
-            max-height: 300px;
-            padding: 6px 0;
+            max-height: 400px;
+            padding: 4px 0;
         }
 
         .submenu-item {
             display: flex;
             align-items: center;
-            padding: 8px 20px 8px 40px;
-            color: rgba(255,255,255,0.7);
+            padding: 8px 16px 8px 38px;
+            color: rgba(255,255,255,0.65);
             text-decoration: none;
-            transition: all 0.3s ease;
-            border-radius: 6px;
+            transition: all 0.25s ease;
+            border-radius: 5px;
             margin: 1px 8px;
-            font-size: 14px;
+            font-size: 13px;
             position: relative;
         }
 
+        .submenu-item::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            width: 4px;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transition: all 0.25s ease;
+        }
+
         .submenu-item:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.08);
             color: white;
             transform: translateX(3px);
         }
 
+        .submenu-item:hover::before {
+            background: #e31e24;
+            transform: scale(1.5);
+        }
+
         .submenu-item.active {
-            background: rgba(227,30,36,0.3);
+            background: rgba(227,30,36,0.25);
             color: white;
             border-left: 3px solid #e31e24;
+            font-weight: 600;
+        }
+
+        .submenu-item.active::before {
+            background: #e31e24;
+            transform: scale(1.5);
         }
 
         .submenu-item i {
-            width: 20px;
+            width: 18px;
             text-align: center;
             margin-right: 10px;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         /* Menu Divider */
         .menu-divider {
             height: 1px;
-            background: rgba(255,255,255,0.1);
-            margin: 8px 20px;
+            background: rgba(255,255,255,0.08);
+            margin: 10px 20px;
+        }
+
+        /* Section Headers */
+        .menu-section-header {
+            padding: 12px 16px 6px 16px;
+            color: rgba(255,255,255,0.4);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
         }
 
         /* Collapsed Sidebar Adjustments */
         .sidebar.collapsed .logo-container {
-            padding: 20px 10px;
+            padding: 18px 8px;
         }
 
         .sidebar.collapsed .main-menu span,
         .sidebar.collapsed .menu-item span,
-        .sidebar.collapsed .submenu {
+        .sidebar.collapsed .submenu,
+        .sidebar.collapsed .menu-section-header {
             display: none;
         }
 
         .sidebar.collapsed .main-menu,
         .sidebar.collapsed .menu-item {
             justify-content: center;
-            padding: 12px;
-            margin: 1px 5px;
+            padding: 10px;
+            margin: 2px 8px;
         }
 
         .sidebar.collapsed .main-menu i,
         .sidebar.collapsed .menu-item i {
             margin-right: 0;
+            font-size: 16px;
         }
 
         .sidebar.collapsed .main-menu::after {
             display: none;
         }
 
+        .sidebar.collapsed .menu-divider {
+            margin: 10px 12px;
+        }
+
         /* Main Content Adjustment */
         .main-content {
-            margin-left: 280px;
+            margin-left: 260px;
             transition: margin-left 0.3s ease;
             min-height: 100vh;
-            background: #f8f9fa;
+            background: #f5f7fa;
+            padding: 20px;
         }
 
         .main-content.expanded {
-            margin-left: 70px;
+            margin-left: 65px;
         }
 
         /* Responsive Design */
@@ -251,51 +316,76 @@
                 transform: translateX(-100%);
             }
 
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
             .sidebar.collapsed {
                 transform: translateX(0);
-                width: 70px;
+                width: 65px;
             }
 
             .main-content {
                 margin-left: 0;
+                padding: 15px;
             }
 
             .main-content.expanded {
-                margin-left: 70px;
+                margin-left: 65px;
             }
         }
 
         /* Smooth scrollbar for sidebar */
         .sidebar::-webkit-scrollbar {
-            width: 4px;
+            width: 5px;
         }
 
         .sidebar::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
         }
 
         .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.3);
-            border-radius: 2px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
         }
 
         .sidebar::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.35);
         }
 
         /* Animation for menu items */
         .menu-item,
         .main-menu,
         .submenu-item {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Focus states for accessibility */
         .menu-item:focus,
         .main-menu:focus,
         .submenu-item:focus {
-            outline: 2px solid rgba(255,255,255,0.5);
+            outline: 2px solid rgba(227,30,36,0.5);
             outline-offset: 2px;
+        }
+
+        /* Badge for notifications */
+        .menu-badge {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #e31e24;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .sidebar.collapsed .menu-badge {
+            right: 5px;
+            top: 5px;
+            transform: none;
         }
     </style>
 </head>
@@ -313,13 +403,10 @@
 
         <a href="{{ route('dashboard') }}" class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
             <i class="fas fa-tachometer-alt"></i>
-            <span>NEPL Dashboard</span>
+            <span>Dashboard</span>
         </a>
 
-        {{-- <a href="{{ route('service-types.index') }}" class="menu-item {{ request()->routeIs('service-types.*') ? 'active' : '' }}">
-            <i class="fas fa-cogs"></i>
-            <span>Service Type</span>
-        </a> --}}
+        <div class="menu-section-header">Core Modules</div>
 
         <a href="{{ route('projects.index') }}" class="menu-item {{ request()->routeIs('projects.*') ? 'active' : '' }}">
             <i class="fas fa-project-diagram"></i>
@@ -333,53 +420,27 @@
 
         <a href="#" class="menu-item {{ request()->routeIs('finance.*') ? 'active' : '' }}">
             <i class="fas fa-calculator"></i>
-            <span>Finance - Taxation Desk</span>
+            <span>Finance & Taxation</span>
         </a>
 
-        <!-- Legal Desk Menu -->
-        {{-- <div class="menu-container">
-            <div class="main-menu {{ request()->routeIs('legal-desk.*') || request()->routeIs('legal-document-types.*') || request()->routeIs('project-legal-documents.*') || request()->routeIs('legal-notifications.*') ? 'active' : '' }}" id="legal-toggle">
-                <i class="fas fa-gavel"></i>
-                <span>Legal Desk</span>
-            </div>
-            
-            <div class="submenu {{ request()->routeIs('legal-desk.*') || request()->routeIs('legal-document-types.*') || request()->routeIs('project-legal-documents.*') || request()->routeIs('legal-notifications.*') ? 'show' : '' }}" id="legal-submenu">
-                <a href="{{ route('legal-desk.index') }}" class="submenu-item {{ request()->routeIs('legal-desk.index') ? 'active' : '' }}">
-                    <i class="fas fa-tachometer-alt"></i>
-                    <span>Legal Dashboard</span>
-                </a>
-                <a href="{{ route('legal-document-types.index') }}" class="submenu-item {{ request()->routeIs('legal-document-types.*') ? 'active' : '' }}">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Document Types</span>
-                </a>
-                <a href="{{ route('project-legal-documents.index') }}" class="submenu-item {{ request()->routeIs('project-legal-documents.*') ? 'active' : '' }}">
-                    <i class="fas fa-file-contract"></i>
-                    <span>Legal Documents</span>
-                </a>
-                <a href="{{ route('legal-notifications.index') }}" class="submenu-item {{ request()->routeIs('legal-notifications.*') ? 'active' : '' }}">
-                    <i class="fas fa-bell"></i>
-                    <span>Notifications</span>
-                </a>
-            </div>
-        </div> --}}
+        <div class="menu-section-header">Operations</div>
 
-        <a href="{{ route('purchase-assets.index') }}" class="menu-item {{ 
-request()->routeIs('purchase.*') ? 'active' : '' }}">
+        <a href="{{ route('purchase-assets.index') }}" class="menu-item {{ request()->routeIs('purchase.*') ? 'active' : '' }}">
             <i class="fas fa-shopping-cart"></i>
             <span>Purchase Desk</span>
         </a>
 
-        <a href="{{ route('sales-financial.index') }}" class="menu-item {{ 
-request()->routeIs('sales.*') ? 'active' : '' }}">
+        <a href="{{ route('sales-financial.index') }}" class="menu-item {{ request()->routeIs('sales.*') ? 'active' : '' }}">
             <i class="fas fa-chart-line"></i>
             <span>Sales Desk</span>
         </a>
 
- <a href="{{ route('consumption.index') }}" class="menu-item {{ request()->routeIs('sales.*') ? 
-'active' : '' }}">
-            <i class="fas fa-chart-line"></i>
+        <a href="{{ route('consumption.index') }}" class="menu-item {{ request()->routeIs('consumption.*') ? 'active' : '' }}">
+            <i class="fas fa-boxes"></i>
             <span>Consumption</span>
         </a>
+
+        <div class="menu-section-header">Data Trackers</div>
 
         <!-- PNG Data Tracker Menu -->
         <div class="menu-container">
@@ -498,6 +559,8 @@ request()->routeIs('sales.*') ? 'active' : '' }}">
             </div>
         </div>
 
+        <div class="menu-section-header">Resources</div>
+
         <a href="{{ route('plumbers.index') }}" class="menu-item {{ request()->routeIs('plumbers.*') ? 'active' : '' }}">
             <i class="fas fa-wrench"></i>
             <span>Plumber Desk</span>
@@ -510,14 +573,14 @@ request()->routeIs('sales.*') ? 'active' : '' }}">
 
         <a href="#" class="menu-item {{ request()->routeIs('subcon.*') ? 'active' : '' }}">
             <i class="fas fa-users"></i>
-            <span>Sub Con Desk</span>
+            <span>Sub Contractors</span>
         </a>
 
-        <div class="menu-divider"></div>
+        <div class="menu-section-header">Management</div>
 
         <a href="#" class="menu-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
             <i class="fas fa-file-alt"></i>
-            <span>Report</span>
+            <span>Reports</span>
         </a>
 
         <a href="#" class="menu-item {{ request()->routeIs('tasks.*') ? 'active' : '' }}">
@@ -532,7 +595,7 @@ request()->routeIs('sales.*') ? 'active' : '' }}">
 
         <a href="#" class="menu-item {{ request()->routeIs('profit.*') ? 'active' : '' }}">
             <i class="fas fa-rupee-sign"></i>
-            <span>Profit</span>
+            <span>Profit Analysis</span>
         </a>
 
         <a href="#" class="menu-item {{ request()->routeIs('integrations.*') ? 'active' : '' }}">

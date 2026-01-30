@@ -19,3 +19,4 @@ yarn-error.log
 *.zip
 backup*/
 *_old*
+*.md

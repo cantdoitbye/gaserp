@@ -19,81 +19,81 @@ class PngController extends Controller
      */
     public function index(Request $request)
     {
+        // Get filters from session if not in request
+        $filters = $request->session()->get('png_filters', []);
+        
+        // If request has filters, update session
+        if ($request->hasAny(['contact_no_filter', 'address_filter', 'plan_type', 'order_application', 
+            'agreement_date_from', 'customer_no', 'service_order_no', 'application_no', 
+            'customer_name', 'contact_no', 'address', 'area', 'scheme', 'sla_days', 'connections_status'])) {
+            $filters = $request->only([
+                'contact_no_filter', 'address_filter', 'plan_type', 'order_application',
+                'agreement_date_from', 'customer_no', 'service_order_no', 'application_no',
+                'customer_name', 'contact_no', 'address', 'area', 'scheme', 'sla_days', 'connections_status'
+            ]);
+            $request->session()->put('png_filters', $filters);
+        }
+        
+        // Check if clear filters is requested
+        if ($request->has('clear_filters')) {
+            $request->session()->forget('png_filters');
+            $filters = [];
+        }
+
         $query = Png::query();
 
-        // --- EXISTING FILTERS ---
-        if ($request->filled('contact_no_filter')) {
-            $query->where('customer_contact_no', 'like', '%' . $request->contact_no_filter . '%');
+        // Apply filters from session
+        if (!empty($filters['contact_no_filter'])) {
+            $query->where('customer_contact_no', 'like', '%' . $filters['contact_no_filter'] . '%');
         }
-        if ($request->filled('address_filter')) {
-            $query->where('address', 'like', '%' . $request->address_filter . '%');
+        if (!empty($filters['address_filter'])) {
+            $query->where('address', 'like', '%' . $filters['address_filter'] . '%');
         }
-        if ($request->filled('plan_type')) {
-            $query->where('plan_type', $request->plan_type);
+        if (!empty($filters['plan_type'])) {
+            $query->where('plan_type', $filters['plan_type']);
         }
-        if ($request->filled('order_application')) {
-            $search = $request->order_application;
+        if (!empty($filters['order_application'])) {
+            $search = $filters['order_application'];
             $query->where(function($q) use ($search) {
                 $q->where('service_order_no', 'like', "%{$search}%")
                 ->orWhere('application_no', 'like', "%{$search}%");
             });
         }
-        // Note: Your HTML uses 'address', but your old controller used 'address_filter'
-        if ($request->filled('address')) {
-            $query->where('address', 'like', '%' . $request->address . '%');
+        if (!empty($filters['address'])) {
+            $query->where('address', 'like', '%' . $filters['address'] . '%');
+        }
+        if (!empty($filters['agreement_date_from'])) {
+            $query->whereDate('agreement_date', '>=', $filters['agreement_date_from']);
+        }
+        if (!empty($filters['service_order_no'])) {
+            $query->where('service_order_no', 'like', '%' . $filters['service_order_no'] . '%');
+        }
+        if (!empty($filters['application_no'])) {
+            $query->where('application_no', 'like', '%' . $filters['application_no'] . '%');
+        }
+        if (!empty($filters['contact_no'])) {
+            $query->where('customer_contact_no', 'like', '%' . $filters['contact_no'] . '%');
+        }
+        if (!empty($filters['area'])) {
+            $query->where('area', $filters['area']);
+        }
+        if (!empty($filters['scheme'])) {
+            $query->where('scheme', $filters['scheme']);
+        }
+        if (!empty($filters['sla_days'])) {
+            $query->where('sla_days', $filters['sla_days']);
+        }
+        if (!empty($filters['customer_no'])) {
+            $query->where('customer_no', 'like', '%' . $filters['customer_no'] . '%');
+        }
+        if (!empty($filters['customer_name'])) {
+            $query->where('customer_name', 'like', '%' . $filters['customer_name'] . '%');
+        }
+        if (!empty($filters['connections_status'])) {
+            $query->where('connections_status', $filters['connections_status']);
         }
 
-        // --- NEW TABLE HEADER FILTERS ---
-        
-        // Agreement Date (From)
-        if ($request->filled('agreement_date_from')) {
-            $query->whereDate('agreement_date', '>=', $request->agreement_date_from);
-        }
-
-        // Service Order No
-        if ($request->filled('service_order_no')) {
-            $query->where('service_order_no', 'like', '%' . $request->service_order_no . '%');
-        }
-
-        // Application No
-        if ($request->filled('application_no')) {
-            $query->where('application_no', 'like', '%' . $request->application_no . '%');
-        }
-
-        // Contact No (The inline table one)
-        if ($request->filled('contact_no')) {
-            $query->where('customer_contact_no', 'like', '%' . $request->contact_no . '%');
-        }
-
-        // Area
-        if ($request->filled('area')) {
-            $query->where('area', $request->area);
-        }
-
-        // Scheme
-        if ($request->filled('scheme')) {
-            $query->where('scheme', $request->scheme);
-        }
-
-        // SLA Days (Assuming this is a calculated field, filtering might be tricky. 
-        // If it's a column in DB, use this:)
-        if ($request->filled('sla_days')) {
-            $query->where('sla_days', $request->sla_days);
-        }
-
-        // 2. Inline Table Filters
-        if ($request->filled('customer_no')) {
-            $query->where('customer_no', 'like', '%' . $request->customer_no . '%');
-        }
-        
-        if ($request->filled('customer_name')) {
-            $query->where('customer_name', 'like', '%' . $request->customer_name . '%');
-        }
-        if ($request->filled('connections_status')) {
-            $query->where('connections_status', $request->connections_status);
-        }
-
-        // 3. Status Counts (Ensure these reflect the current filters)
+        // Status Counts
         $countQuery = clone $query; 
         $statusCounts = [
             'total'       => (clone $countQuery)->count(),
@@ -110,14 +110,14 @@ class PngController extends Controller
             'bill_received'   => (clone $countQuery)->where('connections_status', 'bill_received')->count(),
         ];
 
-        // 4. Correct Sorting Logic
+        // Sorting
         $sortField = $request->get('sort', 'created_at');
         $sortDirection = $request->get('direction', 'desc');
         $query->orderBy('created_at', 'desc');
 
-        $pngs = $query->paginate(15)->withQueryString();
+        $pngs = $query->paginate(15);
 
-        return view('panel.png.index', compact('pngs', 'statusCounts'));
+        return view('panel.png.index', compact('pngs', 'statusCounts', 'filters'));
     }
 
     /**

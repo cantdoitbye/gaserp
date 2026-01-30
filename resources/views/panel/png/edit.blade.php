@@ -980,8 +980,8 @@
             <h4>Conversion Information</h4>
             
             <div class="form-group">
-                <label class="form-label">Conversion Status <span class="required">*</span></label>
-                <select name="conversion_status" class="form-control @error('conversion_status') is-invalid @enderror" onchange="toggleConversionFields()" required>
+                <label class="form-label">Conversion Status</label>
+                <select name="conversion_status" class="form-control @error('conversion_status') is-invalid @enderror" onchange="toggleConversionFields()">
                     <option value="">Select Status</option>
                     <option value="pending" {{ old('conversion_status', $png->conversion_status) == 'pending' ? 'selected' : '' }}>Pending</option>
                     <option value="in_progress" {{ old('conversion_status', $png->conversion_status) == 'in_progress' ? 'selected' : '' }}>In Progress</option>
@@ -1072,8 +1072,8 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">PNG Type <span class="required">*</span></label>
-                            <select name="png_type" id="png_type" class="form-control @error('png_type') is-invalid @enderror" onchange="loadMeasurementTypes()" required>
+                            <label class="form-label">PNG Type</label>
+                            <select name="png_type" id="png_type" class="form-control @error('png_type') is-invalid @enderror" onchange="loadMeasurementTypes()">
                                 <option value="">Select PNG Type</option>
                                 @foreach(\App\Models\PngMeasurementType::getPngTypeOptions() as $key => $value)
                                     <option value="{{ $key }}" {{ old('png_type', $png->png_type) == $key ? 'selected' : '' }}>
@@ -1087,8 +1087,8 @@
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label">Measurement Type <span class="required">*</span></label>
-                            <select name="png_measurement_type_id" id="measurement_type" class="form-control @error('png_measurement_type_id') is-invalid @enderror" onchange="loadMeasurementFields()" required>
+                            <label class="form-label">Measurement Type</label>
+                            <select name="png_measurement_type_id" id="measurement_type" class="form-control @error('png_measurement_type_id') is-invalid @enderror" onchange="loadMeasurementFields()">
                                 <option value="">Select Measurement Type</option>
                                 @if($png->measurementType)
                                     <option value="{{ $png->measurementType->id }}" selected>
@@ -1390,10 +1390,12 @@
                     </div>
                 </div>
                 
-                <div class="form-actions">
-                    <a href="{{ route('png.index') }}" class="btn btn-secondary">Cancel</a>
+                <div class="form-actions" style="display: flex; justify-content: space-between; align-items: center;">
                     <a href="{{ route('png.show', $png->id) }}" class="btn btn-info">View Details</a>
-                    <button type="submit" class="btn btn-primary">Update PNG Job</button>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="submit" class="btn btn-primary">Update PNG Job</button>
+                        <a href="{{ route('png.index') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
                 </div>
             </form>
         </div>

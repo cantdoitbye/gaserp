@@ -359,10 +359,41 @@
 
 .icon-info { background-color: #17a2b8; color: white; }
 .icon-info:hover { background-color: #138496; color: white; }
-.icon-edit { background-color: #ffc107; color: #212529; }
-.icon-edit:hover { background-color: #e0a800; color: #212529; }
 .icon-delete { background-color: #dc3545; color: white; }
 .icon-delete:hover { background-color: #c82333; color: white; }
+
+/* Customer Name Link Styling */
+.customer-name-link {
+    color: #007bff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+}
+
+.customer-name-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.customer-name-link strong {
+    font-weight: 600;
+}
+
+.customer-name-link::after {
+    content: '\f35d';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    margin-left: 5px;
+    font-size: 10px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.customer-name-link:hover::after {
+    opacity: 0.6;
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -459,6 +490,201 @@ th:first-child {
         width: 100%;
         justify-content: center;
         margin-top: 10px;
+    }
+}
+
+/* Column Manager Styles */
+.column-manager-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.column-manager-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 5px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    width: 350px;
+    max-height: 600px;
+    overflow: hidden;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.column-manager-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.column-manager-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.close-panel {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.close-panel:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.column-manager-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    max-height: 450px;
+}
+
+.column-section {
+    margin-bottom: 20px;
+}
+
+.column-section:last-child {
+    margin-bottom: 0;
+}
+
+.column-section h5 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 10px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #667eea;
+}
+
+.column-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.column-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.column-item:hover {
+    background: #e9ecef;
+}
+
+.column-item input[type="checkbox"] {
+    margin-right: 10px;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    accent-color: #667eea;
+}
+
+.column-item label {
+    cursor: pointer;
+    margin: 0;
+    flex: 1;
+    font-size: 13px;
+    color: #495057;
+    user-select: none;
+}
+
+.column-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.column-item.disabled input[type="checkbox"],
+.column-item.disabled label {
+    cursor: not-allowed;
+}
+
+.column-manager-footer {
+    display: flex;
+    gap: 8px;
+    padding: 12px 15px;
+    border-top: 1px solid #e0e0e0;
+    background: #f8f9fa;
+    flex-wrap: wrap;
+}
+
+.column-manager-footer .btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    flex: 1;
+    min-width: 90px;
+}
+
+/* Smooth column transitions */
+.data-table th,
+.data-table td {
+    transition: opacity 0.2s ease, width 0.2s ease;
+}
+
+.data-table th.column-hidden,
+.data-table td.column-hidden {
+    display: none;
+}
+
+/* Scrollbar styling for column manager */
+.column-manager-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.column-manager-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.column-manager-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.column-manager-body::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .column-manager-panel {
+        width: 90vw;
+        max-width: 350px;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .column-manager-footer {
+        flex-direction: column;
+    }
+    
+    .column-manager-footer .btn-sm {
+        width: 100%;
     }
 }
 /* Container for alerts to give them some breathing room */
@@ -587,17 +813,6 @@ th:first-child {
 
 @section('content')
 <div class="main-container">
-    <div class="top-bar">
-        <div class="search-box">
-            {{-- Global search can be added here --}}
-        </div>
-        <div class="header-icons">
-            <button class="icon-button"><i class="fas fa-bell"></i></button>
-            <button class="icon-button"><i class="fas fa-question-circle"></i></button>
-            <div class="user-avatar">{{ auth()->user()->initials ?? 'U' }}</div>
-        </div>
-    </div>
-
     <!-- Filter Section -->
     <div class="content-card">
         <div class="filter-section">
@@ -606,33 +821,33 @@ th:first-child {
                 <div class="filter-group">
                     <label for="filter_contact_numbers">Contact Numbers</label>
                     <input type="text" inputmode="numeric" name="contact_no_filter" id="filter_contact_numbers" 
-                    class="filter-input" value="{{ request('contact_no_filter') }}" placeholder="Numbers only..."
+                    class="filter-input" value="{{ $filters['contact_no_filter'] ?? '' }}" placeholder="Numbers only..."
                     oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                 </div>
                 
                 <div class="filter-group">
                     <label for="filter_locations">Locations</label>
                     <input type="text" name="address_filter" id="filter_locations" class="filter-input" 
-                        value="{{ request('address_filter') }}" placeholder="Search locations...">
+                        value="{{ $filters['address_filter'] ?? '' }}" placeholder="Search locations...">
                 </div>
                 
                 <div class="filter-group">
                     <label for="filter_plan_type">Activity Type</label>
                     <select name="plan_type" id="filter_plan_type" class="filter-select">
                         <option value="">-- All Activity Types --</option>
-                        <option value="domestic" {{ request('plan_type') == 'domestic' ? 'selected' : '' }}>Domestic</option>
-                        <option value="commercial" {{ request('plan_type') == 'commercial' ? 'selected' : '' }}>Commercial </option>
-                        <option value="riser_hadder" {{ request('plan_type') == 'riser_hadder' ? 'selected' : '' }}>Riser-Hadder</option>
-                        <option value="dma" {{ request('plan_type') == 'dma' ? 'selected' : '' }}>DMA</option>
-                        <option value="welded" {{ request('plan_type') == 'welded' ? 'selected' : '' }}>Welded</option>
-                        <option value="o&m" {{ request('plan_type') == 'o&m' ? 'selected' : '' }}>O&M</option>
+                        <option value="domestic" {{ ($filters['plan_type'] ?? '') == 'domestic' ? 'selected' : '' }}>Domestic</option>
+                        <option value="commercial" {{ ($filters['plan_type'] ?? '') == 'commercial' ? 'selected' : '' }}>Commercial </option>
+                        <option value="riser_hadder" {{ ($filters['plan_type'] ?? '') == 'riser_hadder' ? 'selected' : '' }}>Riser-Hadder</option>
+                        <option value="dma" {{ ($filters['plan_type'] ?? '') == 'dma' ? 'selected' : '' }}>DMA</option>
+                        <option value="welded" {{ ($filters['plan_type'] ?? '') == 'welded' ? 'selected' : '' }}>Welded</option>
+                        <option value="o&m" {{ ($filters['plan_type'] ?? '') == 'o&m' ? 'selected' : '' }}>O&M</option>
                     </select>
                 </div>
 
                 <div class="filter-group">
                     <label for="filter_order_application">Order/Application/Notification</label>
                     <input type="text" name="order_application" id="filter_order_application" class="filter-input" 
-                        value="{{ request('order_application') }}" placeholder="Search order...">
+                        value="{{ $filters['order_application'] ?? '' }}" placeholder="Search order...">
                 </div>
 
                 <div class="filter-actions">
@@ -744,8 +959,50 @@ th:first-child {
             <button type="button" class="btn btn-secondary" onclick="clearAllFilters()">
                 <i class="fas fa-times"></i> Clear All Filters
             </button>
+            
+            <!-- Column Visibility Manager -->
+            <div class="column-manager-wrapper" style="position: relative; display: inline-block;">
+                <button type="button" class="btn btn-info" id="column-manager-btn" onclick="toggleColumnManager()">
+                    <i class="fas fa-columns"></i> Manage Columns
+                </button>
+                
+                <div id="column-manager-panel" class="column-manager-panel" style="display: none;">
+                    <div class="column-manager-header">
+                        <h4>Show/Hide Columns</h4>
+                        <button type="button" class="close-panel" onclick="toggleColumnManager()">×</button>
+                    </div>
+                    
+                    <div class="column-manager-body">
+                        <div class="column-section">
+                            <h5>Basic Information</h5>
+                            <div class="column-list" id="basic-columns-list">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="column-section">
+                            <h5>Technical Information</h5>
+                            <div class="column-list" id="technical-columns-list">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="column-manager-footer">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="selectAllColumns()">
+                            <i class="fas fa-check-double"></i> Select All
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="deselectAllColumns()">
+                            <i class="fas fa-times"></i> Deselect All
+                        </button>
+                        <button type="button" class="btn btn-sm btn-primary" onclick="resetToDefault()">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-              <button type="button" class="btn btn-danger" id="delete-selected-btn" onclick="deleteSelected()" style="display: none;">
+            <button type="button" class="btn btn-danger" id="delete-selected-btn" onclick="deleteSelected()" style="display: none;">
                 <i class="fas fa-trash-alt"></i> Delete Selected (<span id="selected-count">0</span>)
             </button>
         </div>
@@ -791,25 +1048,26 @@ th:first-child {
         </div>
 
         <!-- Single Form for All Searches -->
-        <form id="search-form" action="{{ route('png.index') }}" method="GET" style="display: none;">
+        <form id="search-form" action="{{ route('png.search') }}" method="POST" style="display: none;">
+            @csrf
             <!-- Top filter inputs (hidden) -->
-            <input type="hidden" name="contact_no_filter" value="{{ request('contact_no_filter') }}">
-            <input type="hidden" name="address_filter" value="{{ request('address_filter') }}">
-            <input type="hidden" name="plan_type" value="{{ request('plan_type') }}">
-            <input type="hidden" name="order_application" value="{{ request('order_application') }}">
+            <input type="hidden" name="contact_no_filter" value="{{ $filters['contact_no_filter'] ?? '' }}">
+            <input type="hidden" name="address_filter" value="{{ $filters['address_filter'] ?? '' }}">
+            <input type="hidden" name="plan_type" value="{{ $filters['plan_type'] ?? '' }}">
+            <input type="hidden" name="order_application" value="{{ $filters['order_application'] ?? '' }}">
             
             <!-- Inline search inputs (hidden, will be populated by JS) -->
-            <input type="hidden" name="agreement_date_from" value="{{ request('agreement_date_from') }}">
-            <input type="hidden" name="customer_no" value="{{ request('customer_no') }}">
-            <input type="hidden" name="service_order_no" value="{{ request('service_order_no') }}">
-            <input type="hidden" name="application_no" value="{{ request('application_no') }}">
-            <input type="hidden" name="customer_name" value="{{ request('customer_name') }}">
-            <input type="hidden" name="contact_no" value="{{ request('contact_no') }}">
-            <input type="hidden" name="address" value="{{ request('address') }}">
-            <input type="hidden" name="area" value="{{ request('area') }}">
-            <input type="hidden" name="scheme" value="{{ request('scheme') }}">
-            <input type="hidden" name="sla_days" value="{{ request('sla_days') }}">
-            <input type="hidden" name="connections_status" value="{{ request('connections_status') }}">
+            <input type="hidden" name="agreement_date_from" value="{{ $filters['agreement_date_from'] ?? '' }}">
+            <input type="hidden" name="customer_no" value="{{ $filters['customer_no'] ?? '' }}">
+            <input type="hidden" name="service_order_no" value="{{ $filters['service_order_no'] ?? '' }}">
+            <input type="hidden" name="application_no" value="{{ $filters['application_no'] ?? '' }}">
+            <input type="hidden" name="customer_name" value="{{ $filters['customer_name'] ?? '' }}">
+            <input type="hidden" name="contact_no" value="{{ $filters['contact_no'] ?? '' }}">
+            <input type="hidden" name="address" value="{{ $filters['address'] ?? '' }}">
+            <input type="hidden" name="area" value="{{ $filters['area'] ?? '' }}">
+            <input type="hidden" name="scheme" value="{{ $filters['scheme'] ?? '' }}">
+            <input type="hidden" name="sla_days" value="{{ $filters['sla_days'] ?? '' }}">
+            <input type="hidden" name="connections_status" value="{{ $filters['connections_status'] ?? '' }}">
             
             <!-- Sorting -->
             <input type="hidden" name="sort" value="{{ request('sort') }}">
@@ -989,7 +1247,6 @@ th:first-child {
                                 <td>
                                     <div class="action-icons">
                                         <a href="{{ route('png.show', $png) }}" class="action-icon icon-info" title="View"><i class="fas fa-eye"></i></a>
-                                        <a href="{{ route('png.edit', $png) }}" class="action-icon icon-edit" title="Edit"><i class="fas fa-edit"></i></a>
                                         
                                         <form id="delete-form-{{ $png->id }}" action="{{ route('png.destroy', $png) }}" method="POST" class="d-inline">
                                             @csrf
@@ -1005,7 +1262,11 @@ th:first-child {
                                 <td>{{ $png->customer_no ?? 'N/A' }}</td>
                                 <td>{{ $png->service_order_no ?? 'N/A' }}</td>
                                 <td>{{ $png->application_no ?? 'N/A' }}</td>
-                                <td><strong>{{ $png->customer_name }}</strong></td>
+                                <td>
+                                    <a href="{{ route('png.edit', $png) }}" target="_blank" class="customer-name-link" title="Click to edit">
+                                        <strong>{{ $png->customer_name }}</strong>
+                                    </a>
+                                </td>
                                 <td>{{ $png->customer_contact_no ?? 'N/A' }}</td>
                                 <td title="{{ $png->address }}">{{ Str::limit($png->address, 25) }}</td>
                                 <td>
@@ -1357,33 +1618,8 @@ function clearSelection() {
     }
 
     function clearAllFilters() {
-        // Clear top filter section
-        document.querySelectorAll('.filter-input, .filter-select').forEach(input => {
-            if (input.type === 'text' || input.type === 'number') {
-                input.value = '';
-            } else if (input.tagName === 'SELECT') {
-                input.selectedIndex = 0;
-            }
-        });
-        
-        // Clear inline table header filters
-        document.querySelectorAll('.header-search').forEach(input => {
-            input.value = '';
-        });
-        
-        document.querySelectorAll('.header-select').forEach(select => {
-            select.selectedIndex = 0;
-        });
-        
-        // Clear hidden form inputs
-        const form = document.getElementById('search-form');
-        form.querySelectorAll('input[type="hidden"]').forEach(input => {
-            if (!input.name.includes('sort') && !input.name.includes('direction')) {
-                input.value = '';
-            }
-        });
-        
-        form.submit();
+        // Redirect to index page with clear_filters parameter
+        window.location.href = '{{ route("png.index") }}?clear_filters=1';
     }
 
     function filterByStatus(status) {
@@ -1475,4 +1711,33 @@ function clearSelection() {
         }
     });
 </script>
+
+<!-- Column Manager Script -->
+<script src="{{ asset('js/png-column-manager.js') }}"></script>
+
+<!-- Add animation styles for notifications -->
+<style>
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+</style>
+
 @endsection

@@ -264,6 +264,7 @@ Route::delete('png/bulk-delete', [PngController::class, 'bulkDelete'])->name('pn
 
   // PNG Routes
     Route::resource('png', PngController::class);
+    Route::post('png/search', [PngController::class, 'index'])->name('png.search');
     
     // PNG Import/Export Routes
     Route::get('png-import', [PngController::class, 'showImportForm'])->name('png.import.form');
