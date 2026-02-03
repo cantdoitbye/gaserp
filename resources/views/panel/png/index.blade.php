@@ -1092,9 +1092,9 @@ th:first-child {
                             <th class="basic-info-header">
                                 <div class="header-search-container">
                                     <div class="header-title">Actions</div>
-                                    <button type="button" class="clear-filters-btn" onclick="clearAllFilters()" title="Clear all filters">
+                                    <!-- <button type="button" class="clear-filters-btn" onclick="clearAllFilters()" title="Clear all filters">
                                         <i class="fas fa-times"></i>
-                                    </button>
+                                    </button> -->
                                 </div>
                             </th>
                             <!-- Agreement Date Column -->

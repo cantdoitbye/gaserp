@@ -345,19 +345,36 @@ class PngController extends Controller
 
             // Handle multiple file uploads (similar to store)
             if ($request->hasFile('job_cards')) {
+
                 $jobCardsPaths = [];
+
                 foreach ($request->file('job_cards') as $file) {
                     $path = $file->store('png_job_cards', 'public');
+
                     $jobCardsPaths[] = [
                         'name' => $file->getClientOriginalName(),
                         'path' => $path,
                         'size' => $file->getSize(),
-                        'type' => $file->getClientMimeType()
+                        'type' => $file->getClientMimeType(),
                     ];
                 }
-                // Merge with existing files if needed
-                $existingFiles = $png->job_cards_paths ?? [];
-                $data['job_cards_paths'] = json_encode(array_merge($existingFiles, $jobCardsPaths));
+
+                // Decode existing files (JSON → array)
+                $existingFiles = [];
+
+                if (!empty($png->job_cards_paths)) {
+                    $existingFiles = json_decode($png->job_cards_paths, true);
+
+                    // Safety check
+                    if (!is_array($existingFiles)) {
+                        $existingFiles = [];
+                    }
+                }
+
+                // Merge old + new
+                $data['job_cards_paths'] = json_encode(
+                    array_merge($existingFiles, $jobCardsPaths)
+                );
             }
 
             // Auto-calculate totals

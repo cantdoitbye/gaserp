@@ -48,7 +48,7 @@ function base64Decode($value) {
 
 function ajaxSuccessResponse($status, $message = '', $data = []) {
     return [
-        'success' => $success,
+        'success' => $status,
         'message' => $message,
         'data' => $data,
     ];
@@ -202,7 +202,7 @@ function globalDeleteFileUrl($image) {
     return Storage::disk('public')->delete($image);
 }
 
-function uploadBase64($fileName = '', $directory, $prefix, $base64)
+function uploadBase64($directory, $prefix, $base64, $fileName = '')
 {
 
     list($baseType, $image) = explode(';', $base64);
