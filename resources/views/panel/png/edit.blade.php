@@ -647,7 +647,7 @@
 
 .checkbox-group {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     margin-bottom: 18px;
     padding: 12px 16px;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
