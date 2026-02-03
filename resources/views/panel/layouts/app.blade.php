@@ -110,6 +110,26 @@
             font-weight: 600;
         }
 
+        /* Logout Button - Red Styling */
+        .menu-item.logout-item {
+            color: #e74c3c !important;
+            margin-top: 10px;
+        }
+
+        .menu-item.logout-item:hover {
+            background: rgba(231, 76, 60, 0.1);
+            color: #c0392b !important;
+            transform: translateX(4px);
+        }
+
+        .menu-item.logout-item i {
+            color: #e74c3c !important;
+        }
+
+        .menu-item.logout-item:hover i {
+            color: #c0392b !important;
+        }
+
         .menu-item i {
             width: 22px;
             text-align: center;
@@ -607,7 +627,7 @@
         
         <form method="GET" action="{{ route('admin.logout') }}" id="logout-form">
             @csrf
-            <a href="#" class="menu-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <a href="#" class="menu-item logout-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </a>

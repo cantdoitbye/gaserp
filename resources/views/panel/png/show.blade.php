@@ -730,25 +730,34 @@
             @endforeach
             
             {{-- Multiple Files --}}
-            @foreach($multipleFileSections as $field => $config)
-                @if($png->$field && count($png->$field) > 0)
-                    @php $hasFiles = true; @endphp
-                    @foreach($png->$field as $index => $file)
-                        <div class="file-item">
-                            <i class="fas fa-{{ $config['icon'] }} file-icon text-{{ $config['color'] }}"></i>
-                            <span class="file-name">
-                                {{ $config['label'] }} {{ count($png->$field) > 1 ? '(' . ($index + 1) . ')' : '' }}
-                                @if(isset($file['name']))
-                                    - {{ $file['name'] }}
-                                @endif
-                            </span>
-                            <a href="{{ Storage::url($file['path']) }}" target="_blank" class="btn-custom btn-view">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                        </div>
-                    @endforeach
-                @endif
-            @endforeach
+            @php
+                $files = is_string($png->$field)
+                    ? json_decode($png->$field, true)
+                    : $png->$field;
+            @endphp
+
+            @if(is_array($files) && count($files) > 0)
+                @php $hasFiles = true; @endphp
+
+                @foreach($files as $index => $file)
+                    <div class="file-item">
+                        <i class="fas fa-{{ $config['icon'] }} file-icon text-{{ $config['color'] }}"></i>
+
+                        <span class="file-name">
+                            {{ $config['label'] }}
+                            {{ count($files) > 1 ? '(' . ($index + 1) . ')' : '' }}
+
+                            @if(isset($file['name']))
+                                - {{ $file['name'] }}
+                            @endif
+                        </span>
+
+                        <a href="{{ Storage::url($file['path']) }}" target="_blank" class="btn-custom btn-view">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                    </div>
+                @endforeach
+            @endif
             
             @if(!$hasFiles)
                 <p class="no-data-message">No files uploaded.</p>

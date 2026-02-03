@@ -329,7 +329,7 @@
 
 .checkbox-group {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     margin-bottom: 15px;
 }
 

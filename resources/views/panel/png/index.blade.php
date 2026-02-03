@@ -4,6 +4,79 @@
 @section('styles')
 <link rel="stylesheet" href="{{ asset('panel/pe-tracker.css') }}">
 <style>
+/* Active Filters Section */
+.active-filters-section {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.active-filters-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+    margin-right: 5px;
+}
+
+.active-filters-label i {
+    color: #3b82f6;
+    margin-right: 5px;
+}
+
+.filter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.filter-badge .badge-label {
+    opacity: 0.9;
+}
+
+.filter-badge .badge-value {
+    font-weight: 600;
+}
+
+.filter-badge .remove-filter {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 10px;
+    transition: all 0.2s ease;
+    margin-left: 4px;
+}
+
+.filter-badge .remove-filter:hover {
+    background: rgba(255,255,255,0.4);
+    transform: scale(1.1);
+}
+
+.no-filters-text {
+    font-size: 13px;
+    color: #6c757d;
+    font-style: italic;
+}
+
 /* Report Section Styles */
 .report-section {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -808,6 +881,290 @@ th:first-child {
 
 .btn-cancel:hover { background: #e2e8f0; }
 .btn-confirm-delete:hover { background: #c53030; }
+
+/* Plumber Selection Popup Styles */
+.plumber-cell {
+    cursor: pointer;
+    color: #3b82f6;
+    transition: all 0.2s ease;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.plumber-cell:hover {
+    background: #eff6ff;
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+.plumber-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.plumber-popup {
+    background: white;
+    border-radius: 12px;
+    width: 450px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: popupSlideIn 0.3s ease-out;
+}
+
+@keyframes popupSlideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.plumber-popup-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.plumber-popup-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.close-popup-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.close-popup-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.plumber-popup-body {
+    padding: 20px;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.plumber-search-box {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 15px;
+    transition: border-color 0.2s;
+}
+
+.plumber-search-box:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.plumber-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.plumber-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.plumber-item:hover {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    transform: translateX(4px);
+}
+
+.plumber-item-name {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.plumber-item-contact {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.plumber-item-select {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.plumber-item:hover .plumber-item-select {
+    opacity: 1;
+}
+
+.plumber-popup-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+    display: flex;
+    gap: 10px;
+}
+
+.add-plumber-btn {
+    flex: 1;
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.2s;
+}
+
+.add-plumber-btn:hover {
+    background: #059669;
+}
+
+.current-plumber-info {
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+.current-plumber-info strong {
+    color: #92400e;
+}
+
+/* Popup Tabs */
+.popup-tabs {
+    display: flex;
+    background: #f1f5f9;
+    padding: 0 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.popup-tab {
+    padding: 12px 20px;
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.popup-tab.active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+    background: white;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px 0;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.d-grid {
+    display: grid;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    transition: background 0.2s;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+}
+
+.btn-success {
+    background: #10b981;
+    color: white;
+    border: none;
+    transition: background 0.2s;
+}
+
+.btn-success:hover {
+    background: #059669;
+}
 </style>
 @endsection
 
@@ -861,6 +1218,95 @@ th:first-child {
             </div>
         </div>
     </div>
+
+    {{-- Active Filters Display --}}
+    @php
+        $hasActiveFilters = !empty($filters['contact_no_filter']) || 
+                            !empty($filters['address_filter']) || 
+                            !empty($filters['plan_type']) || 
+                            !empty($filters['order_application']) ||
+                            !empty($filters['connections_status']) ||
+                            !empty($filters['customer_name']) ||
+                            !empty($filters['service_order_no']);
+    @endphp
+    
+    @if($hasActiveFilters)
+    <div class="active-filters-section">
+        <span class="active-filters-label">
+            <i class="fas fa-filter"></i> Active Filters:
+        </span>
+        
+        @if(!empty($filters['contact_no_filter']))
+        <span class="filter-badge">
+            <span class="badge-label">Contact:</span>
+            <span class="badge-value">{{ $filters['contact_no_filter'] }}</span>
+            <button type="button" class="remove-filter" onclick="removeFilter('contact_no_filter')" title="Remove filter">
+                <i class="fas fa-times"></i>
+            </button>
+        </span>
+        @endif
+        
+        @if(!empty($filters['address_filter']))
+        <span class="filter-badge">
+            <span class="badge-label">Location:</span>
+            <span class="badge-value">{{ $filters['address_filter'] }}</span>
+            <button type="button" class="remove-filter" onclick="removeFilter('address_filter')" title="Remove filter">
+                <i class="fas fa-times"></i>
+            </button>
+        </span>
+        @endif
+        
+        @if(!empty($filters['plan_type']))
+        <span class="filter-badge">
+            <span class="badge-label">Activity:</span>
+            <span class="badge-value">{{ $filters['plan_type'] }}</span>
+            <button type="button" class="remove-filter" onclick="removeFilter('plan_type')" title="Remove filter">
+                <i class="fas fa-times"></i>
+            </button>
+        </span>
+        @endif
+        
+        @if(!empty($filters['order_application']))
+        <span class="filter-badge">
+            <span class="badge-label">Order:</span>
+            <span class="badge-value">{{ $filters['order_application'] }}</span>
+            <button type="button" class="remove-filter" onclick="removeFilter('order_application')" title="Remove filter">
+                <i class="fas fa-times"></i>
+            </button>
+        </span>
+        @endif
+        
+        @if(!empty($filters['customer_name']))
+        <span class="filter-badge">
+            <span class="badge-label">Name:</span>
+            <span class="badge-value">{{ $filters['customer_name'] }}</span>
+            <button type="button" class="remove-filter" onclick="removeFilter('customer_name')" title="Remove filter">
+                <i class="fas fa-times"></i>
+            </button>
+        </span>
+        @endif
+        
+        @if(!empty($filters['service_order_no']))
+        <span class="filter-badge">
+            <span class="badge-label">Service Order:</span>
+            <span class="badge-value">{{ $filters['service_order_no'] }}</span>
+            <button type="button" class="remove-filter" onclick="removeFilter('service_order_no')" title="Remove filter">
+                <i class="fas fa-times"></i>
+            </button>
+        </span>
+        @endif
+        
+        @if(!empty($filters['connections_status']))
+        <span class="filter-badge">
+            <span class="badge-label">Status:</span>
+            <span class="badge-value">{{ ucwords(str_replace('_', ' ', $filters['connections_status'])) }}</span>
+            <button type="button" class="remove-filter" onclick="removeFilter('connections_status')" title="Remove filter">
+                <i class="fas fa-times"></i>
+            </button>
+        </span>
+        @endif
+    </div>
+    @endif
 
     <h1 class="page-title">PNG Data Tracker</h1>
 
@@ -1092,9 +1538,9 @@ th:first-child {
                             <th class="basic-info-header">
                                 <div class="header-search-container">
                                     <div class="header-title">Actions</div>
-                                    <button type="button" class="clear-filters-btn" onclick="clearAllFilters()" title="Clear all filters">
+                                    <!-- <button type="button" class="clear-filters-btn" onclick="clearAllFilters()" title="Clear all filters">
                                         <i class="fas fa-times"></i>
-                                    </button>
+                                    </button> -->
                                 </div>
                             </th>
                             <!-- Agreement Date Column -->
@@ -1339,7 +1785,14 @@ th:first-child {
                                         N/A
                                     @endif
                                 </td>
-                                <td>{{ $png->plb_name ?? 'N/A' }}</td>
+                                <td>
+                                    <span class="plumber-cell" 
+                                          onclick="openPlumberPopup({{ $png->id }}, '{{ $png->plb_name ?? '' }}')"
+                                          id="plumber-cell-{{ $png->id }}"
+                                          title="Click to change plumber">
+                                        {{ $png->plb_name ?? 'N/A' }}
+                                    </span>
+                                </td>
                                 <td>{{ $png->plb_date ? $png->plb_date->format('d-m-Y') : 'N/A' }}</td>
                                 <td>{{ $png->pdt_date ? $png->pdt_date->format('d-m-Y') : 'N/A' }}</td>
                                 <td>{{ $png->pdt_witness_by ?? 'N/A' }}</td>
@@ -1446,6 +1899,81 @@ th:first-child {
         </div>
     </div>
 </div>
+
+{{-- Plumber Data Popup --}}
+<div id="plumberPopupOverlay" class="plumber-popup-overlay" onclick="closePlumberPopup(event)">
+    <div class="plumber-popup" onclick="event.stopPropagation()">
+        <div class="plumber-popup-header">
+            <h3><i class="fas fa-user-hard-hat"></i> Update Plumber Data</h3>
+            <button type="button" class="close-popup-btn" onclick="closePlumberPopup()">&times;</button>
+        </div>
+        
+        <div class="popup-tabs">
+            <button class="popup-tab active" onclick="switchPopupTab('manual')">Manual Entry</button>
+            <button class="popup-tab" onclick="switchPopupTab('excel')">Import Excel</button>
+        </div>
+
+        <div class="plumber-popup-body">
+            <div class="current-plumber-info" id="currentPlumberInfo" style="display: none;">
+                <i class="fas fa-info-circle"></i> 
+                Current: <strong id="currentPlumberName"></strong>
+            </div>
+
+            {{-- Manual Entry Form --}}
+            <div id="manualTabContent" class="tab-content active">
+                <form id="plumberManualForm" onsubmit="submitPlumberManual(event)">
+                    <div class="form-group mb-3">
+                        <label class="form-label">Plumber Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="plb_name" id="manual_plb_name" required placeholder="Enter plumber name">
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label class="form-label">Plumbing Date</label>
+                        <input type="date" class="form-control" name="plb_date" id="manual_plb_date">
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Remarks</label>
+                        <textarea class="form-control" name="remarks" id="manual_remarks" rows="2" placeholder="Optional remarks"></textarea>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Data
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            {{-- Excel Import Form --}}
+            <div id="excelTabContent" class="tab-content" style="display: none;">
+                <form id="plumberExcelForm" onsubmit="submitPlumberExcel(event)">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Upload Excel file with plumber data for this record.
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Select Excel/CSV File <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" name="plumber_file" id="plumber_file" accept=".xlsx,.xls,.csv" required>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-file-upload"></i> Upload & Update
+                        </button>
+                    </div>
+                    
+                    <div class="mt-3 text-center">
+                        <a href="{{ route('png.download-template') }}" class="text-muted small">
+                            <i class="fas fa-download"></i> Download Template
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -1473,6 +2001,139 @@ th:first-child {
         let overlay = document.getElementById('deleteModalOverlay');
         if (event.target == overlay) {
             closeDeleteModal();
+        }
+    }
+
+    // ============ Plumber Popup Functions ============
+    let currentPngId = null;
+    
+    function openPlumberPopup(pngId, currentPlumber) {
+        currentPngId = pngId;
+        const overlay = document.getElementById('plumberPopupOverlay');
+        const currentInfo = document.getElementById('currentPlumberInfo');
+        const currentName = document.getElementById('currentPlumberName');
+        
+        // Show current plumber if exists
+        if (currentPlumber && currentPlumber.trim() !== '') {
+            currentName.textContent = currentPlumber;
+            currentInfo.style.display = 'block';
+        } else {
+            currentInfo.style.display = 'none';
+        }
+        
+        // Reset forms
+        document.getElementById('plumberManualForm').reset();
+        document.getElementById('plumberExcelForm').reset();
+        
+        // Default to manual tab
+        switchPopupTab('manual');
+        
+        overlay.style.display = 'flex';
+    }
+    
+    function closePlumberPopup(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById('plumberPopupOverlay').style.display = 'none';
+        currentPngId = null;
+    }
+    
+    function switchPopupTab(tabName) {
+        // Update tab buttons
+        document.querySelectorAll('.popup-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        const activeTabBtn = document.querySelector(`.popup-tab[onclick="switchPopupTab('${tabName}')"]`);
+        if(activeTabBtn) activeTabBtn.classList.add('active');
+        
+        // Update content
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.style.display = 'none';
+            content.classList.remove('active');
+        });
+        
+        const activeContent = document.getElementById(`${tabName}TabContent`);
+        if(activeContent) {
+            activeContent.style.display = 'block';
+            activeContent.classList.add('active');
+        }
+    }
+    
+    function submitPlumberManual(event) {
+        event.preventDefault();
+        if (!currentPngId) return;
+        
+        const form = document.getElementById('plumberManualForm');
+        const formData = new FormData(form);
+        
+        // Add png_id to data
+        const data = {
+            png_id: currentPngId,
+            plb_name: formData.get('plb_name'),
+            plb_date: formData.get('plb_date'),
+            remarks: formData.get('remarks')
+        };
+        
+        fetch('{{ route("png.update-plumber") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updatePlumberCell(currentPngId, data.plb_name);
+                closePlumberPopup();
+                // Optionally show toast success
+            } else {
+                alert('Error: ' + (data.message || 'Update failed'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    }
+    
+    function submitPlumberExcel(event) {
+        event.preventDefault();
+        if (!currentPngId) return;
+        
+        const form = document.getElementById('plumberExcelForm');
+        const formData = new FormData(form);
+        formData.append('png_id', currentPngId);
+        
+        fetch('{{ route("png.import-plumber-data") }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updatePlumberCell(currentPngId, data.plb_name);
+                closePlumberPopup();
+                alert('Data imported successfully!');
+            } else {
+                alert('Error: ' + (data.message || 'Import failed'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred during upload. Please try again.');
+        });
+    }
+    
+    function updatePlumberCell(id, name) {
+        const cell = document.getElementById('plumber-cell-' + id);
+        if (cell) {
+            cell.textContent = name;
+            // Update onclick to show new current name next time
+            cell.onclick = function() { openPlumberPopup(id, name); };
         }
     }
     document.addEventListener('DOMContentLoaded', function() {
@@ -1620,6 +2281,36 @@ function clearSelection() {
     function clearAllFilters() {
         // Redirect to index page with clear_filters parameter
         window.location.href = '{{ route("png.index") }}?clear_filters=1';
+    }
+
+    function removeFilter(filterName) {
+        // Map filter names to their corresponding input elements
+        const filterInputMap = {
+            'contact_no_filter': 'filter_contact_numbers',
+            'address_filter': 'filter_locations',
+            'plan_type': 'filter_plan_type',
+            'order_application': 'filter_order_application',
+            'connections_status': null, // Hidden input only
+            'customer_name': null, // Header search
+            'service_order_no': null // Header search
+        };
+        
+        const inputId = filterInputMap[filterName];
+        if (inputId) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.value = '';
+            }
+            // Also clear hidden form inputs
+            const form = document.getElementById('search-form');
+            const hiddenInput = form.querySelector('input[name="' + filterName + '"]');
+            if (hiddenInput) {
+                hiddenInput.value = '';
+            }
+        }
+        
+        // Resubmit the form
+        submitSearch();
     }
 
     function filterByStatus(status) {

@@ -345,19 +345,36 @@ class PngController extends Controller
 
             // Handle multiple file uploads (similar to store)
             if ($request->hasFile('job_cards')) {
+
                 $jobCardsPaths = [];
+
                 foreach ($request->file('job_cards') as $file) {
                     $path = $file->store('png_job_cards', 'public');
+
                     $jobCardsPaths[] = [
                         'name' => $file->getClientOriginalName(),
                         'path' => $path,
                         'size' => $file->getSize(),
-                        'type' => $file->getClientMimeType()
+                        'type' => $file->getClientMimeType(),
                     ];
                 }
-                // Merge with existing files if needed
-                $existingFiles = $png->job_cards_paths ?? [];
-                $data['job_cards_paths'] = json_encode(array_merge($existingFiles, $jobCardsPaths));
+
+                // Decode existing files (JSON → array)
+                $existingFiles = [];
+
+                if (!empty($png->job_cards_paths)) {
+                    $existingFiles = json_decode($png->job_cards_paths, true);
+
+                    // Safety check
+                    if (!is_array($existingFiles)) {
+                        $existingFiles = [];
+                    }
+                }
+
+                // Merge old + new
+                $data['job_cards_paths'] = json_encode(
+                    array_merge($existingFiles, $jobCardsPaths)
+                );
             }
 
             // Auto-calculate totals
@@ -768,6 +785,128 @@ already deleted.";
             return redirect()->back()
                 ->with('error', 'An error occurred while deleting the PNG jobs: ' . 
 $e->getMessage());
+        }
+    }
+
+    /**
+     * Update plumber name via AJAX (Manual Entry)
+     */
+    public function updatePlumber(Request $request)
+    {
+        try {
+            $request->validate([
+                'png_id' => 'required|exists:pngs,id',
+                'plb_name' => 'required|string|max:255',
+                'plb_date' => 'nullable|date',
+                'remarks' => 'nullable|string'
+            ]);
+
+            $png = Png::findOrFail($request->png_id);
+            $png->plb_name = $request->plb_name;
+            if ($request->has('plb_date')) {
+                $png->plb_date = $request->plb_date;
+            }
+            if ($request->filled('remarks')) {
+                $png->remarks = $request->remarks;
+            }
+            $png->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Plumber data updated successfully',
+                'plb_name' => $png->plb_name
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Plumber update failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update plumber: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Import plumber data via Excel for specific record
+     */
+    public function importPlumberData(Request $request)
+    {
+        try {
+            $request->validate([
+                'png_id' => 'required|exists:pngs,id',
+                'plumber_file' => 'required|file|mimes:xlsx,xls,csv|max:2048'
+            ]);
+
+            $png = Png::findOrFail($request->png_id);
+            
+            // Temporary simple import: Read first row of data
+            $data = Excel::toArray([], $request->file('plumber_file'));
+            
+            if (empty($data) || empty($data[0])) {
+                throw new \Exception('Empty file or invalid format');
+            }
+
+            // Assume first sheet
+            $rows = $data[0];
+            
+            // Logic: 
+            // If header exists, look for 'Plumber Name', 'Date'. 
+            // If not found or just values, assume 1st column = Name, 2nd = Date
+            
+            $header = array_map('strtolower', $rows[0]);
+            $nameIndex = 0;
+            $dateIndex = 1;
+
+            // Try to find columns by name
+            $foundName = array_search('plumber name', $header);
+            if ($foundName !== false) $nameIndex = $foundName;
+            
+            $foundDate = array_search('plumbing date', $header);
+            if ($foundDate !== false) $dateIndex = $foundDate;
+
+            // Get data from 2nd row (index 1) if header exists, else 1st row if no header? 
+            // usually excel has header. Let's assume header exists.
+            if (count($rows) < 2) {
+                 throw new \Exception('No data rows found in file');
+            }
+
+            $dataRow = $rows[1];
+            
+            $plumberName = $dataRow[$nameIndex] ?? null;
+            $plumbingDate = $dataRow[$dateIndex] ?? null;
+
+            if (!$plumberName) {
+                throw new \Exception('Plumber Name not found in file');
+            }
+
+            $png->plb_name = $plumberName;
+            
+            if ($plumbingDate) {
+                // Try to parse excel date or string date
+                try {
+                     if (is_numeric($plumbingDate)) {
+                        $png->plb_date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($plumbingDate);
+                     } else {
+                        $png->plb_date = \Carbon\Carbon::parse($plumbingDate);
+                     }
+                } catch (\Exception $e) {
+                    // Ignore date parse error, keep existing or null
+                }
+            }
+            
+            $png->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Plumber data imported successfully',
+                'plb_name' => $png->plb_name
+            ]);
+
+        } catch (\Exception $e) {
+             \Log::error('Plumber import failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Import failed: ' . $e->getMessage()
+            ], 500);
         }
     }
 }
