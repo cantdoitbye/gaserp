@@ -917,7 +917,7 @@
     <select name="project_id" class="form-control @error('project_id') is-invalid @enderror">
         <option value="">Select Project</option>
         @foreach(\App\Models\Project::all() as $project)
-            <option value="{{ $project->id }}" {{ old('project_id') == $project->id ? 'selected' : '' }}>
+            <option value="{{ $project->id }}" {{ old('project_id', $png->project_id) == $project->id ? 'selected' : '' }}>
                 {{ $project->name }}
             </option>
         @endforeach
@@ -1726,10 +1726,15 @@
                                 <h5>AutoCad DWG</h5>
                             </div>
                             
-                            @if($png->autocad_dwg_paths && count($png->autocad_dwg_paths) > 0)
+                            @php
+                                $autocadFiles = is_string($png->autocad_dwg_paths) 
+                                    ? json_decode($png->autocad_dwg_paths, true) 
+                                    : $png->autocad_dwg_paths;
+                            @endphp
+                            @if(is_array($autocadFiles) && count($autocadFiles) > 0)
                                 <div class="existing-files-list">
                                     <div class="existing-files-title">Existing Files:</div>
-                                    @foreach($png->autocad_dwg_paths as $file)
+                                    @foreach($autocadFiles as $file)
                                         <div class="existing-file">
                                             <a href="{{ Storage::url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
                                             <small>{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>
@@ -1759,10 +1764,15 @@
                                 <h5>Site Visit Reports</h5>
                             </div>
                             
-                            @if($png->site_visit_reports_paths && count($png->site_visit_reports_paths) > 0)
+                            @php
+                                $siteVisitFiles = is_string($png->site_visit_reports_paths) 
+                                    ? json_decode($png->site_visit_reports_paths, true) 
+                                    : $png->site_visit_reports_paths;
+                            @endphp
+                            @if(is_array($siteVisitFiles) && count($siteVisitFiles) > 0)
                                 <div class="existing-files-list">
                                     <div class="existing-files-title">Existing Files:</div>
-                                    @foreach($png->site_visit_reports_paths as $file)
+                                    @foreach($siteVisitFiles as $file)
                                         <div class="existing-file">
                                             <a href="{{ Storage::url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
                                             <small>{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>
@@ -1822,10 +1832,15 @@
                     <div class="form-row">
                         <div class="form-group-full">
                             <label class="form-label">Other Documents</label>
-                            @if($png->other_documents_paths && count($png->other_documents_paths) > 0)
+                            @php
+                                $otherDocsFiles = is_string($png->other_documents_paths) 
+                                    ? json_decode($png->other_documents_paths, true) 
+                                    : $png->other_documents_paths;
+                            @endphp
+                            @if(is_array($otherDocsFiles) && count($otherDocsFiles) > 0)
                                 <div class="existing-files-list">
                                     <div class="existing-files-title">Existing Files:</div>
-                                    @foreach($png->other_documents_paths as $file)
+                                    @foreach($otherDocsFiles as $file)
                                         <div class="existing-file">
                                             <a href="{{ Storage::url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
                                             <small>{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>

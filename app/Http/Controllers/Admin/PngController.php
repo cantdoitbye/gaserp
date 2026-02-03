@@ -377,6 +377,111 @@ class PngController extends Controller
                 );
             }
 
+            // Handle AutoCad DWG uploads
+            if ($request->hasFile('autocad_dwg')) {
+                $autocadPaths = [];
+                foreach ($request->file('autocad_dwg') as $file) {
+                    $path = $file->store('png_autocad_dwg', 'public');
+                    $autocadPaths[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'size' => $file->getSize(),
+                        'type' => $file->getClientMimeType()
+                    ];
+                }
+
+                // Merge with existing files
+                $existingFiles = [];
+                if (!empty($png->autocad_dwg_paths)) {
+                    $existingFiles = is_string($png->autocad_dwg_paths) 
+                        ? json_decode($png->autocad_dwg_paths, true) 
+                        : $png->autocad_dwg_paths;
+                    if (!is_array($existingFiles)) {
+                        $existingFiles = [];
+                    }
+                }
+                $data['autocad_dwg_paths'] = json_encode(array_merge($existingFiles, $autocadPaths));
+            }
+
+            // Handle Site Visit Reports uploads
+            if ($request->hasFile('site_visit_reports')) {
+                $siteVisitPaths = [];
+                foreach ($request->file('site_visit_reports') as $file) {
+                    $path = $file->store('png_site_visit_reports', 'public');
+                    $siteVisitPaths[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'size' => $file->getSize(),
+                        'type' => $file->getClientMimeType()
+                    ];
+                }
+
+                // Merge with existing files
+                $existingFiles = [];
+                if (!empty($png->site_visit_reports_paths)) {
+                    $existingFiles = is_string($png->site_visit_reports_paths) 
+                        ? json_decode($png->site_visit_reports_paths, true) 
+                        : $png->site_visit_reports_paths;
+                    if (!is_array($existingFiles)) {
+                        $existingFiles = [];
+                    }
+                }
+                $data['site_visit_reports_paths'] = json_encode(array_merge($existingFiles, $siteVisitPaths));
+            }
+
+            // Handle Other Documents uploads
+            if ($request->hasFile('other_documents')) {
+                $otherDocsPaths = [];
+                foreach ($request->file('other_documents') as $file) {
+                    $path = $file->store('png_other_documents', 'public');
+                    $otherDocsPaths[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'size' => $file->getSize(),
+                        'type' => $file->getClientMimeType()
+                    ];
+                }
+
+                // Merge with existing files
+                $existingFiles = [];
+                if (!empty($png->other_documents_paths)) {
+                    $existingFiles = is_string($png->other_documents_paths) 
+                        ? json_decode($png->other_documents_paths, true) 
+                        : $png->other_documents_paths;
+                    if (!is_array($existingFiles)) {
+                        $existingFiles = [];
+                    }
+                }
+                $data['other_documents_paths'] = json_encode(array_merge($existingFiles, $otherDocsPaths));
+            }
+
+            // Handle Additional Documents uploads
+            if ($request->hasFile('additional_documents')) {
+                $additionalDocsPaths = [];
+                foreach ($request->file('additional_documents') as $file) {
+                    $path = $file->store('png_additional_documents', 'public');
+                    $additionalDocsPaths[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'size' => $file->getSize(),
+                        'type' => $file->getClientMimeType()
+                    ];
+                }
+
+                // Merge with existing files
+                $existingFiles = [];
+                if (!empty($png->additional_documents)) {
+                    $existingFiles = is_string($png->additional_documents) 
+                        ? json_decode($png->additional_documents, true) 
+                        : $png->additional_documents;
+                    if (!is_array($existingFiles)) {
+                        $existingFiles = [];
+                    }
+                }
+                $data['additional_documents'] = json_encode(array_merge($existingFiles, $additionalDocsPaths));
+            }
+
+
             // Auto-calculate totals
             if ($request->filled([
                 'gi_guard_to_main_valve_half_inch',

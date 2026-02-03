@@ -362,11 +362,10 @@
     box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
 }
 
-/* Datepicker specific styling */
-.flatpickr-input {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
+/* Datepicker styling - matches header-search */
+.header-search-container input.form-control {
+    padding: 6px 8px !important;
+    font-size: 12px !important;
 } 
 
 .status-conv-done { background-color: #d4edda; color: #155724; }
@@ -2139,9 +2138,7 @@ th:first-child {
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize Datepicker
         flatpickr("#date_picker", {
-            dateFormat: "Y-m-d",
-            altInput: true,
-            altFormat: "d-m-Y", // Shows user-friendly date, sends Y-m-d to server
+            dateFormat: "d-m-Y",
             allowInput: true,
             onChange: function(selectedDates, dateStr, instance) {
                 // Manually trigger the update when a date is picked
