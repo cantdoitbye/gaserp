@@ -3,108 +3,383 @@
 @section('styles')
 <link rel="stylesheet" href="{{ asset('panel/pe-tracker.css') }}">
 <style>
+/* ==========================================
+   MODERN UI STYLES - PNG EDIT FORM
+   Color Scheme: Modern Blue Theme
+   ========================================== */
+
+/* Validation Alert Box */
+.validation-alert {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 15px rgba(238, 90, 90, 0.3);
+    animation: slideDown 0.4s ease;
+    position: relative;
+}
+
+.validation-alert::before {
+    content: '\f071';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 40px;
+    opacity: 0.2;
+}
+
+.validation-alert h4 {
+    margin: 0 0 12px 0;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.validation-alert h4 i {
+    font-size: 20px;
+}
+
+.validation-alert ul {
+    margin: 0;
+    padding-left: 20px;
+    list-style: none;
+}
+
+.validation-alert ul li {
+    padding: 6px 0;
+    font-size: 14px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.validation-alert ul li::before {
+    content: '\f00d';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    font-size: 12px;
+}
+
+.validation-alert .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.validation-alert .close-btn:hover {
+    background: rgba(255,255,255,0.4);
+    transform: rotate(90deg);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Success Alert */
+.success-alert {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 18px 24px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    animation: slideDown 0.4s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.success-alert i {
+    font-size: 24px;
+}
+
+.success-alert span {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+/* Modern Form Card */
+.form-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08), 0 2px 10px rgba(0,0,0,0.04);
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.form-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    padding: 24px 30px;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-header::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+}
+
+.form-body {
+    padding: 30px;
+}
+
+/* Modern Tabs */
 .form-tabs {
     display: flex;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 20px;
+    gap: 8px;
+    background: #f1f5f9;
+    padding: 8px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
 }
+
 .form-tab {
-    padding: 10px 20px;
+    padding: 14px 24px;
     cursor: pointer;
     border: none;
-    background: #f8f9fa;
-    border-bottom: 3px solid transparent;
+    background: transparent;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #64748b;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
+
+.form-tab:hover {
+    background: rgba(59, 130, 246, 0.08);
+    color: #3b82f6;
+}
+
 .form-tab.active {
-    background: white;
-    border-bottom-color: #007bff;
-    color: #007bff;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.35);
+    transform: translateY(-1px);
 }
+
+.form-tab i {
+    margin-right: 8px;
+}
+
 .tab-content {
     display: none;
+    animation: fadeIn 0.4s ease;
 }
+
 .tab-content.active {
     display: block;
 }
-.form-section-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 20px 0 15px 0;
-    color: #333;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
-}
-.calculated-field {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-}
-.measurement-group {
-    background-color: #f9f9f9;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-.measurement-category {
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    background-color: #f8f9fa;
-}
-.measurement-category h5 {
-    margin-bottom: 15px;
-    color: #495057;
-    font-weight: 600;
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Files & Documents Styles */
+/* Form Section Title */
+.form-section-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 28px 0 20px 0;
+    color: #1e293b;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #3b82f6;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-section-title i {
+    color: #3b82f6;
+}
+
+/* Modern Form Controls */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    display: block;
+    font-size: 14px;
+}
+
+.form-label .required {
+    color: #ef4444;
+    font-weight: 700;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.form-control.is-invalid {
+    border-color: #ef4444;
+    background: #fef2f2;
+}
+
+.form-control.is-invalid:focus {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.invalid-feedback {
+    color: #ef4444;
+    font-size: 13px;
+    margin-top: 6px;
+    display: block;
+    font-weight: 500;
+}
+
+/* Modern Form Row */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+/* Calculated Field */
+.calculated-field {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 2px solid #e2e8f0;
+    cursor: not-allowed;
+}
+
+/* Measurement Styles */
+.measurement-group {
+    background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.measurement-category {
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.measurement-category h5 {
+    margin-bottom: 20px;
+    color: #1e293b;
+    font-weight: 700;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.measurement-category h5 i {
+    color: #3b82f6;
+}
+
+/* Documents Grid */
 .documents-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    gap: 24px;
     margin-bottom: 30px;
 }
 
 .document-section {
-    border: 2px dashed #dee2e6;
-    border-radius: 12px;
-    padding: 20px;
-    background: #f8f9fa;
+    border: 2px dashed #cbd5e1;
+    border-radius: 16px;
+    padding: 24px;
+    background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
     transition: all 0.3s ease;
 }
 
 .document-section:hover {
-    border-color: #007bff;
-    background: rgba(0, 123, 255, 0.05);
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.02);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
 }
 
 .document-header {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e2e8f0;
 }
 
 .document-icon {
-    font-size: 24px;
-    margin-right: 10px;
-    color: #007bff;
+    font-size: 28px;
+    margin-right: 12px;
+    color: #3b82f6;
 }
 
 .document-header h5 {
     margin: 0;
-    color: #495057;
-    font-weight: 600;
+    color: #1e293b;
+    font-weight: 700;
+    font-size: 15px;
 }
 
 .document-upload-area {
     position: relative;
-    min-height: 120px;
+    min-height: 130px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .file-input {
@@ -123,39 +398,39 @@
     width: 100%;
     height: 100%;
     background: white;
-    border: 2px dashed #ced4da;
-    border-radius: 8px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
-    padding: 20px;
+    padding: 24px;
 }
 
 .file-upload-label:hover {
-    border-color: #007bff;
-    background: rgba(0, 123, 255, 0.05);
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.02);
 }
 
 .file-upload-label i {
-    font-size: 32px;
-    color: #6c757d;
-    margin-bottom: 8px;
+    font-size: 36px;
+    color: #94a3b8;
+    margin-bottom: 10px;
 }
 
 .file-upload-label span {
-    font-weight: 500;
-    color: #495057;
-    margin-bottom: 4px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
 }
 
 .file-upload-label small {
-    color: #6c757d;
+    color: #94a3b8;
     font-size: 12px;
 }
 
 .file-preview {
-    margin-top: 10px;
-    max-height: 150px;
+    margin-top: 12px;
+    max-height: 160px;
     overflow-y: auto;
 }
 
@@ -164,41 +439,47 @@
     align-items: center;
     justify-content: space-between;
     background: white;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    padding: 8px 12px;
-    margin-bottom: 5px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 6px;
 }
 
 .file-preview-item .file-name {
     flex: 1;
     font-size: 13px;
-    color: #495057;
+    color: #475569;
     margin-right: 10px;
+    font-weight: 500;
 }
 
 .file-preview-item .file-size {
     font-size: 11px;
-    color: #6c757d;
+    color: #94a3b8;
     margin-right: 10px;
 }
 
 .file-preview-item .remove-file {
-    background: #dc3545;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
     border: none;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     cursor: pointer;
     font-size: 10px;
+    transition: all 0.3s ease;
+}
+
+.file-preview-item .remove-file:hover {
+    transform: scale(1.1);
 }
 
 .existing-file {
-    background: #e9ecef;
-    color: #495057;
-    padding: 8px 12px;
-    border-radius: 4px;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    color: #475569;
+    padding: 10px 14px;
+    border-radius: 8px;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
@@ -206,9 +487,10 @@
 }
 
 .existing-file a {
-    color: #007bff;
+    color: #3b82f6;
     text-decoration: none;
     font-size: 13px;
+    font-weight: 600;
 }
 
 .existing-file a:hover {
@@ -216,13 +498,14 @@
 }
 
 .existing-files-list {
-    margin-bottom: 15px;
+    margin-bottom: 16px;
 }
 
 .existing-files-title {
-    font-weight: 500;
-    margin-bottom: 10px;
-    color: #495057;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #475569;
+    font-size: 14px;
 }
 
 .document-info {
@@ -231,15 +514,16 @@
 
 .form-file-info {
     font-size: 12px;
-    color: #6c757d;
-    margin-top: 5px;
+    color: #94a3b8;
+    margin-top: 6px;
 }
 
+/* Modern Step Progress */
 .step-progress {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 30px;
-    padding: 0 20px;
+    margin-bottom: 35px;
+    padding: 0 10px;
 }
 
 .step-item {
@@ -253,64 +537,82 @@
 .step-item:not(:last-child)::after {
     content: '';
     position: absolute;
-    top: 15px;
-    left: 60%;
-    width: 80%;
-    height: 2px;
-    background-color: #dee2e6;
+    top: 18px;
+    left: 55%;
+    width: 85%;
+    height: 3px;
+    background: linear-gradient(90deg, #e2e8f0 0%, #e2e8f0 100%);
     z-index: 0;
+    border-radius: 2px;
 }
 
 .step-item.active:not(:last-child)::after {
-    background-color: #007bff;
+    background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+}
+
+.step-item.completed:not(:last-child)::after {
+    background: linear-gradient(90deg, #22c55e 0%, #4ade80 100%);
 }
 
 .step-number {
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background-color: #dee2e6;
-    color: #6c757d;
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    color: #64748b;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    margin-bottom: 5px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 8px;
     position: relative;
     z-index: 1;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .step-item.active .step-number {
-    background-color: #007bff;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    transform: scale(1.1);
 }
 
 .step-item.completed .step-number {
-    background-color: #28a745;
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
     color: white;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
 }
 
 .step-label {
     font-size: 12px;
-    font-weight: 500;
-    color: #6c757d;
+    font-weight: 600;
+    color: #94a3b8;
+    text-align: center;
 }
 
 .step-item.active .step-label {
-    color: #007bff;
-    font-weight: bold;
+    color: #3b82f6;
+    font-weight: 700;
+}
+
+.step-item.completed .step-label {
+    color: #22c55e;
 }
 
 /* Multi-Step Container */
 .multi-step-container {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 25px;
-    margin-top: 20px;
+    background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    padding: 28px;
+    margin-top: 24px;
+    border: 1px solid #e2e8f0;
 }
 
 .step-content {
     display: none;
+    animation: fadeIn 0.4s ease;
 }
 
 .step-content.active {
@@ -318,64 +620,223 @@
 }
 
 .step-content h4 {
-    color: #495057;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #dee2e6;
+    color: #1e293b;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #3b82f6;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.step-content h4 i {
+    color: #3b82f6;
 }
 
 /* Conditional Fields */
 .conditional-fields {
-    margin-top: 15px;
-    padding: 15px;
+    margin-top: 18px;
+    padding: 20px;
     background: white;
-    border-radius: 5px;
-    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .checkbox-group {
     display: flex;
-    align-items: baseline;
-    margin-bottom: 15px;
+    align-items: center;
+    margin-bottom: 18px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 10px;
 }
 
 .checkbox-group input[type="checkbox"] {
-    margin-right: 8px;
-    transform: scale(1.1);
+    margin-right: 12px;
+    transform: scale(1.3);
+    cursor: pointer;
+    accent-color: #3b82f6;
 }
 
 .checkbox-label {
-    font-weight: 500;
-    color: #495057;
+    font-weight: 600;
+    color: #475569;
     cursor: pointer;
     margin-bottom: 0;
+    font-size: 15px;
 }
 
 /* Step Navigation */
 .step-navigation {
     display: flex;
     justify-content: space-between;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #dee2e6;
+    margin-top: 35px;
+    padding-top: 24px;
+    border-top: 2px solid #e2e8f0;
+    gap: 15px;
 }
 
 .step-navigation button:only-child {
     margin-left: auto;
+}
+
+/* Modern Buttons */
+.btn {
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+}
+
+.btn-info {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+}
+
+.btn-info:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+}
+
+/* Submit Button */
+.form-actions {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #e2e8f0;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    padding: 16px 40px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 25px rgba(59, 130, 246, 0.35);
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 35px rgba(59, 130, 246, 0.45);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+.btn-cancel {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    color: #64748b;
+    padding: 16px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+/* Page Title */
+.page-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.page-title::before {
+    content: '';
+    width: 5px;
+    height: 32px;
+    background: linear-gradient(180deg, #3b82f6 0%, #60a5fa 100%);
+    border-radius: 3px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-tabs {
+        flex-direction: column;
+    }
+    
+    .form-tab {
+        text-align: center;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .step-progress {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .step-item:not(:last-child)::after {
+        display: none;
+    }
 }
 </style>
 @endsection
 
 @section('content')
 <div class="main-container">
-    <div class="top-bar">
-        <div class="search-box"></div>
-        <div class="header-icons">
-            <button class="icon-button"><i class="fas fa-bell"></i></button>
-            <button class="icon-button"><i class="fas fa-question-circle"></i></button>
-            <div class="user-avatar">{{ auth()->user()->initials ?? 'U' }}</div>
-        </div>
-    </div>
 
     <h1 class="page-title">Edit PNG Job</h1>
 
@@ -385,28 +846,64 @@
         </div>
         <div class="form-body">
 
+            {{-- Modern Success Alert --}}
             @if(session('success'))
-                <div class="alert alert-success" role="alert" style="margin: 15px 0; padding: 15px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; color: #155724;">
-                    <strong>Success!</strong> {{ session('success') }}
+                <div class="success-alert" id="successAlert">
+                    <i class="fas fa-check-circle"></i>
+                    <span>{{ session('success') }}</span>
+                    <button type="button" class="close-btn" onclick="this.parentElement.style.display='none'" style="margin-left: auto;">&times;</button>
                 </div>
             @endif
 
+            {{-- Modern Validation Error Alert Box --}}
+            @if($errors->any())
+                <div class="validation-alert" id="validationAlert">
+                    <button type="button" class="close-btn" onclick="this.parentElement.style.display='none'">&times;</button>
+                    <h4><i class="fas fa-exclamation-triangle"></i> Please fix the following errors:</h4>
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{-- Client-side Validation Alert (Hidden by default) --}}
+            <div class="validation-alert" id="clientValidationAlert" style="display: none;">
+                <button type="button" class="close-btn" onclick="this.parentElement.style.display='none'">&times;</button>
+                <h4><i class="fas fa-exclamation-triangle"></i> Please fix the following errors:</h4>
+                <ul id="clientValidationErrors"></ul>
+            </div>
+
+            {{-- Session Error Alert --}}
             @if(session('error'))
-                <div class="alert alert-danger" role="alert" style="margin: 15px 0; padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px; color: #721c24;">
-                    <strong>Error!</strong> {{ session('error') }}
+                <div class="validation-alert" id="errorAlert">
+                    <button type="button" class="close-btn" onclick="this.parentElement.style.display='none'">&times;</button>
+                    <h4><i class="fas fa-times-circle"></i> Error</h4>
+                    <ul>
+                        <li>{{ session('error') }}</li>
+                    </ul>
                 </div>
             @endif
 
-            <form action="{{ route('png.update', $png->id) }}" method="POST" enctype="multipart/form-data" onsubmit="debugFormSubmission(event)">
+            <form action="{{ route('png.update', $png->id) }}" method="POST" enctype="multipart/form-data" id="pngEditForm">
                 @csrf
                 @method('PUT')
                 
-                <!-- Form Tabs -->
+                <!-- Modern Form Tabs -->
                 <div class="form-tabs">
-                    <button type="button" class="form-tab active" onclick="showTab('basic-info')">Basic Information</button>
-                    <button type="button" class="form-tab" onclick="showTab('technical-details')">Technical Information</button>
-                    <button type="button" class="form-tab" onclick="showTab('measurements')">Dynamic Measurements</button>
-                    <button type="button" class="form-tab" onclick="showTab('files-documents')">Files & Documents</button>
+                    <button type="button" class="form-tab active" onclick="showTab('basic-info')">
+                        <i class="fas fa-info-circle"></i> Basic Information
+                    </button>
+                    <button type="button" class="form-tab" onclick="showTab('technical-details')">
+                        <i class="fas fa-cogs"></i> Technical Information
+                    </button>
+                    <button type="button" class="form-tab" onclick="showTab('measurements')">
+                        <i class="fas fa-ruler-combined"></i> Dynamic Measurements
+                    </button>
+                    <button type="button" class="form-tab" onclick="showTab('files-documents')">
+                        <i class="fas fa-folder-open"></i> Files & Documents
+                    </button>
                 </div>
 
                 <!-- Basic Information Tab -->
@@ -1391,10 +1888,17 @@
                 </div>
                 
                 <div class="form-actions" style="display: flex; justify-content: space-between; align-items: center;">
-                    <a href="{{ route('png.show', $png->id) }}" class="btn btn-info">View Details</a>
+                    <a href="{{ route('png.show', $png->id) }}" class="btn btn-info">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
                     <div style="display: flex; gap: 10px;">
-                        <button type="submit" class="btn btn-primary">Update PNG Job</button>
-                        <a href="{{ route('png.index') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="button" id="updateNextBtn" class="btn btn-primary" onclick="handleUpdateNext()">
+                            <span id="btnText">Update & Next</span>
+                            <i id="btnIcon" class="fas fa-arrow-right"></i>
+                        </button>
+                        <a href="{{ route('png.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
                     </div>
                 </div>
             </form>
@@ -1408,6 +1912,10 @@
     // Store existing measurements data for later use
     const existingMeasurements = @json($png->measurements_data ?? []);
     
+    // Tab names in order for navigation
+    const tabOrder = ['basic-info', 'technical-details', 'measurements', 'files-documents'];
+    let currentTabIndex = 0;
+
     function showTab(tabName) {
         console.log('Attempting to show tab:', tabName);
         
@@ -1427,6 +1935,13 @@
         if (targetTab) {
             targetTab.classList.add('active');
             console.log('Successfully activated tab:', tabName);
+            
+            // Update current tab index
+            currentTabIndex = tabOrder.indexOf(tabName);
+            if (currentTabIndex === -1) currentTabIndex = 0;
+            
+            // Update button state based on current tab
+            updateButtonState();
         } else {
             console.error(`Tab with ID '${tabName}' not found`);
             // List all available tab content IDs for debugging
@@ -1436,9 +1951,169 @@
             return;
         }
         
-        // Add active class to clicked tab
-        if (event && event.target) {
-            event.target.classList.add('active');
+        // Add active class to clicked tab button
+        const allTabButtons = document.querySelectorAll('.form-tab');
+        allTabButtons.forEach((btn, index) => {
+            if (index === currentTabIndex) {
+                btn.classList.add('active');
+            }
+        });
+    }
+
+    // Update button text and icon based on current tab
+    function updateButtonState() {
+        const btnText = document.getElementById('btnText');
+        const btnIcon = document.getElementById('btnIcon');
+        const updateNextBtn = document.getElementById('updateNextBtn');
+        
+        if (currentTabIndex === tabOrder.length - 1) {
+            // Last tab - show "Update PNG" with save icon
+            btnText.textContent = 'Update PNG';
+            btnIcon.className = 'fas fa-save';
+            updateNextBtn.onclick = function() { submitForm(); };
+        } else {
+            // Other tabs - show "Update & Next" with arrow icon
+            btnText.textContent = 'Update & Next';
+            btnIcon.className = 'fas fa-arrow-right';
+            updateNextBtn.onclick = function() { handleUpdateNext(); };
+        }
+    }
+
+    // Define required fields for each tab
+    const tabValidationRules = {
+        'basic-info': [
+            { name: 'service_order_no', label: 'Order No' },
+            { name: 'customer_name', label: 'Customer Name' },
+            { name: 'agreement_date', label: 'Agreement Date' }
+        ],
+        'technical-details': [], // No required fields in technical tab
+        'measurements': [], // No required fields in measurements tab
+        'files-documents': [] // No required fields in files tab
+    };
+
+    // Validate current tab fields
+    function validateCurrentTab() {
+        const currentTabName = tabOrder[currentTabIndex];
+        const rules = tabValidationRules[currentTabName] || [];
+        const errors = [];
+
+        console.log('Validating tab:', currentTabName);
+        console.log('Rules:', rules);
+
+        rules.forEach(rule => {
+            const field = document.querySelector('input[name="' + rule.name + '"], select[name="' + rule.name + '"], textarea[name="' + rule.name + '"]');
+            console.log('Looking for field:', rule.name, 'Found:', field);
+            
+            if (field) {
+                const value = field.value ? field.value.trim() : '';
+                console.log('Field value:', value);
+                
+                if (!value || value === '') {
+                    errors.push(rule.label + ' is required');
+                    field.classList.add('is-invalid');
+                    console.log('Field is invalid:', rule.name);
+                } else {
+                    field.classList.remove('is-invalid');
+                    console.log('Field is valid:', rule.name);
+                }
+            } else {
+                console.warn('Field not found:', rule.name);
+            }
+        });
+
+        console.log('Validation errors:', errors);
+        return errors;
+    }
+
+    // Show client-side validation errors
+    function showClientValidationErrors(errors) {
+        const alertBox = document.getElementById('clientValidationAlert');
+        const errorList = document.getElementById('clientValidationErrors');
+        
+        // Clear previous errors
+        errorList.innerHTML = '';
+        
+        // Add new errors
+        errors.forEach(error => {
+            const li = document.createElement('li');
+            li.textContent = error;
+            errorList.appendChild(li);
+        });
+        
+        // Show the alert box
+        alertBox.style.display = 'block';
+        
+        // Scroll to the alert box
+        alertBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Hide client-side validation errors
+    function hideClientValidationErrors() {
+        const alertBox = document.getElementById('clientValidationAlert');
+        alertBox.style.display = 'none';
+    }
+
+    // Handle Update & Next button click
+    function handleUpdateNext() {
+        console.log('handleUpdateNext called');
+        console.log('Current tab index:', currentTabIndex);
+        
+        // Validate current tab first
+        const errors = validateCurrentTab();
+        console.log('Errors found:', errors);
+        
+        if (errors.length > 0) {
+            // Show errors and stay on current tab
+            console.log('Showing validation errors');
+            showClientValidationErrors(errors);
+            return;
+        }
+        
+        // Hide any previous validation errors
+        hideClientValidationErrors();
+        
+        // Move to next tab if not on last tab
+        if (currentTabIndex < tabOrder.length - 1) {
+            const nextTabName = tabOrder[currentTabIndex + 1];
+            console.log('Moving to next tab:', nextTabName);
+            showTab(nextTabName);
+            
+            // Scroll to form top smoothly
+            document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            // On last tab, submit the form
+            console.log('On last tab, submitting form');
+            submitForm();
+        }
+    }
+
+    // Submit the form
+    function submitForm() {
+        // Validate all tabs before submitting
+        let allErrors = [];
+        
+        tabOrder.forEach((tabName, index) => {
+            const rules = tabValidationRules[tabName] || [];
+            rules.forEach(rule => {
+                const field = document.querySelector(`[name="${rule.name}"]`);
+                if (field) {
+                    const value = field.value.trim();
+                    if (!value) {
+                        allErrors.push(`${rule.label} is required`);
+                        field.classList.add('is-invalid');
+                    }
+                }
+            });
+        });
+        
+        if (allErrors.length > 0) {
+            showClientValidationErrors(allErrors);
+            return;
+        }
+        
+        const form = document.getElementById('pngEditForm');
+        if (form) {
+            form.submit();
         }
     }
 
