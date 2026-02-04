@@ -961,12 +961,15 @@ $e->getMessage());
             $nameIndex = 0;
             $dateIndex = 1;
 
-            // Try to find columns by name
+            // Try to find columns by name (support multiple header variations)
             $foundName = array_search('plumber name', $header);
+            if ($foundName === false) $foundName = array_search('plb name', $header);
             if ($foundName !== false) $nameIndex = $foundName;
             
             $foundDate = array_search('plumbing date', $header);
+            if ($foundDate === false) $foundDate = array_search('plb date', $header);
             if ($foundDate !== false) $dateIndex = $foundDate;
+
 
             // Get data from 2nd row (index 1) if header exists, else 1st row if no header? 
             // usually excel has header. Let's assume header exists.
