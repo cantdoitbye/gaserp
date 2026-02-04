@@ -6,18 +6,7 @@
 
 @section('content')
 <div class="main-container">
-    <div class="top-bar">
-        <div class="breadcrumb">
-            <a href="{{ route('png.index') }}">PNG Tracker</a>
-            <span>/</span>
-            <span>Import Data</span>
-        </div>
-        <div class="header-icons">
-            <button class="icon-button"><i class="fas fa-bell"></i></button>
-            <button class="icon-button"><i class="fas fa-question-circle"></i></button>
-            <div class="user-avatar">{{ auth()->user()->initials ?? 'U' }}</div>
-        </div>
-    </div>
+
 
     <h1 class="page-title">Import PNG Tracker Data</h1>
 

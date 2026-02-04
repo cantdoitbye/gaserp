@@ -174,7 +174,7 @@ class PngController extends Controller
                         'type' => $file->getClientMimeType()
                     ];
                 }
-                $data['job_cards_paths'] = json_encode($jobCardsPaths);
+                $data['job_cards_paths'] = $jobCardsPaths;
             }
 
             if ($request->hasFile('autocad_dwg')) {
@@ -188,7 +188,7 @@ class PngController extends Controller
                         'type' => $file->getClientMimeType()
                     ];
                 }
-                $data['autocad_dwg_paths'] = json_encode($autocadPaths);
+                $data['autocad_dwg_paths'] = $autocadPaths;
             }
 
             if ($request->hasFile('site_visit_reports')) {
@@ -202,7 +202,7 @@ class PngController extends Controller
                         'type' => $file->getClientMimeType()
                     ];
                 }
-                $data['site_visit_reports_paths'] = json_encode($siteVisitPaths);
+                $data['site_visit_reports_paths'] = $siteVisitPaths;
             }
 
             if ($request->hasFile('other_documents')) {
@@ -216,7 +216,22 @@ class PngController extends Controller
                         'type' => $file->getClientMimeType()
                     ];
                 }
-                $data['other_documents_paths'] = json_encode($otherDocs);
+                $data['other_documents_paths'] = $otherDocs;
+            }
+
+            // Handle additional_documents uploads
+            if ($request->hasFile('additional_documents')) {
+                $additionalDocs = [];
+                foreach ($request->file('additional_documents') as $file) {
+                    $path = $file->store('png_additional_documents', 'public');
+                    $additionalDocs[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'size' => $file->getSize(),
+                        'type' => $file->getClientMimeType()
+                    ];
+                }
+                $data['additional_documents'] = $additionalDocs;
             }
 
             // Auto-calculate totals if individual measurements are provided
@@ -362,19 +377,11 @@ class PngController extends Controller
                 // Decode existing files (JSON → array)
                 $existingFiles = [];
 
-                if (!empty($png->job_cards_paths)) {
-                    $existingFiles = json_decode($png->job_cards_paths, true);
-
-                    // Safety check
-                    if (!is_array($existingFiles)) {
-                        $existingFiles = [];
-                    }
-                }
-
                 // Merge old + new
-                $data['job_cards_paths'] = json_encode(
-                    array_merge($existingFiles, $jobCardsPaths)
-                );
+                $existingFiles = is_array($png->job_cards_paths) ? $png->job_cards_paths : (is_string($png->job_cards_paths) ? json_decode($png->job_cards_paths, true) : []);
+                $existingFiles = is_array($existingFiles) ? $existingFiles : [];
+                
+                $data['job_cards_paths'] = array_merge($existingFiles, $jobCardsPaths);
             }
 
             // Handle AutoCad DWG uploads
@@ -391,16 +398,10 @@ class PngController extends Controller
                 }
 
                 // Merge with existing files
-                $existingFiles = [];
-                if (!empty($png->autocad_dwg_paths)) {
-                    $existingFiles = is_string($png->autocad_dwg_paths) 
-                        ? json_decode($png->autocad_dwg_paths, true) 
-                        : $png->autocad_dwg_paths;
-                    if (!is_array($existingFiles)) {
-                        $existingFiles = [];
-                    }
-                }
-                $data['autocad_dwg_paths'] = json_encode(array_merge($existingFiles, $autocadPaths));
+                $existingFiles = is_array($png->autocad_dwg_paths) ? $png->autocad_dwg_paths : (is_string($png->autocad_dwg_paths) ? json_decode($png->autocad_dwg_paths, true) : []);
+                $existingFiles = is_array($existingFiles) ? $existingFiles : [];
+                
+                $data['autocad_dwg_paths'] = array_merge($existingFiles, $autocadPaths);
             }
 
             // Handle Site Visit Reports uploads
@@ -417,16 +418,10 @@ class PngController extends Controller
                 }
 
                 // Merge with existing files
-                $existingFiles = [];
-                if (!empty($png->site_visit_reports_paths)) {
-                    $existingFiles = is_string($png->site_visit_reports_paths) 
-                        ? json_decode($png->site_visit_reports_paths, true) 
-                        : $png->site_visit_reports_paths;
-                    if (!is_array($existingFiles)) {
-                        $existingFiles = [];
-                    }
-                }
-                $data['site_visit_reports_paths'] = json_encode(array_merge($existingFiles, $siteVisitPaths));
+                $existingFiles = is_array($png->site_visit_reports_paths) ? $png->site_visit_reports_paths : (is_string($png->site_visit_reports_paths) ? json_decode($png->site_visit_reports_paths, true) : []);
+                $existingFiles = is_array($existingFiles) ? $existingFiles : [];
+
+                $data['site_visit_reports_paths'] = array_merge($existingFiles, $siteVisitPaths);
             }
 
             // Handle Other Documents uploads
@@ -443,16 +438,10 @@ class PngController extends Controller
                 }
 
                 // Merge with existing files
-                $existingFiles = [];
-                if (!empty($png->other_documents_paths)) {
-                    $existingFiles = is_string($png->other_documents_paths) 
-                        ? json_decode($png->other_documents_paths, true) 
-                        : $png->other_documents_paths;
-                    if (!is_array($existingFiles)) {
-                        $existingFiles = [];
-                    }
-                }
-                $data['other_documents_paths'] = json_encode(array_merge($existingFiles, $otherDocsPaths));
+                $existingFiles = is_array($png->other_documents_paths) ? $png->other_documents_paths : (is_string($png->other_documents_paths) ? json_decode($png->other_documents_paths, true) : []);
+                $existingFiles = is_array($existingFiles) ? $existingFiles : [];
+
+                $data['other_documents_paths'] = array_merge($existingFiles, $otherDocsPaths);
             }
 
             // Handle Additional Documents uploads
@@ -469,16 +458,10 @@ class PngController extends Controller
                 }
 
                 // Merge with existing files
-                $existingFiles = [];
-                if (!empty($png->additional_documents)) {
-                    $existingFiles = is_string($png->additional_documents) 
-                        ? json_decode($png->additional_documents, true) 
-                        : $png->additional_documents;
-                    if (!is_array($existingFiles)) {
-                        $existingFiles = [];
-                    }
-                }
-                $data['additional_documents'] = json_encode(array_merge($existingFiles, $additionalDocsPaths));
+                $existingFiles = is_array($png->additional_documents) ? $png->additional_documents : (is_string($png->additional_documents) ? json_decode($png->additional_documents, true) : []);
+                $existingFiles = is_array($existingFiles) ? $existingFiles : [];
+
+                $data['additional_documents'] = array_merge($existingFiles, $additionalDocsPaths);
             }
 
 
@@ -555,11 +538,58 @@ class PngController extends Controller
 
             // Delete multiple files
             if ($png->job_cards_paths) {
-                foreach ($png->job_cards_paths as $file) {
-                    if (isset($file['path'])) {
-                        Storage::disk('public')->delete($file['path']);
+                 $files = is_string($png->job_cards_paths) ? json_decode($png->job_cards_paths, true) : $png->job_cards_paths;
+                 if (is_array($files)) {
+                    foreach ($files as $file) {
+                        if (isset($file['path'])) {
+                            Storage::disk('public')->delete($file['path']);
+                        }
                     }
-                }
+                 }
+            }
+
+            if ($png->autocad_dwg_paths) {
+                 $files = is_string($png->autocad_dwg_paths) ? json_decode($png->autocad_dwg_paths, true) : $png->autocad_dwg_paths;
+                 if (is_array($files)) {
+                    foreach ($files as $file) {
+                        if (isset($file['path'])) {
+                            Storage::disk('public')->delete($file['path']);
+                        }
+                    }
+                 }
+            }
+
+            if ($png->site_visit_reports_paths) {
+                 $files = is_string($png->site_visit_reports_paths) ? json_decode($png->site_visit_reports_paths, true) : $png->site_visit_reports_paths;
+                 if (is_array($files)) {
+                    foreach ($files as $file) {
+                        if (isset($file['path'])) {
+                            Storage::disk('public')->delete($file['path']);
+                        }
+                    }
+                 }
+            }
+
+            if ($png->other_documents_paths) {
+                 $files = is_string($png->other_documents_paths) ? json_decode($png->other_documents_paths, true) : $png->other_documents_paths;
+                 if (is_array($files)) {
+                    foreach ($files as $file) {
+                        if (isset($file['path'])) {
+                            Storage::disk('public')->delete($file['path']);
+                        }
+                    }
+                 }
+            }
+
+            if ($png->additional_documents) {
+                 $files = is_string($png->additional_documents) ? json_decode($png->additional_documents, true) : $png->additional_documents;
+                 if (is_array($files)) {
+                    foreach ($files as $file) {
+                        if (isset($file['path'])) {
+                            Storage::disk('public')->delete($file['path']);
+                        }
+                    }
+                 }
             }
 
             $png->delete();
@@ -903,22 +933,51 @@ $e->getMessage());
                 'png_id' => 'required|exists:pngs,id',
                 'plb_name' => 'required|string|max:255',
                 'plb_date' => 'nullable|date',
-                'remarks' => 'nullable|string'
+                'remarks' => 'nullable|string',
+                // Optional technical fields validation
+                'meter_number' => 'nullable|string|max:255',
+                'pdt_date' => 'nullable|date',
+                'pdt_witness_by' => 'nullable|string|max:255',
+                'ground_connections_date' => 'nullable|date',
+                'ground_connections_witness_by' => 'nullable|string|max:255',
+                'mmt_date' => 'nullable|date',
+                'mmt_witness_by' => 'nullable|string|max:255',
+                'conversion_technician_name' => 'nullable|string|max:255',
+                'conversion_date' => 'nullable|date',
+                'conversion_status' => 'nullable|string|max:255',
+                'report_submission_date' => 'nullable|date',
+                'ra_bill_no' => 'nullable|string|max:255',
             ]);
 
             $png = Png::findOrFail($request->png_id);
             $png->plb_name = $request->plb_name;
-            if ($request->has('plb_date')) {
-                $png->plb_date = $request->plb_date;
+            
+            // Standard fields
+            if ($request->has('plb_date')) $png->plb_date = $request->plb_date;
+            if ($request->filled('remarks')) $png->remarks = $request->remarks;
+
+            // Update allowed technical fields if present in request
+            $allowedFields = [
+                'meter_number', 'pdt_date', 'pdt_witness_by',
+                'ground_connections_date', 'ground_connections_witness_by',
+                'mmt_date', 'mmt_witness_by',
+                'conversion_technician_name', 'conversion_date',
+                'conversion_status', 'report_submission_date', 'ra_bill_no'
+            ];
+
+            foreach ($allowedFields as $field) {
+                if ($request->has($field)) {
+                    $png->$field = $request->input($field);
+                }
             }
-            if ($request->filled('remarks')) {
-                $png->remarks = $request->remarks;
-            }
+
             $png->save();
+
+            session()->flash('success', 'Plumber data & technical fields updated successfully.');
 
             return response()->json([
                 'success' => true,
-                'message' => 'Plumber data updated successfully',
+                'message' => 'Plumber data & technical fields updated successfully',
                 'plb_name' => $png->plb_name
             ]);
         } catch (\Exception $e) {

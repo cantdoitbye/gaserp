@@ -941,7 +941,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Agreement Date <span class="required">*</span></label>
-                            <input type="date" name="agreement_date" class="form-control @error('agreement_date') is-invalid @enderror" value="{{ old('agreement_date') }}" required>
+                            <input type="text" name="agreement_date" class="form-control datepicker-input @error('agreement_date') is-invalid @enderror" value="{{ old('agreement_date') }}" placeholder="dd-mm-yyyy" required>
                             @error('agreement_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -964,7 +964,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Start Date</label>
-                            <input type="date" name="start_date" class="form-control @error('start_date') is-invalid @enderror" value="{{ old('start_date') }}">
+                            <input type="text" name="start_date" class="form-control datepicker-input @error('start_date') is-invalid @enderror" value="{{ old('start_date') }}" placeholder="dd-mm-yyyy">
                             @error('start_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -1404,7 +1404,7 @@
                     
                     <div class="form-group">
                         <label class="form-label">PLB Date</label>
-                        <input type="date" name="plb_date" class="form-control @error('plb_date') is-invalid @enderror" value="{{ old('plb_date') }}">
+                        <input type="text" name="plb_date" class="form-control datepicker-input @error('plb_date') is-invalid @enderror" value="{{ old('plb_date') }}" placeholder="dd-mm-yyyy">
                         @error('plb_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -1443,7 +1443,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">PPT Date</label>
-                        <input type="date" name="pdt_date" class="form-control @error('pdt_date') is-invalid @enderror" value="{{ old('pdt_date') }}">
+                        <input type="text" name="pdt_date" class="form-control datepicker-input @error('pdt_date') is-invalid @enderror" value="{{ old('pdt_date') }}" placeholder="dd-mm-yyyy">
                         @error('pdt_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -1490,7 +1490,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">GC Date</label>
-                        <input type="date" name="gc_date" class="form-control @error('gc_date') is-invalid @enderror" value="{{ old('gc_date') }}">
+                        <input type="text" name="gc_date" class="form-control datepicker-input @error('gc_date') is-invalid @enderror" value="{{ old('gc_date') }}" placeholder="dd-mm-yyyy">
                         @error('gc_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -1537,7 +1537,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">MMT Date</label>
-                        <input type="date" name="mmt_date" class="form-control @error('mmt_date') is-invalid @enderror" value="{{ old('mmt_date') }}">
+                        <input type="text" name="mmt_date" class="form-control datepicker-input @error('mmt_date') is-invalid @enderror" value="{{ old('mmt_date') }}" placeholder="dd-mm-yyyy">
                         @error('mmt_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -1598,7 +1598,7 @@
                     
                     <div class="form-group">
                         <label class="form-label">Conversion Date <span class="required">*</span></label>
-                        <input type="date" name="conversion_date" class="form-control @error('conversion_date') is-invalid @enderror" value="{{ old('conversion_date') }}">
+                        <input type="text" name="conversion_date" class="form-control datepicker-input @error('conversion_date') is-invalid @enderror" value="{{ old('conversion_date') }}" placeholder="dd-mm-yyyy">
                         @error('conversion_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -2293,10 +2293,12 @@
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
-    function removeFileFromPreview(button, index) {
-        const fileItem = button.closest('.file-preview-item');
-        fileItem.remove();
-    }
+    // File Remove Functionality (using event delegation for dynamically added elements)
+    document.addEventListener('click', function(event) {
+        if (event.target.closest('.remove-file')) {
+            event.target.closest('.file-preview-item').remove();
+        }
+    });
 
     function debugFormSubmission(event) {
         console.log('Form is being submitted...');
@@ -2365,8 +2367,81 @@ function updateStepProgress(activeStep) {
     });
 }
 
+function showToast(message, type = 'success') {
+    // Inject styles dynamically if not present
+    if (!document.getElementById('toast-notification-styles')) {
+        const style = document.createElement('style');
+        style.id = 'toast-notification-styles';
+        style.textContent = `
+            .toast-notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #ffffff;
+                border-left: 5px solid #28a745;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                padding: 16px 24px;
+                border-radius: 8px;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                animation: slideIn 0.3s ease-out;
+                min-width: 320px;
+                font-family: 'Segoe UI', sans-serif;
+            }
+            .toast-notification.error {
+                border-left-color: #dc3545;
+            }
+            .toast-icon {
+                font-size: 24px;
+                color: #28a745;
+            }
+            .toast-notification.error .toast-icon {
+                color: #dc3545;
+            }
+            .toast-message {
+                font-size: 14px;
+                font-weight: 500;
+                color: #333;
+                flex: 1;
+            }
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Remove existing toasts
+    const existing = document.querySelectorAll('.toast-notification');
+    existing.forEach(t => t.remove());
+
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    
+    const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+    
+    toast.innerHTML = `
+        <i class="fas ${icon} toast-icon"></i>
+        <div class="toast-message">${message}</div>
+        <button onclick="this.parentElement.remove()" style="background:none;border:none;margin-left:10px;cursor:pointer;font-size:18px;color:#999;transition:color 0.2s;">&times;</button>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => toast.remove(), 500);
+    }, 5000);
+}
+
 function completeTechnicalInfo() {
-    alert('Technical Information completed! You can now proceed to other tabs.');
+    // Show modern toast instead of native alert
+    showToast('Technical Information completed! You can now proceed to other tabs.', 'success');
 }
 
 // Toggle Functions for Conditional Fields
@@ -2463,6 +2538,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Check conversion status
     toggleConversionFields();
+
+    // Initialize Flatpickr for date inputs
+    flatpickr(".datepicker-input", {
+        dateFormat: "Y-m-d", // Value sent to server
+        altInput: true,      // Show a different format to user
+        altFormat: "d-m-Y",  // Format shown to user
+        allowInput: true
+    });
 });
 </script>
 @endsection

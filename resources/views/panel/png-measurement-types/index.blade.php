@@ -3,107 +3,213 @@
 @section('styles')
 <link rel="stylesheet" href="{{ asset('panel/pe-tracker.css') }}">
 <style>
+<style>
 .measurement-type-card {
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    border: none;
+    border-radius: 12px;
+    margin-bottom: 24px;
     background: white;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.measurement-type-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }
 .measurement-type-header {
-    background: #f8f9fa;
-    padding: 15px 20px;
-    border-bottom: 1px solid #dee2e6;
+    background: linear-gradient(to right, #ffffff, #f8f9fa);
+    padding: 20px 25px;
+    border-bottom: 1px solid #f1f3f5;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-radius: 12px 12px 0 0;
 }
 .measurement-type-body {
-    padding: 20px;
+    padding: 25px;
 }
 .measurement-type-title {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     margin: 0;
-    color: #495057;
+    color: #343a40;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 .measurement-type-meta {
-    font-size: 14px;
-    color: #6c757d;
-    margin-top: 5px;
+    font-size: 13px;
+    color: #868e96;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 .field-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 15px;
-    margin-top: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
 }
 .field-item {
     background: #f8f9fa;
     border: 1px solid #e9ecef;
-    border-radius: 6px;
-    padding: 12px;
+    border-radius: 10px;
+    padding: 15px;
     font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+.field-item:hover {
+    border-color: #adb5bd;
 }
 .field-name {
     font-weight: 600;
     color: #495057;
+    margin-bottom: 6px;
+    font-size: 15px;
 }
 .field-details {
     color: #6c757d;
-    margin-top: 5px;
+    font-size: 13px;
+    line-height: 1.5;
 }
 .status-active {
     background: #d4edda;
     color: #155724;
-    padding: 4px 8px;
-    border-radius: 12px;
+    padding: 6px 12px;
+    border-radius: 20px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.status-active::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #155724;
+    border-radius: 50%;
 }
 .status-inactive {
     background: #f8d7da;
     color: #721c24;
-    padding: 4px 8px;
-    border-radius: 12px;
+    padding: 6px 12px;
+    border-radius: 20px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.status-inactive::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #721c24;
+    border-radius: 50%;
 }
 .png-type-badge {
-    background: #e3f2fd;
-    color: #1976d2;
-    padding: 4px 12px;
-    border-radius: 12px;
+    background: #e7f5ff;
+    color: #1c7ed6;
+    padding: 6px 12px;
+    border-radius: 20px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
     text-transform: capitalize;
+    letter-spacing: 0.5px;
+}
+
+/* New Action Buttons Styling */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+.action-buttons .btn {
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+    border: none;
+}
+.action-buttons .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.action-buttons .btn-primary {
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+}
+.action-buttons .btn-success {
+    background: linear-gradient(135deg, #198754, #157347);
+}
+.action-buttons .btn-secondary {
+    background: linear-gradient(135deg, #6c757d, #5c636a);
+}
+
+/* Action Group for Items */
+.action-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: #495057;
+    background: white;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+}
+.btn-icon:hover {
+    background: #f8f9fa;
+    color: #0d6efd;
+    border-color: #0d6efd;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+.btn-icon.btn-icon-danger:hover {
+    color: #dc3545;
+    border-color: #dc3545;
+    background: #fff5f5;
+}
+.btn-icon.btn-icon-warning:hover {
+    color: #ffc107;
+    border-color: #ffc107;
+    background: #fff9db;
+}
+.btn-icon i {
+    font-size: 14px;
 }
 </style>
 @endsection
 
 @section('content')
 <div class="main-container">
-    <div class="top-bar">
-        <div class="search-box">
-            <!-- Search functionality can be added here -->
-        </div>
-        <div class="header-icons">
-            <button class="icon-button"><i class="fas fa-bell"></i></button>
-            <button class="icon-button"><i class="fas fa-question-circle"></i></button>
-            <div class="user-avatar">{{ auth()->user()->initials ?? 'U' }}</div>
-        </div>
-    </div>
+
 
     <h1 class="page-title">Measurement Types Management</h1>
 
-    <div class="content-card">
+    <div class="content-card" style="background: transparent; box-shadow: none; padding: 0;">
         <div class="action-buttons">
             <a href="{{ route('png-measurement-types.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Add New Measurement Type
+                <i class="fas fa-plus"></i> Add New Type
             </a>
             <form action="{{ route('png-measurement-types.create-defaults') }}" method="POST" class="d-inline">
                 @csrf
                 <button type="submit" class="btn btn-success" onclick="return confirm('This will create default measurement types for Flat, House, and Bungalow. Continue?')">
-                    <i class="fas fa-magic"></i> Create Default Types
+                    <i class="fas fa-magic"></i> Create Defaults
                 </button>
             </form>
             <a href="{{ route('png.index') }}" class="btn btn-secondary">
@@ -112,14 +218,14 @@
         </div>
 
         @if(session('success'))
-            <div class="alert alert-success" role="alert">
-                {{ session('success') }}
+            <div class="alert alert-success" role="alert" style="border-radius: 10px; border: none; background: #d1e7dd; color: #0f5132;">
+                <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
             </div>
         @endif
 
         @if(session('error'))
-            <div class="alert alert-danger" role="alert">
-                {{ session('error') }}
+            <div class="alert alert-danger" role="alert" style="border-radius: 10px; border: none; background: #f8d7da; color: #842029;">
+                <i class="fas fa-exclamation-circle me-2"></i> {{ session('error') }}
             </div>
         @endif
 
@@ -127,47 +233,48 @@
             <div class="measurement-type-card">
                 <div class="measurement-type-header">
                     <div>
-                        <h3 class="measurement-type-title">{{ $type->name }}</h3>
+                        <h3 class="measurement-type-title">
+                            {{ $type->name }}
+                        </h3>
                         <div class="measurement-type-meta">
                             <span class="png-type-badge">{{ $type->png_type }}</span>
                             <span class="{{ $type->is_active ? 'status-active' : 'status-inactive' }}">
                                 {{ $type->is_active ? 'Active' : 'Inactive' }}
                             </span>
-                            <span class="text-muted">
-                                • {{ count($type->measurement_fields) }} fields 
-                                • {{ $type->pngs_count ?? 0 }} jobs using this type
+                            <span style="opacity: 0.6;">|</span>
+                            <span>
+                                <i class="fas fa-ruler-combined me-1"></i> {{ count($type->measurement_fields) }} fields
+                            </span>
+                            <span>
+                                <i class="fas fa-briefcase me-1"></i> {{ $type->pngs_count ?? 0 }} jobs
                             </span>
                         </div>
                     </div>
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                            Actions
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="{{ route('png-measurement-types.show', $type) }}">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <a class="dropdown-item" href="{{ route('png-measurement-types.edit', $type) }}">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-                            <form action="{{ route('png-measurement-types.toggle-status', $type) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="dropdown-item">
-                                    <i class="fas fa-power-off"></i> 
-                                    {{ $type->is_active ? 'Deactivate' : 'Activate' }}
-                                </button>
-                            </form>
-                            <div class="dropdown-divider"></div>
-                            <form action="{{ route('png-measurement-types.destroy', $type) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="dropdown-item text-danger" 
-                                        onclick="return confirm('Are you sure? This will permanently delete this measurement type.')">
-                                    <i class="fas fa-trash"></i> Delete
-                                </button>
-                            </form>
-                        </div>
+                    
+                    <div class="action-group">
+                        <a href="{{ route('png-measurement-types.show', $type) }}" class="btn-icon" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ route('png-measurement-types.edit', $type) }}" class="btn-icon" title="Edit Type">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        
+                        <form action="{{ route('png-measurement-types.toggle-status', $type) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="btn-icon btn-icon-warning" title="{{ $type->is_active ? 'Deactivate' : 'Activate' }}">
+                                <i class="fas fa-power-off"></i>
+                            </button>
+                        </form>
+                        
+                        <form action="{{ route('png-measurement-types.destroy', $type) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn-icon btn-icon-danger" title="Delete Type" 
+                                    onclick="return confirm('Are you sure? This will permanently delete this measurement type.')">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
                 

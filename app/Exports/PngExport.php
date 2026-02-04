@@ -335,9 +335,14 @@ class PngExport implements FromQuery, WithHeadings, WithMapping, WithStyles, Wit
         $sheet->getRowDimension(1)->setRowHeight(25);
 
         // Auto-size columns for better readability
-        foreach (range('A', $lastColumn) as $columnID) {
-            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        // Auto-size columns for better readability
+        $currentColumn = 'A';
+        while ($currentColumn !== $lastColumn) {
+            $sheet->getColumnDimension($currentColumn)->setAutoSize(true);
+            $currentColumn++;
         }
+        // Handle the last column
+        $sheet->getColumnDimension($lastColumn)->setAutoSize(true);
 
         // Freeze header row
         $sheet->freezePane('A2');

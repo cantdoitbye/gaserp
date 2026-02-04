@@ -1164,11 +1164,292 @@ th:first-child {
 .btn-success:hover {
     background: #059669;
 }
+
+/* Custom Pagination Styles */
+.custom-pagination-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.pagination-info {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.pagination-list {
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    border-radius: 0.25rem;
+    gap: 5px;
+}
+
+.page-item .page-link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    color: #4b5563;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+    min-width: 35px;
+    text-align: center;
+}
+
+.page-item:not(.disabled) .page-link:hover {
+    z-index: 2;
+    color: #0d6efd;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    font-weight: 600;
+}
+
+.page-item.disabled .page-link {
+    color: #9ca3af;
+    pointer-events: none;
+    background-color: #f9fafb;
+    border-color: #e5e7eb;
+}
+
+.page-link i {
+    font-size: 12px;
+}
+
+/* Plumber Popup Modern Styling */
+.dynamic-field-row {
+    background: #ffffff;
+    border: 1px solid #e2e8f0 !important;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.dynamic-field-row select.form-select-sm {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    padding: 7px 10px !important;
+    font-size: 13px !important;
+    width: 150px !important;
+    flex-shrink: 0 !important;
+    background-color: #f8fafc !important;
+    height: 38px !important;
+}
+
+.dynamic-field-row input.form-control-sm {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    padding: 7px 12px !important;
+    font-size: 13px !important;
+    flex-grow: 1 !important;
+    height: 38px !important;
+}
+
+.remove-field-btn {
+    background: #fee2e2 !important;
+    color: #ef4444 !important;
+    border: none !important;
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    flex-shrink: 0 !important;
+}
+
+.remove-field-btn:hover {
+    background: #fecaca !important;
+    color: #dc2626 !important;
+    transform: scale(1.05);
+}
+
+.btn-add-field-modern {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    background: #f0f9ff !important;
+    color: #0369a1 !important;
+    border: 1px dashed #0ea5e9 !important;
+    padding: 12px !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    width: 100% !important;
+    margin-bottom: 20px !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    text-decoration: none !important;
+}
+
+.btn-add-field-modern:hover {
+    background: #e0f2fe !important;
+    border-style: solid !important;
+    color: #0c4a6e !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* Ensure Flatpickr is above popup */
+.flatpickr-calendar {
+    z-index: 999999 !important;
+    font-family: inherit !important;
+}
+
+/* Toast Notification Styles */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast-alert {
+    min-width: 300px;
+    max-width: 450px;
+    background: white;
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    animation: toastSlideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    position: relative;
+    overflow: hidden;
+    border: none !important;
+}
+
+.toast-alert .toast-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.toast-alert .toast-content {
+    flex-grow: 1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.toast-alert .toast-close {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    font-size: 18px;
+}
+
+.toast-alert .toast-close:hover {
+    opacity: 1;
+}
+
+/* Progress bar at the bottom */
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background: rgba(0,0,0,0.1);
+}
+
+.toast-progress-bar {
+    height: 100%;
+    width: 100%;
+    animation: toastProgress 5s linear forwards;
+}
+
+/* Alert Types */
+.toast-success { color: #065f46; }
+.toast-success .toast-icon { color: #10b981; }
+.toast-success .toast-progress-bar { background: #10b981; }
+
+.toast-error { color: #991b1b; }
+.toast-error .toast-icon { color: #ef4444; }
+.toast-error .toast-progress-bar { background: #ef4444; }
+
+.toast-warning { color: #92400e; }
+.toast-warning .toast-icon { color: #f59e0b; }
+.toast-warning .toast-progress-bar { background: #f59e0b; }
+
+@keyframes toastSlideIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes toastSlideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(120%); opacity: 0; }
+}
+
+@keyframes toastProgress {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+.toast-out {
+    animation: toastSlideOut 0.5s ease forwards !important;
+}
 </style>
 @endsection
 
 @section('content')
 <div class="main-container">
+    <div class="toast-container">
+        {{-- Success Message --}}
+        @if(session('success'))
+            <div class="toast-alert toast-success" id="successToast">
+                <div class="toast-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="toast-content">{{ session('success') }}</div>
+                <div class="toast-close" onclick="dismissToast(this.parentElement)">&times;</div>
+                <div class="toast-progress"><div class="toast-progress-bar"></div></div>
+            </div>
+        @endif
+
+        {{-- Error Message --}}
+        @if(session('error'))
+            <div class="toast-alert toast-error" id="errorToast">
+                <div class="toast-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="toast-content">{{ session('error') }}</div>
+                <div class="toast-close" onclick="dismissToast(this.parentElement)">&times;</div>
+                <div class="toast-progress"><div class="toast-progress-bar"></div></div>
+            </div>
+        @endif
+
+        {{-- Warning Message --}}
+        @if(session('warning'))
+            <div class="toast-alert toast-warning" id="warningToast">
+                <div class="toast-icon"><i class="fas fa-exclamation-circle"></i></div>
+                <div class="toast-content">{{ session('warning') }}</div>
+                <div class="toast-close" onclick="dismissToast(this.parentElement)">&times;</div>
+                <div class="toast-progress"><div class="toast-progress-bar"></div></div>
+            </div>
+        @endif
+    </div>
+
     <!-- Filter Section -->
     <div class="content-card">
         <div class="filter-section">
@@ -1459,38 +1740,7 @@ th:first-child {
             <input type="hidden" name="selected_ids" id="selected-ids">
         </form>
 
-        <div class="alert-container">
-            @if(session('success'))
-                <div class="alert alert-success" role="alert">
-                    <i class="fas fa-check-circle" style="margin-top: 4px;"></i>
-                    <div>{{ session('success') }}</div>
-                </div>
-            @endif
-
-            @if(session('warning'))
-                <div class="alert alert-warning" role="alert">
-                    <i class="fas fa-exclamation-triangle" style="margin-top: 4px;"></i>
-                    <div>
-                        <strong>Notification</strong>
-                        <div class="alert-details">
-                            {{ session('warning') }}
-                        </div>
-                    </div>
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="alert alert-danger" role="alert">
-                    <i class="fas fa-times-circle" style="margin-top: 4px;"></i>
-                    <div>
-                        <strong>Error Occurred</strong>
-                        <div class="alert-details">
-                            {{ session('error') }}
-                        </div>
-                    </div>
-                </div>
-            @endif
-        </div>
+        {{-- Alerts moved to top --}}
 
         <!-- Single Form for All Searches -->
         <form id="search-form" action="{{ route('png.search') }}" method="POST" style="display: none;">
@@ -1708,7 +1958,7 @@ th:first-child {
                                 <td>{{ $png->service_order_no ?? 'N/A' }}</td>
                                 <td>{{ $png->application_no ?? 'N/A' }}</td>
                                 <td>
-                                    <a href="{{ route('png.edit', $png) }}" target="_blank" class="customer-name-link" title="Click to edit">
+                                    <a href="{{ route('png.edit', $png) }}" class="customer-name-link" title="Click to edit">
                                         <strong>{{ $png->customer_name }}</strong>
                                     </a>
                                 </td>
@@ -1785,8 +2035,26 @@ th:first-child {
                                     @endif
                                 </td>
                                 <td>
+                                    @php
+                                        $techData = [
+                                            'meter_number' => $png->meter_number,
+                                            'pdt_date' => $png->pdt_date ? $png->pdt_date->format('d-m-Y') : '',
+                                            'pdt_witness_by' => $png->pdt_witness_by,
+                                            'ground_connections_date' => $png->ground_connections_date ? $png->ground_connections_date->format('d-m-Y') : '',
+                                            'ground_connections_witness_by' => $png->ground_connections_witness_by,
+                                            'mmt_date' => $png->mmt_date ? $png->mmt_date->format('d-m-Y') : '',
+                                            'mmt_witness_by' => $png->mmt_witness_by,
+                                            'conversion_technician_name' => $png->conversion_technician_name,
+                                            'conversion_date' => $png->conversion_date ? $png->conversion_date->format('d-m-Y') : '',
+                                            'conversion_status' => $png->conversion_status,
+                                            'report_submission_date' => $png->report_submission_date ? $png->report_submission_date->format('d-m-Y') : '',
+                                            'ra_bill_no' => $png->ra_bill_no,
+                                            'remarks' => $png->remarks,
+                                        ];
+                                    @endphp
                                     <span class="plumber-cell" 
-                                          onclick="openPlumberPopup({{ $png->id }}, '{{ $png->plb_name ?? '' }}')"
+                                          onclick="openPlumberPopup({{ $png->id }}, '{{ addslashes($png->plb_name ?? '') }}', '{{ $png->plb_date ? $png->plb_date->format('d-m-Y') : '' }}', this)"
+                                          data-tech-data="{{ json_encode($techData) }}"
                                           id="plumber-cell-{{ $png->id }}"
                                           title="Click to change plumber">
                                         {{ $png->plb_name ?? 'N/A' }}
@@ -1882,8 +2150,49 @@ th:first-child {
             </div>
         </div>
 
-        <div style="margin-top: 15px; display: flex; justify-content: center;">
-            {{ $pngs->appends(request()->query())->links() }}
+        <div class="custom-pagination-container">
+            <div class="pagination-info">
+                Showing {{ $pngs->firstItem() ?? 0 }} to {{ $pngs->lastItem() ?? 0 }} of {{ $pngs->total() }} results
+            </div>
+            
+            @if ($pngs->hasPages())
+                <ul class="pagination-list">
+                    {{-- Previous Page Link --}}
+                    @if ($pngs->onFirstPage())
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                        </li>
+                    @else
+                        <li class="page-item">
+                            <a class="page-link" href="{{ $pngs->previousPageUrl() }}" rel="prev"><i class="fas fa-chevron-left"></i></a>
+                        </li>
+                    @endif
+
+                    {{-- Pagination Elements --}}
+                    @foreach ($pngs->getUrlRange(max(1, $pngs->currentPage() - 2), min($pngs->lastPage(), $pngs->currentPage() + 2)) as $page => $url)
+                        @if ($page == $pngs->currentPage())
+                            <li class="page-item active">
+                                <span class="page-link">{{ $page }}</span>
+                            </li>
+                        @else
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                            </li>
+                        @endif
+                    @endforeach
+
+                    {{-- Next Page Link --}}
+                    @if ($pngs->hasMorePages())
+                        <li class="page-item">
+                            <a class="page-link" href="{{ $pngs->nextPageUrl() }}" rel="next"><i class="fas fa-chevron-right"></i></a>
+                        </li>
+                    @else
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                        </li>
+                    @endif
+                </ul>
+            @endif
         </div>
     </div>
 </div>
@@ -1928,8 +2237,15 @@ th:first-child {
                     
                     <div class="form-group mb-3">
                         <label class="form-label">Plumbing Date</label>
-                        <input type="date" class="form-control" name="plb_date" id="manual_plb_date">
+                        <input type="text" class="form-control" name="plb_date" id="manual_plb_date" placeholder="Pick Date...">
                     </div>
+
+                    {{-- Dynamic Additional Fields --}}
+                    <div id="additionalFieldsContainer"></div>
+                    
+                    <button type="button" class="btn-add-field-modern" onclick="addManualField()">
+                        <i class="fas fa-plus-circle"></i> Add Technical Field
+                    </button>
 
                     <div class="form-group mb-3">
                         <label class="form-label">Remarks</label>
@@ -2005,27 +2321,65 @@ th:first-child {
 
     // ============ Plumber Popup Functions ============
     let currentPngId = null;
+    let currentPngData = {};
     
-    function openPlumberPopup(pngId, currentPlumber) {
+    function openPlumberPopup(pngId, currentPlumber, currentPlbDate, element) {
         currentPngId = pngId;
+        
+        // Load additional technical data if it exists on the element
+        if (element && element.dataset.techData) {
+            try {
+                currentPngData = JSON.parse(element.dataset.techData);
+            } catch(e) {
+                console.error("Error parsing tech data", e);
+                currentPngData = {};
+            }
+        } else {
+            currentPngData = {};
+        }
+
         const overlay = document.getElementById('plumberPopupOverlay');
         const currentInfo = document.getElementById('currentPlumberInfo');
         const currentName = document.getElementById('currentPlumberName');
+        const nameInput = document.getElementById('manual_plb_name');
+        const dateInput = document.getElementById('manual_plb_date');
+        const remarksInput = document.getElementById('manual_remarks');
         
-        // Show current plumber if exists
+        // Reset forms at the beginning
+        document.getElementById('plumberManualForm').reset();
+        document.getElementById('plumberExcelForm').reset();
+
+        // Clear additional fields container
+        document.getElementById('additionalFieldsContainer').innerHTML = '';
+
+        // Show current plumber display if exists
         if (currentPlumber && currentPlumber.trim() !== '') {
             currentName.textContent = currentPlumber;
             currentInfo.style.display = 'block';
+            if(nameInput) nameInput.value = currentPlumber;
         } else {
             currentInfo.style.display = 'none';
         }
-        
-        // Reset forms
-        document.getElementById('plumberManualForm').reset();
-        document.getElementById('plumberExcelForm').reset();
+
+        // Pre-fill date if exists
+        if (currentPlbDate && currentPlbDate.trim() !== '') {
+            if(dateInput) dateInput.value = currentPlbDate;
+        }
+
+        // Pre-fill remarks if exists
+        if (remarksInput && currentPngData.remarks) {
+            remarksInput.value = currentPngData.remarks;
+        }
         
         // Default to manual tab
         switchPopupTab('manual');
+
+        // Initialize Flatpickr for the static plumbing date field
+        flatpickr("#manual_plb_date", {
+            dateFormat: "d-m-Y",
+            allowInput: true,
+            defaultDate: currentPlbDate || null
+        });
         
         overlay.style.display = 'flex';
     }
@@ -2064,13 +2418,23 @@ th:first-child {
         const form = document.getElementById('plumberManualForm');
         const formData = new FormData(form);
         
-        // Add png_id to data
+        // Base data
         const data = {
             png_id: currentPngId,
             plb_name: formData.get('plb_name'),
             plb_date: formData.get('plb_date'),
             remarks: formData.get('remarks')
         };
+        
+        // Collect dynamic fields
+        const dynamicInputs = document.querySelectorAll('.dynamic-field-row');
+        dynamicInputs.forEach(row => {
+            const select = row.querySelector('select');
+            const input = row.querySelector('input');
+            if(select && input && select.value && input.value) {
+                data[select.value] = input.value;
+            }
+        });
         
         fetch('{{ route("png.update-plumber") }}', {
             method: 'POST',
@@ -2083,9 +2447,9 @@ th:first-child {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                updatePlumberCell(currentPngId, data.plb_name);
+                // Success: Reload page. Session flash from controller will show success message.
                 closePlumberPopup();
-                // Optionally show toast success
+                window.location.reload(); 
             } else {
                 alert('Error: ' + (data.message || 'Update failed'));
             }
@@ -2094,6 +2458,78 @@ th:first-child {
             console.error('Error:', error);
             alert('An error occurred. Please try again.');
         });
+    }
+
+    // Dynamic Field Functions
+    function addManualField() {
+        const container = document.getElementById('additionalFieldsContainer');
+        const rowId = 'field-' + Date.now();
+        
+        const row = document.createElement('div');
+        row.className = 'dynamic-field-row';
+        row.id = rowId;
+        
+        row.innerHTML = `
+            <select class="form-select form-select-sm" onchange="updateInputType(this)">
+                <option value="">Select Field...</option>
+                <option value="meter_number">Meter Number</option>
+                <option value="pdt_date">PPT Date</option>
+                <option value="ground_connections_date">GC Date</option>
+                <option value="mmt_date">MMT Date</option>
+                <option value="conversion_date">Conversion Date</option>
+                <option value="report_submission_date">Report Submission Date</option>
+                <option value="pdt_witness_by">PPT Witness By</option>
+                <option value="ground_connections_witness_by">GC Witness By</option>
+                <option value="mmt_witness_by">MMT Witness By</option>
+                <option value="conversion_technician_name">Conversion Tech Name</option>
+                <option value="conversion_status">Conversion Status</option>
+                <option value="ra_bill_no">RA-Bill No.</option>
+            </select>
+            <input type="text" class="form-control form-control-sm" placeholder="Enter value">
+            <button type="button" class="remove-field-btn" title="Remove" onclick="removeManualField('${rowId}')">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        
+        container.appendChild(row);
+    }
+
+    function removeManualField(rowId) {
+        const row = document.getElementById(rowId);
+        if(row) row.remove();
+    }
+
+    function updateInputType(select) {
+        const row = select.closest('.dynamic-field-row');
+        const input = row.querySelector('input');
+        const fieldName = select.value;
+        
+        const dateFields = ['pdt_date', 'ground_connections_date', 'mmt_date', 'conversion_date', 'report_submission_date'];
+        
+        // Destroy existing flatpickr instance if any
+        if (input._flatpickr) {
+            input._flatpickr.destroy();
+        }
+
+        // Pre-fill existing value if available
+        const existingValue = currentPngData[fieldName] || '';
+        input.value = existingValue;
+
+        if(dateFields.includes(fieldName)) {
+            input.type = 'text';
+            input.placeholder = 'Pick Date...';
+            input.classList.add('bg-white'); // Ensure it looks like an input
+            flatpickr(input, {
+                dateFormat: "d-m-Y",
+                allowInput: true,
+                disableMobile: "true", // Force flatpickr on mobile too for consistency
+                defaultDate: existingValue || null
+            });
+        } else {
+            input.type = 'text';
+            input.placeholder = 'Enter value';
+            input.classList.remove('bg-white');
+        }
     }
     
     function submitPlumberExcel(event) {
@@ -2114,9 +2550,9 @@ th:first-child {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                updatePlumberCell(currentPngId, data.plb_name);
+                // For Excel import, it's safer to reload since it might update many technical fields
                 closePlumberPopup();
-                alert('Data imported successfully!');
+                window.location.reload(); 
             } else {
                 alert('Error: ' + (data.message || 'Import failed'));
             }
@@ -2127,12 +2563,12 @@ th:first-child {
         });
     }
     
-    function updatePlumberCell(id, name) {
+    function updatePlumberCell(id, name, date) {
         const cell = document.getElementById('plumber-cell-' + id);
         if (cell) {
             cell.textContent = name;
-            // Update onclick to show new current name next time
-            cell.onclick = function() { openPlumberPopup(id, name); };
+            // Update onclick to show new current name and date next time
+            cell.onclick = function() { openPlumberPopup(id, name, date); };
         }
     }
     document.addEventListener('DOMContentLoaded', function() {
@@ -2397,6 +2833,23 @@ function clearSelection() {
         if (e.which < 48 || e.which > 57) {
             e.preventDefault();
         }
+    });
+
+    // Auto-dismiss toasts after 5 seconds
+    function dismissToast(toast) {
+        if(!toast) return;
+        toast.classList.add('toast-out');
+        setTimeout(() => toast.remove(), 500);
+    }
+
+    // Initialize toast auto-dismiss on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const toasts = document.querySelectorAll('.toast-alert');
+        toasts.forEach(toast => {
+            setTimeout(() => {
+                dismissToast(toast);
+            }, 5000);
+        });
     });
 </script>
 

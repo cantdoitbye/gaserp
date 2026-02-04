@@ -352,17 +352,7 @@
 
 @section('content')
 <div class="main-container">
-   <div class="top-bar">
-        <div class="search-box">
-            {{-- <i class="fas fa-search"></i> --}}
-            {{-- <input type="text" placeholder="Search PNG tracker records..."> --}}
-        </div>
-        <div class="header-icons">
-            <button class="icon-button"><i class="fas fa-bell"></i></button>
-            <button class="icon-button"><i class="fas fa-question-circle"></i></button>
-            <div class="user-avatar">{{ auth()->user()->initials ?? 'U' }}</div>
-        </div>
-    </div>
+
 
     <div class="job-details-container">
         <!-- Header with Actions -->

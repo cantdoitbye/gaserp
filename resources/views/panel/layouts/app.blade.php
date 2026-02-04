@@ -97,10 +97,10 @@
         }
 
         .menu-item:hover {
-            background: rgba(255,255,255,0.08);
-            color: white;
-            transform: translateX(4px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.05) !important;
+            color: white !important;
+            box-shadow: none !important;
+            transform: none !important;
         }
 
         .menu-item.active {
@@ -117,9 +117,10 @@
         }
 
         .menu-item.logout-item:hover {
-            background: rgba(231, 76, 60, 0.1);
+            background: rgba(231, 76, 60, 0.1) !important;
             color: #c0392b !important;
-            transform: translateX(4px);
+            box-shadow: none !important;
+            transform: none !important;
         }
 
         .menu-item.logout-item i {
@@ -159,10 +160,10 @@
         }
 
         .main-menu:hover {
-            background: rgba(255,255,255,0.08);
-            color: white;
-            transform: translateX(4px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.05) !important;
+            color: white !important;
+            box-shadow: none !important;
+            transform: none !important;
         }
 
         .main-menu.active {
