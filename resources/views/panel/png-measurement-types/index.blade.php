@@ -17,9 +17,10 @@
     box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }
 .measurement-type-header {
-    background: linear-gradient(to right, #ffffff, #f8f9fa);
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
     padding: 20px 25px;
-    border-bottom: 1px solid #f1f3f5;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -32,14 +33,14 @@
     font-size: 18px;
     font-weight: 700;
     margin: 0;
-    color: #343a40;
+    color: white;
     display: flex;
     align-items: center;
     gap: 12px;
 }
 .measurement-type-meta {
     font-size: 13px;
-    color: #868e96;
+    color: rgba(255, 255, 255, 0.8);
     margin-top: 8px;
     display: flex;
     align-items: center;
