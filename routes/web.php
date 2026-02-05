@@ -406,3 +406,13 @@ Route::get('/consumption', function () {
 // Auth::routes();
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Route for shared hosting to create storage link
+Route::get('/link-storage', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        return 'Storage link created successfully!';
+    } catch (\Exception $e) {
+        return 'Error creating storage link: ' . $e->getMessage();
+    }
+});
