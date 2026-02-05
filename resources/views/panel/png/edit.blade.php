@@ -1948,6 +1948,17 @@
         console.log('Target tab element:', targetTab);
         
         if (targetTab) {
+            // Validate current tab before switching (unless moving backwards)
+            const targetIndex = tabOrder.indexOf(tabName);
+            if (targetIndex > currentTabIndex) {
+                const errors = validateCurrentTab();
+                if (errors.length > 0) {
+                    showClientValidationErrors(errors);
+                    return;
+                }
+            }
+            hideClientValidationErrors();
+
             targetTab.classList.add('active');
             console.log('Successfully activated tab:', tabName);
             

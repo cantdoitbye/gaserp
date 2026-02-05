@@ -2043,6 +2043,17 @@
         console.log('Target tab element:', targetTab);
         
         if (targetTab) {
+            // Validate current tab before switching (unless moving backwards)
+            const targetIndex = tabOrder.indexOf(tabName);
+            if (targetIndex > currentTabIndex) {
+                const errors = validateCurrentTab();
+                if (errors.length > 0) {
+                    showClientValidationErrors(errors);
+                    return;
+                }
+            }
+            hideClientValidationErrors();
+
             targetTab.classList.add('active');
             console.log('Successfully activated tab:', tabName);
         } else {
@@ -2098,7 +2109,9 @@
             { name: 'agreement_date', label: 'Agreement Date' }
         ],
         'location-details': [], // No required fields
-        'technical-info': [], // No required fields
+        'technical-info': [
+            { name: 'conversion_status', label: 'Conversion Status' }
+        ],
         'measurements': [], // No required fields
         'files-documents': [] // No required fields
     };
@@ -2440,6 +2453,17 @@ function showToast(message, type = 'success') {
 }
 
 function completeTechnicalInfo() {
+    const conversionStatus = document.querySelector('select[name="conversion_status"]');
+    
+    if (!conversionStatus || !conversionStatus.value) {
+        showToast('Please select a Conversion Status', 'error');
+        if(conversionStatus) conversionStatus.classList.add('is-invalid');
+        return;
+    }
+    
+    // Remove invalid class
+    conversionStatus.classList.remove('is-invalid');
+
     // Show modern toast instead of native alert
     showToast('Technical Information completed! You can now proceed to other tabs.', 'success');
 }
@@ -2501,7 +2525,7 @@ function toggleConversionFields() {
     const statusSelect = document.querySelector('select[name="conversion_status"]');
     const conversionFields = document.getElementById('conversion_done_fields');
     
-    if (statusSelect.value === 'done') {
+    if (['conv_done', 'comm'].includes(statusSelect.value)) {
         conversionFields.style.display = 'block';
         // Make fields required when visible
         conversionFields.querySelectorAll('input[name="conversion_technician_name"], input[name="conversion_date"]').forEach(input => {
