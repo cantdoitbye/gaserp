@@ -1692,14 +1692,20 @@
                                 <div class="existing-files-list">
                                     <div class="existing-files-title">Existing Files:</div>
 
-                                    @foreach($files as $file)
-                                        <div class="existing-file">
-                                            <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank">
-                                                {{ $file['name'] ?? 'File' }}
-                                            </a>
-                                            <small>
-                                                {{ isset($file['size']) ? number_format($file['size'] / 1024, 2) . ' KB' : '' }}
-                                            </small>
+                                    @foreach($files as $index => $file)
+                                        <div class="existing-file d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank">
+                                                    {{ $file['name'] ?? 'File' }}
+                                                </a>
+                                                <small class="ms-2">
+                                                    {{ isset($file['size']) ? number_format($file['size'] / 1024, 2) . ' KB' : '' }}
+                                                </small>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" 
+                                                onclick="deleteFile('job_cards_paths', '{{ $index }}', this)" title="Remove file">
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                         </div>
                                     @endforeach
                                 </div>
@@ -1734,10 +1740,16 @@
                             @if(is_array($autocadFiles) && count($autocadFiles) > 0)
                                 <div class="existing-files-list">
                                     <div class="existing-files-title">Existing Files:</div>
-                                    @foreach($autocadFiles as $file)
-                                        <div class="existing-file">
-                                            <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
-                                            <small>{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>
+                                    @foreach($autocadFiles as $index => $file)
+                                        <div class="existing-file d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
+                                                <small class="ms-2">{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" 
+                                                onclick="deleteFile('autocad_dwg_paths', '{{ $index }}', this)" title="Remove file">
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                         </div>
                                     @endforeach
                                 </div>
@@ -1772,10 +1784,16 @@
                             @if(is_array($siteVisitFiles) && count($siteVisitFiles) > 0)
                                 <div class="existing-files-list">
                                     <div class="existing-files-title">Existing Files:</div>
-                                    @foreach($siteVisitFiles as $file)
-                                        <div class="existing-file">
-                                            <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
-                                            <small>{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>
+                                    @foreach($siteVisitFiles as $index => $file)
+                                        <div class="existing-file d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
+                                                <small class="ms-2">{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" 
+                                                onclick="deleteFile('site_visit_reports_paths', '{{ $index }}', this)" title="Remove file">
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                         </div>
                                     @endforeach
                                 </div>
@@ -1803,8 +1821,12 @@
                         <div class="form-group">
                             <label class="form-label">Scan Copy</label>
                             @if($png->scan_copy_path)
-                                <div class="existing-file">
+                                <div class="existing-file d-flex justify-content-between align-items-center">
                                     <a href="{{ Storage::disk('public')->url($png->scan_copy_path) }}" target="_blank">View Current Scan Copy</a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" 
+                                        onclick="deleteFile('scan_copy_path', '', this)" title="Remove file">
+                                        <i class="fas fa-times"></i>
+                                    </button>
                                 </div>
                             @endif
                             <input type="file" name="scan_copy" class="form-control-file @error('scan_copy') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png">
@@ -1817,8 +1839,12 @@
                         <div class="form-group">
                             <label class="form-label">Certificate</label>
                             @if($png->certificate_path)
-                                <div class="existing-file">
+                                <div class="existing-file d-flex justify-content-between align-items-center">
                                     <a href="{{ Storage::disk('public')->url($png->certificate_path) }}" target="_blank">View Current Certificate</a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" 
+                                        onclick="deleteFile('certificate_path', '', this)" title="Remove file">
+                                        <i class="fas fa-times"></i>
+                                    </button>
                                 </div>
                             @endif
                             <input type="file" name="certificate" class="form-control-file @error('certificate') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png">
@@ -1840,10 +1866,16 @@
                             @if(is_array($otherDocsFiles) && count($otherDocsFiles) > 0)
                                 <div class="existing-files-list">
                                     <div class="existing-files-title">Existing Files:</div>
-                                    @foreach($otherDocsFiles as $file)
-                                        <div class="existing-file">
-                                            <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
-                                            <small>{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>
+                                    @foreach($otherDocsFiles as $index => $file)
+                                        <div class="existing-file d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
+                                                <small class="ms-2">{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" 
+                                                onclick="deleteFile('other_documents_paths', '{{ $index }}', this)" title="Remove file">
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                         </div>
                                     @endforeach
                                 </div>
@@ -1869,7 +1901,7 @@
     <div class="existing-files-list">
         <div class="existing-files-title">Existing Files:</div>
 
-        @foreach($files as $file)
+        @foreach($files as $index => $file)
             @php
                 // handle different storage formats
                 $path = is_array($file)
@@ -1878,14 +1910,20 @@
             @endphp
 
             @if($path)
-                <div class="existing-file">
-                    <a href="{{ Storage::disk('public')->url($path) }}" target="_blank">
-                        {{ basename($path) }}
-                    </a>
+                <div class="existing-file d-flex justify-content-between align-items-center">
+                    <div>
+                        <a href="{{ Storage::disk('public')->url($path) }}" target="_blank">
+                            {{ basename($path) }}
+                        </a>
 
-                    @if(is_array($file) && isset($file['size']))
-                        <small>{{ number_format($file['size'] / 1024, 2) }} KB</small>
-                    @endif
+                        @if(is_array($file) && isset($file['size']))
+                            <small class="ms-2">{{ number_format($file['size'] / 1024, 2) }} KB</small>
+                        @endif
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" 
+                        onclick="deleteFile('additional_documents', '{{ $index }}', this)" title="Remove file">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             @endif
         @endforeach
@@ -1923,7 +1961,58 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    function deleteFile(field, index, btn) {
+        Swal.fire({
+            title: 'Delete this file?',
+            text: "This action cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let url = `{{ route('png.delete-file', ['png' => $png->id, 'field' => ':field', 'index' => ':index']) }}`
+                    .replace(':field', field);
+                
+                if (index !== '') {
+                    url = url.replace(':index', index);
+                } else {
+                    url = url.split('/:index')[0]; // Remove :index if not mapping
+                }
+
+                fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Deleted!', 'File has been removed.', 'success');
+                        $(btn).closest('.existing-file').fadeOut(300, function() {
+                            $(this).remove();
+                            // Check if this was the last file in the list
+                            const list = $(this).closest('.existing-files-list');
+                            if (list.find('.existing-file').length === 0) {
+                                list.remove();
+                            }
+                        });
+                    } else {
+                        Swal.fire('Error!', data.message || 'Something went wrong.', 'error');
+                    }
+                })
+                .catch(error => {
+                    Swal.fire('Error!', 'Network error or server error.', 'error');
+                });
+            }
+        });
+    }
+
     // Store existing measurements data for later use
     const existingMeasurements = @json($png->measurements_data ?? []);
     

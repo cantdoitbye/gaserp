@@ -5,6 +5,50 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    function deleteFile(field, index, btn) {
+        Swal.fire({
+            title: 'Delete this file?',
+            text: "This action cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const url = `{{ route('png.delete-file', ['png' => $png->id, 'field' => ':field', 'index' => ':index']) }}`
+                    .replace(':field', field)
+                    .replace(':index', index);
+
+                fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Deleted!', 'File has been removed.', 'success');
+                        // Remove the element from DOM
+                        $(btn).closest('.position-relative').fadeOut(300, function() {
+                            $(this).remove();
+                            if ($('.doc-grid').children('.position-relative').length === 0) {
+                                $('.doc-grid').html('<div class="col-12 text-center text-muted py-4">No documents attached.</div>');
+                            }
+                        });
+                    } else {
+                        Swal.fire('Error!', data.message || 'Something went wrong.', 'error');
+                    }
+                })
+                .catch(error => {
+                    Swal.fire('Error!', 'Network error or server error.', 'error');
+                });
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // Find all delete forms
         const deleteForms = document.querySelectorAll('.delete-form');
@@ -210,11 +254,44 @@ body {
     border: 1px solid #e2e8f0;
     border-radius: 12px;
     padding: 16px;
+    padding-top: 24px;
     text-align: center;
     transition: all 0.2s;
     text-decoration: none;
     display: block;
+    position: relative;
 }
+
+.remove-doc {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    background: #fee2e2;
+    color: #ef4444;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
+}
+
+.remove-doc:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.1);
+}
+
+.position-relative {
+    position: relative;
+}
+
 
 .doc-card-mini:hover {
     background: white;
@@ -496,9 +573,9 @@ body {
                             $allFiles = [];
                             
                             // Singles
-                            if($png->scan_copy_path) $allFiles[] = ['path' => $png->scan_copy_path, 'name' => 'Scan Copy', 'type' => 'PDF'];
-                            if($png->autocad_drawing_path) $allFiles[] = ['path' => $png->autocad_drawing_path, 'name' => 'AutoCAD Drawing', 'type' => 'DWG'];
-                            if($png->certificate_path) $allFiles[] = ['path' => $png->certificate_path, 'name' => 'Certificate', 'type' => 'DOC'];
+                            if($png->scan_copy_path) $allFiles[] = ['path' => $png->scan_copy_path, 'name' => 'Scan Copy', 'type' => 'PDF', 'field' => 'scan_copy_path'];
+                            if($png->autocad_drawing_path) $allFiles[] = ['path' => $png->autocad_drawing_path, 'name' => 'AutoCAD Drawing', 'type' => 'DWG', 'field' => 'autocad_drawing_path'];
+                            if($png->certificate_path) $allFiles[] = ['path' => $png->certificate_path, 'name' => 'Certificate', 'type' => 'DOC', 'field' => 'certificate_path'];
 
                             // Multiples
                             $multiFields = ['job_cards_paths' => 'Job Card', 'site_visit_reports_paths' => 'Site Report', 'other_documents_paths' => 'Other'];
@@ -507,21 +584,28 @@ body {
                                     $files = is_string($png->$field) ? json_decode($png->$field, true) : $png->$field;
                                     if(is_array($files)) {
                                         foreach($files as $i => $f) {
-                                             $allFiles[] = ['path' => $f['path'], 'name' => $f['name'] ?? "$label #".($i+1), 'type' => 'FILE'];
+                                             $allFiles[] = ['path' => $f['path'], 'name' => $f['name'] ?? "$label #".($i+1), 'type' => 'FILE', 'field' => $field, 'index' => $i];
                                         }
                                     }
                                 }
                             }
                         @endphp
 
-                        @forelse($allFiles as $file)
-                             <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank" class="doc-card-mini">
-                                <div class="doc-icon-lg">
-                                    <i class="fas fa-file-alt"></i>
-                                </div>
-                                <span class="doc-name" title="{{ $file['name'] }}">{{ $file['name'] }}</span>
-                                <span class="doc-type">{{ $file['type'] }}</span>
-                            </a>
+                        @forelse($allFiles as $index => $file)
+                            <div class="position-relative">
+                                 <button type="button" class="remove-doc" 
+                                    onclick="deleteFile('{{ $file['field'] }}', '{{ $file['index'] ?? '' }}', this)" 
+                                    title="Remove file">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank" class="doc-card-mini">
+                                    <div class="doc-icon-lg">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <span class="doc-name" title="{{ $file['name'] }}">{{ $file['name'] }}</span>
+                                    <span class="doc-type">{{ $file['type'] }}</span>
+                                </a>
+                            </div>
                         @empty
                             <div class="col-12 text-center text-muted py-4">
                                 No documents attached.
@@ -604,3 +688,5 @@ body {
     </div>
 </div>
 @endsection
+
+

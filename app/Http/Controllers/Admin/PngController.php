@@ -1076,4 +1076,53 @@ $e->getMessage());
             ], 500);
         }
     }
+
+    /**
+     * Delete an uploaded file.
+     */
+    public function deleteFile(Png $png, $field, $index = null)
+    {
+        try {
+            $data = $png->$field;
+
+            // Handle multiple files (JSON or Array)
+            if ($index !== null) {
+                if (is_string($data)) {
+                    $data = json_decode($data, true);
+                }
+
+                if (is_array($data) && isset($data[$index])) {
+                    $fileData = $data[$index];
+                    $filePath = is_array($fileData) ? ($fileData['path'] ?? null) : $fileData;
+                    
+                    if ($filePath && Storage::disk('public')->exists($filePath)) {
+                        Storage::disk('public')->delete($filePath);
+                    }
+                    
+                    array_splice($data, $index, 1);
+                    $png->$field = count($data) > 0 ? $data : null;
+                }
+            } else {
+                // Handle single file (string path)
+                if ($data && Storage::disk('public')->exists($data)) {
+                    Storage::disk('public')->delete($data);
+                }
+                $png->$field = null;
+            }
+
+            $png->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'File deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('File deletion error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
+
