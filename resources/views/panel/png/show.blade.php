@@ -712,7 +712,7 @@
                     <div class="file-item">
                         <i class="fas fa-{{ $config['icon'] }} file-icon text-{{ $config['color'] }}"></i>
                         <span class="file-name">{{ $config['label'] }}</span>
-                        <a href="{{ Storage::url($png->$field) }}" target="_blank" class="btn-custom btn-view">
+                        <a href="{{ Storage::disk('public')->url($png->$field) }}" target="_blank" class="btn-custom btn-view">
                             <i class="fas fa-eye"></i> View
                         </a>
                     </div>
@@ -742,7 +742,7 @@
                             @endif
                         </span>
 
-                        <a href="{{ Storage::url($file['path']) }}" target="_blank" class="btn-custom btn-view">
+                        <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank" class="btn-custom btn-view">
                             <i class="fas fa-eye"></i> View
                         </a>
                     </div>

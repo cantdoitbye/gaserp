@@ -1694,7 +1694,7 @@
 
                                     @foreach($files as $file)
                                         <div class="existing-file">
-                                            <a href="{{ Storage::url($file['path']) }}" target="_blank">
+                                            <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank">
                                                 {{ $file['name'] ?? 'File' }}
                                             </a>
                                             <small>
@@ -1736,7 +1736,7 @@
                                     <div class="existing-files-title">Existing Files:</div>
                                     @foreach($autocadFiles as $file)
                                         <div class="existing-file">
-                                            <a href="{{ Storage::url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
+                                            <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
                                             <small>{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>
                                         </div>
                                     @endforeach
@@ -1774,7 +1774,7 @@
                                     <div class="existing-files-title">Existing Files:</div>
                                     @foreach($siteVisitFiles as $file)
                                         <div class="existing-file">
-                                            <a href="{{ Storage::url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
+                                            <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
                                             <small>{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>
                                         </div>
                                     @endforeach
@@ -1804,7 +1804,7 @@
                             <label class="form-label">Scan Copy</label>
                             @if($png->scan_copy_path)
                                 <div class="existing-file">
-                                    <a href="{{ Storage::url($png->scan_copy_path) }}" target="_blank">View Current Scan Copy</a>
+                                    <a href="{{ Storage::disk('public')->url($png->scan_copy_path) }}" target="_blank">View Current Scan Copy</a>
                                 </div>
                             @endif
                             <input type="file" name="scan_copy" class="form-control-file @error('scan_copy') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png">
@@ -1818,7 +1818,7 @@
                             <label class="form-label">Certificate</label>
                             @if($png->certificate_path)
                                 <div class="existing-file">
-                                    <a href="{{ Storage::url($png->certificate_path) }}" target="_blank">View Current Certificate</a>
+                                    <a href="{{ Storage::disk('public')->url($png->certificate_path) }}" target="_blank">View Current Certificate</a>
                                 </div>
                             @endif
                             <input type="file" name="certificate" class="form-control-file @error('certificate') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png">
@@ -1842,7 +1842,7 @@
                                     <div class="existing-files-title">Existing Files:</div>
                                     @foreach($otherDocsFiles as $file)
                                         <div class="existing-file">
-                                            <a href="{{ Storage::url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
+                                            <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank">{{ $file['name'] ?? 'File' }}</a>
                                             <small>{{ isset($file['size']) ? number_format($file['size']/1024, 2) . ' KB' : '' }}</small>
                                         </div>
                                     @endforeach
@@ -1879,7 +1879,7 @@
 
             @if($path)
                 <div class="existing-file">
-                    <a href="{{ Storage::url($path) }}" target="_blank">
+                    <a href="{{ Storage::disk('public')->url($path) }}" target="_blank">
                         {{ basename($path) }}
                     </a>
 
