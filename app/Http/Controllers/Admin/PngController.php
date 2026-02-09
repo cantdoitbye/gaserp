@@ -323,7 +323,7 @@ class PngController extends Controller
         try {
             $data = $request->all();
 
-            // Validate required fields
+            // Validate required fields and file sizes
             $request->validate([
                 'service_order_no' => 'required|string|max:255',
                 'customer_name' => 'required|string|max:255',
@@ -333,6 +333,22 @@ class PngController extends Controller
                 'gc_date' => 'nullable|date',
                 'mmt_date' => 'nullable|date',
                 'conversion_date' => 'nullable|date',
+                // File size validation (7MB = 7168KB)
+                'scan_copy' => 'nullable|file|max:7168',
+                'certificate' => 'nullable|file|max:7168',
+                'job_cards.*' => 'nullable|file|max:7168',
+                'autocad_dwg.*' => 'nullable|file|max:51200',
+                'site_visit_reports.*' => 'nullable|file|max:7168',
+                'other_documents.*' => 'nullable|file|max:7168',
+                'additional_documents.*' => 'nullable|file|max:7168',
+            ], [
+                'scan_copy.max' => 'Scan copy file size cannot exceed 7MB.',
+                'certificate.max' => 'Certificate file size cannot exceed 7MB.',
+                'job_cards.*.max' => 'Each job card file size cannot exceed 7MB.',
+                'autocad_dwg.*.max' => 'Each AutoCAD DWG file size cannot exceed 50MB.',
+                'site_visit_reports.*.max' => 'Each site visit report file size cannot exceed 7MB.',
+                'other_documents.*.max' => 'Each other document file size cannot exceed 7MB.',
+                'additional_documents.*.max' => 'Each additional document file size cannot exceed 7MB.',
             ]);
 
             // Handle file uploads (same as store method)
@@ -360,11 +376,19 @@ class PngController extends Controller
 
             // Handle multiple file uploads (similar to store)
             if ($request->hasFile('job_cards')) {
+                Log::info('Job Cards upload detected', [
+                    'files_count' => count($request->file('job_cards'))
+                ]);
 
                 $jobCardsPaths = [];
 
                 foreach ($request->file('job_cards') as $file) {
                     $path = $file->store('png_job_cards', 'public');
+                    Log::info('Job Card file stored', [
+                        'original_name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'size' => $file->getSize()
+                    ]);
 
                     $jobCardsPaths[] = [
                         'name' => $file->getClientOriginalName(),

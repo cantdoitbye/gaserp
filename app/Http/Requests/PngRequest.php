@@ -11,7 +11,7 @@ class PngRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize() 
     {
         return true;
     }
@@ -66,15 +66,16 @@ class PngRequest extends FormRequest
             'measurements.*' => 'nullable',
             
             // File uploads
-            'scan_copy' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'scan_copy' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:7168',
             'autocad_drawing' => 'nullable|file|mimes:dwg,dxf,pdf|max:10240',
-            'certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:7168',
             
             // New file types
-            'job_cards.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:5120',
+            'job_cards.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:7168',
             'autocad_dwg.*' => 'nullable|file|mimes:dwg,dxf,pdf|max:10240',
-            'site_visit_reports.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:5120',
-            'other_documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:5120',
+            'site_visit_reports.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:7168',
+            'other_documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:7168',
+            'additional_documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:7168',
         ];
 
         return $rules;
@@ -97,19 +98,21 @@ class PngRequest extends FormRequest
             'kitchen.integer' => 'Kitchen points must be a valid number.',
             'sla_days.integer' => 'SLA Days must be a valid number.',
             'scan_copy.mimes' => 'Scan copy must be a PDF, JPG, JPEG, or PNG file.',
-            'scan_copy.max' => 'Scan copy file size cannot exceed 5MB.',
+            'scan_copy.max' => 'Scan copy file size cannot exceed 7MB.',
             'autocad_drawing.mimes' => 'AutoCAD drawing must be a DWG, DXF, or PDF file.',
             'autocad_drawing.max' => 'AutoCAD drawing file size cannot exceed 10MB.',
             'certificate.mimes' => 'Certificate must be a PDF, JPG, JPEG, or PNG file.',
-            'certificate.max' => 'Certificate file size cannot exceed 5MB.',
+            'certificate.max' => 'Certificate file size cannot exceed 7MB.',
             'job_cards.*.mimes' => 'Job card files must be PDF, JPG, JPEG, PNG, DOC, or DOCX.',
-            'job_cards.*.max' => 'Each job card file size cannot exceed 5MB.',
+            'job_cards.*.max' => 'Each job card file size cannot exceed 7MB.',
             'autocad_dwg.*.mimes' => 'AutoCAD files must be DWG, DXF, or PDF.',
             'autocad_dwg.*.max' => 'Each AutoCAD file size cannot exceed 10MB.',
             'site_visit_reports.*.mimes' => 'Site visit report files must be PDF, JPG, JPEG, PNG, DOC, or DOCX.',
-            'site_visit_reports.*.max' => 'Each site visit report file size cannot exceed 5MB.',
+            'site_visit_reports.*.max' => 'Each site visit report file size cannot exceed 7MB.',
             'other_documents.*.mimes' => 'Other document files must be PDF, JPG, JPEG, PNG, DOC, or DOCX.',
-            'other_documents.*.max' => 'Each other document file size cannot exceed 5MB.',
+            'other_documents.*.max' => 'Each other document file size cannot exceed 7MB.',
+            'additional_documents.*.mimes' => 'Additional document files must be PDF, JPG, JPEG, PNG, DOC, or DOCX.',
+            'additional_documents.*.max' => 'Each additional document file size cannot exceed 7MB.',
         ];
     }
 

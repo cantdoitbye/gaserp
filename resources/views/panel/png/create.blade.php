@@ -1913,7 +1913,7 @@
                                 <div class="file-preview" id="job_cards_preview"></div>
                             </div>
                             <div class="document-info">
-                                <small class="text-muted">Accepted formats: PDF, JPG, PNG, DOC, DOCX (max: 5MB each)</small>
+                                <small class="text-muted">Accepted formats: PDF, JPG, PNG, DOC, DOCX (max: 7MB each)</small>
                             </div>
                         </div>
 
@@ -1953,7 +1953,7 @@
                                 <div class="file-preview" id="site_visit_reports_preview"></div>
                             </div>
                             <div class="document-info">
-                                <small class="text-muted">Accepted formats: PDF, JPG, PNG, DOC, DOCX (max: 5MB each)</small>
+                                <small class="text-muted">Accepted formats: PDF, JPG, PNG, DOC, DOCX (max: 7MB each)</small>
                             </div>
                         </div>
                     </div>
@@ -1965,7 +1965,7 @@
                         <div class="form-group">
                             <label class="form-label">Scan Copy</label>
                             <input type="file" name="scan_copy" class="form-control-file @error('scan_copy') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png">
-                            <div class="form-file-info">Accepted formats: PDF, JPG, PNG (max: 5MB)</div>
+                            <div class="form-file-info">Accepted formats: PDF, JPG, PNG (max: 7MB)</div>
                             @error('scan_copy')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -1974,7 +1974,7 @@
                         <div class="form-group">
                             <label class="form-label">Certificate</label>
                             <input type="file" name="certificate" class="form-control-file @error('certificate') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png">
-                            <div class="form-file-info">Accepted formats: PDF, JPG, PNG (max: 5MB)</div>
+                            <div class="form-file-info">Accepted formats: PDF, JPG, PNG (max: 7MB)</div>
                             @error('certificate')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -1985,7 +1985,7 @@
                         <div class="form-group-full">
                             <label class="form-label">Other Documents</label>
                             <input type="file" name="other_documents[]" class="form-control-file @error('other_documents.*') is-invalid @enderror" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
-                            <div class="form-file-info">Multiple files allowed. Accepted formats: PDF, DOC, DOCX, JPG, PNG (max: 5MB each)</div>
+                            <div class="form-file-info">Multiple files allowed. Accepted formats: PDF, DOC, DOCX, JPG, PNG (max: 7MB each)</div>
                             @error('other_documents.*')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
