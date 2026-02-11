@@ -662,8 +662,11 @@ class PngController extends Controller
         ]);
 
         try {
-            $import = new PngImport;
-            Excel::import($import, $request->file('excel_file'));
+        $skipDuplicates = $request->has('skip_duplicates');
+        $updateDuplicates = $request->has('update_duplicates');
+        
+        $import = new PngImport($skipDuplicates, $updateDuplicates);
+        Excel::import($import, $request->file('excel_file'));
             
             $summary = $import->getImportSummary();
             

@@ -225,6 +225,55 @@ class PngImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkR
         return $mapping[$status] ?? $status;
     }
 
+/**
+ * Normalize area to match database/view expectations
+ */
+private function normalizeArea($area)
+{
+    if (is_null($area) || $area === '') {
+        return null;
+    }
+
+    $area = strtolower(trim($area));
+    
+    $mapping = [
+        'bungalow' => 'bungalow',
+        'bunglow' => 'bungalow',
+        'tapping' => 'tapping',
+        'row house' => 'row_house',
+        'row-house' => 'row_house',
+        'rowhouse' => 'row_house',
+        'row_house' => 'row_house',
+        'floor tf' => 'floor_tf',
+        'floor_tf' => 'floor_tf',
+        'floor-tf' => 'floor_tf',
+    ];
+
+    if (array_key_exists($area, $mapping)) {
+        return $mapping[$area];
+    }
+
+    // Replace spaces and hyphens with underscores for better slug-like storage
+    return str_replace([' ', '-'], '_', $area);
+}
+
+/**
+ * Normalize scheme name
+ */
+private function normalizeScheme($scheme)
+{
+    if (is_null($scheme) || $scheme === '') {
+        return null;
+    }
+
+    $scheme = strtolower(trim($scheme));
+    
+    // Some basic normalization for common variants
+    $scheme = str_replace([' ', '-', '_'], '_', $scheme);
+    
+    return $scheme;
+}
+
     /**
      * Convert technical errors to user-friendly messages
      */
@@ -348,6 +397,9 @@ class PngImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkR
             'geyser_point' => ['geyser_point', 'geyserpoint', 'geyser'],
             'extra_kitchen' => ['extra_kitchen', 'extrakitchen', 'kitchen'],
             'sla_days' => ['sla_days', 'sladays', 'sla'],
+            'address' => ['address', 'full_address', 'location_address', 'site_address'],
+            'area' => ['area', 'location_area', 'zone', 'location', 'sector', 'category', 'street_4'],
+            'scheme' => ['scheme', 'scheme_name', 'project_scheme', 'project', 'sub_scheme'],
             'connections_status' => ['connections_status', 'connectionsstatus', 'status'],
 
             // Technical Information
@@ -454,6 +506,14 @@ class PngImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkR
             $data['connections_status'] = $this->normalizeConnectionStatus($data['connections_status']);
         }
 
+        if (isset($data['area'])) {
+            $data['area'] = $this->normalizeArea($data['area']);
+        }
+
+        if (isset($data['scheme'])) {
+            $data['scheme'] = $this->normalizeScheme($data['scheme']);
+        }
+
         // Convert numeric fields - keep null if empty
         $numericFields = [
             'geyser_point', 'extra_kitchen', 'sla_days',
@@ -490,7 +550,8 @@ class PngImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkR
             'mmt_tpi', 'conversion_technician', 'meter_number', 'plumber',
             'witnesses_name_date', 'witnesses_name_date_2', 'reported',
             'nepl_claim', 'offline_drawing', 'gc_done_by', 'v_lookup',
-            'ra_bill_no', 'current_remarks', 'previous_remarks', 'remarks'
+            'ra_bill_no', 'current_remarks', 'previous_remarks', 'remarks',
+            'area', 'scheme', 'address'
         ];
         
         foreach ($stringFields as $field) {
@@ -519,7 +580,7 @@ class PngImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkR
             'gf_saddle_63x32mm', 'gf_saddle_125x32', 'gf_saddle_90x20mm',
             'gf_reducer_32x20mm', 'nepl_claim', 'offline_drawing', 'gc_done_by',
             'v_lookup', 'ra_bill_no', 'current_remarks', 'previous_remarks', 'remarks',
-            'customer' // Add customer field to avoid the error
+            'customer', 'area', 'scheme', 'address' // Add address to avoid it being filtered out
         ];
 
         $filteredData = [];
@@ -530,6 +591,15 @@ class PngImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkR
         // Set customer field as fallback for customer_name
         if (empty($filteredData['customer']) && !empty($filteredData['customer_name'])) {
             $filteredData['customer'] = $filteredData['customer_name'];
+        }
+
+        // Fallback for area from street_4 if street_4 seems to contain area-like keywords
+        if (empty($filteredData['area']) && !empty($data['street_4'])) {
+            $street4 = $data['street_4'];
+            // If street_4 contains common area terms or is just a short name (Area A, Zone 1, etc)
+            if (preg_match('/area|zone|sector|phase|tapping|bungalow/i', $street4) || strlen($street4) < 15) {
+                $filteredData['area'] = $street4;
+            }
         }
 
         return $filteredData;

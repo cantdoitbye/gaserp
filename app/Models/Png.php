@@ -388,6 +388,62 @@ class Png extends Model
     }
 
     /**
+     * Get calculated SLA days from agreement date
+     */
+    public function getSlaCalculatedDaysAttribute()
+    {
+        if (!$this->agreement_date) {
+            return null;
+        }
+        
+        return now()->diffInDays($this->agreement_date);
+    }
+
+    /**
+     * Get SLA days status with color coding
+     */
+    public function getSlaStatusAttribute()
+    {
+        $calculatedDays = $this->sla_calculated_days;
+        $targetSla = $this->sla_days;
+        
+        if ($calculatedDays === null || $targetSla === null) {
+            return ['status' => 'unknown', 'class' => 'text-muted'];
+        }
+        
+        if ($calculatedDays <= $targetSla) {
+            return ['status' => 'on_time', 'class' => 'text-success'];
+        } else {
+            $overdueDays = $calculatedDays - $targetSla;
+            return [
+                'status' => 'overdue', 
+                'class' => 'text-danger',
+                'overdue_days' => $overdueDays
+            ];
+        }
+    }
+
+    /**
+     * Get combined address from individual fields if the main address field is empty
+     */
+    public function getAddressAttribute($value)
+    {
+        if (!empty($value)) {
+            return $value;
+        }
+
+        $parts = array_filter([
+            $this->house_no,
+            $this->street_1,
+            $this->street_2,
+            $this->street_3,
+            $this->street_4
+        ]);
+
+        return !empty($parts) ? implode(', ', $parts) : 'N/A';
+    }
+
+    /**
      * Scope for filtering by booking method
      */
     public function scopeByBookingBy($query, $bookingBy)

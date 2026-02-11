@@ -41,6 +41,8 @@ class PngImportTemplate implements FromArray, WithHeadings, WithStyles, WithColu
                 'Sector 15', // street_2
                 'Phase 2', // street_3
                 'Area A', // street_4
+                'Bungalow', // area
+                'Standard', // scheme
                 1, // geyser_point
                 1, // extra_kitchen
                 30, // sla_days
@@ -140,6 +142,8 @@ class PngImportTemplate implements FromArray, WithHeadings, WithStyles, WithColu
             'Street 2',
             'Street 3',
             'Street 4',
+            'Area',
+            'Scheme',
             'Geyser Point',
             'Extra Kitchen',
             'SLA Days',
@@ -311,64 +315,66 @@ class PngImportTemplate implements FromArray, WithHeadings, WithStyles, WithColu
             'N' => 15,  // Street 2
             'O' => 15,  // Street 3
             'P' => 15,  // Street 4
-            'Q' => 12,  // Geyser Point
-            'R' => 12,  // Extra Kitchen
-            'S' => 10,  // SLA Days
-            'T' => 18,  // Connections Status
-            'U' => 15,  // PLB Name
-            'V' => 12,  // PLB Date
-            'W' => 12,  // PDT Date
-            'X' => 10,  // PDT TPI
-            'Y' => 12,  // GC Date
-            'Z' => 10,  // GC TPI
-            'AA' => 12, // MMT Date
-            'AB' => 10, // MMT TPI
-            'AC' => 15, // Conversion Date
-            'AD' => 18, // Conversion Technician
-            'AE' => 15, // Conversion Payment
-            'AF' => 12, // Meter Number
-            'AG' => 12, // Meter Reading
-            'AH' => 15, // Plumber
-            'AI' => 20, // Witnesses Name & Date
-            'AJ' => 20, // Witnesses Name & Date 2
-            'AK' => 15, // Date of Report
-            'AL' => 10, // Reported
-            'AM' => 20, // GI Guard to Main Valve
-            'AN' => 20, // GI Main Valve to Meter
-            'AO' => 20, // GI Meter to Geyser
-            'AP' => 18, // GI Geyser Point
-            'AQ' => 18, // Extra Kitchen Point
-            'AR' => 12, // Total GI
-            'AS' => 15, // High Press 1.6 Reg
-            'AT' => 15, // Low Press 2.5 Reg
-            'AU' => 10, // Reg Qty
-            'AV' => 10, // Gas Tap
-            'AW' => 12, // Valve 1/2"
-            'AX' => 15, // GI Coupling 1/2"
-            'AY' => 12, // GI Elbow 1/2"
-            'AZ' => 12, // Clamp 1/2"
-            'BA' => 12, // GI Tee 1/2"
-            'BB' => 12, // Anaconda
-            'BC' => 15, // Open Cut 20mm
-            'BD' => 12, // Boring 20mm
-            'BE' => 18, // Total MDPE Pipe 20mm
-            'BF' => 12, // Tee 20mm
-            'BG' => 15, // RCC Guard 20mm
-            'BH' => 15, // GF Coupler 20mm
-            'BI' => 18, // GF Saddle 32x20mm
-            'BJ' => 18, // GF Saddle 63x20mm
-            'BK' => 18, // GF Saddle 63x32mm
-            'BL' => 15, // GF Saddle 125x32
-            'BM' => 18, // GF Saddle 90x20mm
-            'BN' => 18, // GF Reducer 32x20mm
-            'BO' => 15, // NEPL Claim
-            'BP' => 15, // Offline Drawing
-            'BQ' => 15, // GC Done By
-            'BR' => 12, // V Lookup
-            'BS' => 15, // RA Bill No
-            'BT' => 25, // Current Remarks
-            'BU' => 25, // Previous Remarks
-            'BV' => 25, // Remarks
+            'Q' => 15,  // Area
+            'R' => 15,  // Scheme
+            'S' => 12,  // Geyser Point
+            'T' => 12,  // Extra Kitchen
+            'U' => 10,  // SLA Days
+            'V' => 18,  // Connections Status
+            'W' => 15,  // PLB Name
+            'X' => 12,  // PLB Date
+            'Y' => 12,  // PDT Date
+            'Z' => 10,  // PDT TPI
+            'AA' => 12, // GC Date
+            'AB' => 10, // GC TPI
+            'AC' => 12, // MMT Date
+            'AD' => 10, // MMT TPI
+            'AE' => 15, // Conversion Date
+            'AF' => 18, // Conversion Technician
+            'AG' => 15, // Conversion Payment
+            'AH' => 12, // Meter Number
+            'AI' => 12, // Meter Reading
+            'AJ' => 15, // Plumber
+            'AK' => 20, // Witnesses Name & Date
+            'AL' => 20, // Witnesses Name & Date 2
+            'AM' => 15, // Date of Report
+            'AN' => 10, // Reported
+            'AO' => 20, // GI Guard to Main Valve
+            'AP' => 20, // GI Main Valve to Meter
+            'AQ' => 20, // GI Meter to Geyser
+            'AR' => 18, // GI Geyser Point
+            'AS' => 18, // Extra Kitchen Point
+            'AT' => 12, // Total GI
+            'AU' => 15, // High Press 1.6 Reg
+            'AV' => 15, // Low Press 2.5 Reg
+            'AW' => 10, // Reg Qty
+            'AX' => 10, // Gas Tap
+            'AY' => 12, // Valve 1/2"
+            'AZ' => 15, // GI Coupling 1/2"
+            'BA' => 12, // GI Elbow 1/2"
+            'BB' => 12, // Clamp 1/2"
+            'BC' => 12, // GI Tee 1/2"
+            'BD' => 12, // Anaconda
+            'BE' => 15, // Open Cut 20mm
+            'BF' => 12, // Boring 20mm
+            'BG' => 18, // Total MDPE Pipe 20mm
+            'BH' => 12, // Tee 20mm
+            'BI' => 15, // RCC Guard 20mm
+            'BJ' => 15, // GF Coupler 20mm
+            'BK' => 18, // GF Saddle 32x20mm
+            'BL' => 18, // GF Saddle 63x20mm
+            'BM' => 18, // GF Saddle 63x32mm
+            'BN' => 15, // GF Saddle 125x32
+            'BO' => 18, // GF Saddle 90x20mm
+            'BP' => 18, // GF Reducer 32x20mm
+            'BQ' => 15, // NEPL Claim
+            'BR' => 15, // Offline Drawing
+            'BS' => 15, // GC Done By
+            'BT' => 12, // V Lookup
+            'BU' => 15, // RA Bill No
+            'BV' => 25, // Current Remarks
+            'BW' => 25, // Previous Remarks
+            'BX' => 25, // Remarks
         ];
     }
 
