@@ -136,7 +136,7 @@ class PngImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkR
 
         // Validate plan_type
         if (!empty($data['plan_type'])) {
-            $allowedPlanTypes = ['apartment', 'individual', 'commercial', 'bungalow', 'rowhouse', 'farmhouse'];
+            $allowedPlanTypes = ['apartment', 'individual', 'commercial', 'bungalow', 'rowhouse', 'farmhouse', 'domestic', 'riser_hadder', 'dma', 'welded', 'o&m'];
             $normalizedPlanType = $this->normalizePlanType($data['plan_type']);
             if ($normalizedPlanType && !in_array($normalizedPlanType, $allowedPlanTypes)) {
                 $errors[] = "Invalid plan type '{$data['plan_type']}'. Allowed values: " . implode(', ', $allowedPlanTypes);
@@ -380,7 +380,7 @@ private function normalizeScheme($scheme)
             'agreement_date' => ['agreement_date', 'agreementdate', 'agreement_dt'],
             'booking_by' => ['booking_by', 'bookingby', 'booked_by'],
             'start_date' => ['start_date', 'startdate', 'start_dt'],
-            'plan_type' => ['plan_type', 'plantype', 'plan'],
+            'plan_type' => ['plan_type', 'plantype', 'plan', 'activity_type'],
             'customer' => ['customer', 'customer_name', 'customername', 'name'],
             'customer_name' => ['customer_name', 'customername', 'name', 'customer'],
             'customer_no' => ['customer_no', 'customer_number', 'customerno', 'customernum', 'customer_num'],
@@ -399,7 +399,7 @@ private function normalizeScheme($scheme)
             'sla_days' => ['sla_days', 'sladays', 'sla'],
             'address' => ['address', 'full_address', 'location_address', 'site_address'],
             'area' => ['area', 'location_area', 'zone', 'location', 'sector', 'category', 'street_4'],
-            'scheme' => ['scheme', 'scheme_name', 'project_scheme', 'project', 'sub_scheme'],
+            'scheme' => ['scheme', 'scheme_name', 'project_scheme', 'project', 'sub_scheme', 'activity_type'],
             'connections_status' => ['connections_status', 'connectionsstatus', 'status'],
 
             // Technical Information
@@ -681,9 +681,9 @@ private function normalizeScheme($scheme)
             'farm-house' => 'farmhouse',
             
             // Other common variations
-            'ggl' => 'individual', // Based on your data, GGL seems to be individual
-            'domestic' => 'individual',
-            'residential' => 'individual',
+            'ggl' => 'individual',
+            'domestic' => 'domestic',
+            'residential' => 'domestic',
         ];
         
         // Check if the plan type exists in our mapping
